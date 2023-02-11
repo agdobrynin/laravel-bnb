@@ -1,7 +1,5 @@
-<template>
-    <div>
-        Component One 🚀 {{ printable }}
-    </div>
+<template lang="pug">
+div Component One 🚀 {{ printable }} 😀
 </template>
 
 <script setup lang="ts">

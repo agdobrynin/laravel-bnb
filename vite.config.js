@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
 import path from 'path'
-
+import pugPlugin from 'vite-plugin-pug';
 
 export default defineConfig({
     plugins: [
@@ -16,6 +16,7 @@ export default defineConfig({
                 includeAbsolute: false,
             },
         }),
+        pugPlugin({ pretty: true }, { name: 'My Pug' }),
     ],
     resolve: {
         alias: {
