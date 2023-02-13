@@ -1,17 +1,12 @@
-import ExampleOne from '@/Components/ExampleOne.vue'
-import ExampleTwo from '@/Components/ExampleTwo.vue'
-import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router'
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+
+import BookableList from '@/Components/BookableList/BookableList.vue'
 
 const routes: RouteRecordRaw[] = [
     {
         name: 'home',
         path: '/',
-        component: ExampleOne,
-    },
-    {
-        name: 'two',
-        path: '/two',
-        component: ExampleTwo
+        component: BookableList,
     }
 ]
 

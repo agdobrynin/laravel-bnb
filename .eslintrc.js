@@ -13,10 +13,16 @@ module.exports = {
         'eslint:recommended',
         '@vue/eslint-config-typescript'
     ],
+    plugins: [
+        'simple-import-sort'
+    ],
     parserOptions: {
         ecmaVersion: 'latest'
     },
     rules: {
-        'quotes': ['error', 'single', { 'avoidEscape': true }]
+        'quotes': ['error', 'single', { 'avoidEscape': true }],
+        'simple-import-sort/imports': 'error',
+        'simple-import-sort/exports': 'error',
+        'object-curly-spacing': ['error', 'always'],
     }
 }
