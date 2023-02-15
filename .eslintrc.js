@@ -24,5 +24,6 @@ module.exports = {
         'simple-import-sort/imports': 'error',
         'simple-import-sort/exports': 'error',
         'object-curly-spacing': ['error', 'always'],
+        'semi': ['error', 'never'],
     }
 }

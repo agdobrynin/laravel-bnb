@@ -1,10 +1,12 @@
-import './bootstrap';
+// import './bootstrap';
 import '../css/app.css'
 import '../scss/app.scss'
 
-import {createApp} from 'vue'
-import App from './App.vue'
+import { createApp } from 'vue'
+
 import router from '@/router'
+
+import App from './App.vue'
 
 createApp(App)
     .use(router)
