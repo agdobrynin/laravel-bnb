@@ -5,14 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Bookable extends Model
+class Booking extends Model
 {
     use HasFactory, HasUuids;
 
-    public function booking(): HasMany
+    public function bookable(): BelongsTo
     {
-        return $this->hasMany(Booking::class);
+        return $this->belongsTo(Bookable::class);
     }
 }
