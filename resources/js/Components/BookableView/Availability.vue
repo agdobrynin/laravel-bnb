@@ -26,7 +26,7 @@ import { reactive } from 'vue'
 
 import { DateRange } from '@/Models/DateRange'
 
-const dateRange: DateRange = new DateRange(new Date(), new Date())
+const dateRange: DateRange = new DateRange(new Date(), 4)
 
 const data = reactive(dateRange)
 </script>
