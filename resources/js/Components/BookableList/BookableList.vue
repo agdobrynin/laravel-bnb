@@ -18,7 +18,7 @@ import { computed, onMounted, ref } from 'vue'
 import BookableItem from '@/Components/BookableList/BookableListItem.vue'
 import PlaceholderCard from '@/Components/PlaceholderCard/PlaceholderCard.vue'
 import HttpService from '@/Services/HttpService'
-import type { InterfaceApiError } from '@/Services/InterfaceApiError'
+import type { InterfaceApiError } from '@/Services/Interfaces/InterfaceApiError'
 import type { IBookableList } from '@/Types/IBookableList'
 
 const bookableList: Ref<IBookableList|null> = ref(null)

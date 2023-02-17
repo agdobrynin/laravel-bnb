@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,5 +17,12 @@ class Booking extends Model
     public function bookable(): BelongsTo
     {
         return $this->belongsTo(Bookable::class);
+    }
+
+
+    public function scopeBetweenDates(Builder $builder, string $start, string $end): Builder
+    {
+        return $builder->where('end', '>=', $start)
+            ->where('start', '<=', $end);
     }
 }

@@ -12,7 +12,7 @@ div
                         hr
                         article {{ bookable.description }}
             div.col-md-4.mb-4
-                Availability
+                Availability(:id="bookable.id")
 </template>
 
 <script setup lang="ts">
@@ -23,7 +23,7 @@ import { useRoute } from 'vue-router'
 import Availability from '@/Components/BookableView/Availability.vue'
 import PlaceholderCard from '@/Components/PlaceholderCard/PlaceholderCard.vue'
 import HttpService from '@/Services/HttpService'
-import type { InterfaceApiError } from '@/Services/InterfaceApiError'
+import type { InterfaceApiError } from '@/Services/Interfaces/InterfaceApiError'
 import type { IBookable } from '@/Types/IBookable'
 import type { IBookableItem } from '@/Types/IBookableItem'
 

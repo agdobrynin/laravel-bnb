@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios'
 
-import type { InterfaceApiError } from '@/Services/InterfaceApiError'
+import type { InterfaceApiError } from '@/Services/Interfaces/InterfaceApiError'
 import type { IApiError } from '@/Types/IApiError'
 
 export class ApiError implements InterfaceApiError {
