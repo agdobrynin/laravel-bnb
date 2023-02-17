@@ -5,7 +5,7 @@ _описание проекта и изученные темы позже._
 **Стек:**
 🐘 Php 8.2
 🟥 Laravel 9
-🥉 Vue 3
+🥉 Vue 3 by composition api + TypeScript + Pug
 🧶 Boostrap css 5
 🦖 MariaDb
 
