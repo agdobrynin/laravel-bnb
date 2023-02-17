@@ -11,6 +11,8 @@ class Booking extends Model
 {
     use HasFactory, HasUuids;
 
+    protected $fillable = ['start', 'end'];
+
     public function bookable(): BelongsTo
     {
         return $this->belongsTo(Bookable::class);

@@ -10,7 +10,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            BookableSeeder::class,
+            BookableWithBookingDatesSeeder::class,
         ]);
     }
 }
