@@ -1,5 +1,5 @@
 export class DateRange {
-    private dateEnd: Date
+    private dateEnd: Date | undefined
     constructor(private dateStart: Date, private offsetEnd: number = 1) {
         this.dateEnd = this.nextDate(dateStart, offsetEnd)
     }
@@ -13,11 +13,13 @@ export class DateRange {
             if (date.getTime() >= this.dateStart.getTime()) {
                 this.dateEnd = date
             }
+        } else {
+            this.dateEnd = undefined
         }
     }
 
     get end () : string {
-        return this.formatted(this.dateEnd)
+        return this.dateEnd ? this.formatted(this.dateEnd) : ''
     }
 
     get endMin (): string {
@@ -33,7 +35,7 @@ export class DateRange {
             if (date.getTime() >= this.dateToday.getTime()) {
                 this.dateStart = date
 
-                if (this.dateStart.getTime() > this.dateEnd.getTime()) {
+                if (this.dateEnd && this.dateStart.getTime() > this.dateEnd.getTime()) {
                     // set offset
                     this.dateEnd = this.nextDate(this.dateStart, this.offsetEnd)
                 }
