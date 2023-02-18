@@ -25,5 +25,11 @@ module.exports = {
         'simple-import-sort/exports': 'error',
         'object-curly-spacing': ['error', 'always'],
         'semi': ['error', 'never'],
-    }
+    },
+    ignorePatterns: [
+        'public',
+        'node_modules',
+        'vendor',
+        '!.*', // Check the configs
+    ],
 }
