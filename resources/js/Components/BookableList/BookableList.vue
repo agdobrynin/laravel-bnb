@@ -4,10 +4,16 @@ div
         div.alert.alert-danger(v-if="apiError") {{ apiError }}
         div(v-else-if="bookables.length === 0") Not found books.
         template(v-else)
-            div.col.d-flex.align-items-stretch(v-for="bookable in bookables" :key="bookable.id")
+            div.col.d-flex.align-items-stretch(
+                v-for="bookable in bookables"
+                :key="bookable.id"
+            )
                 BookableItem(:item="bookable")
     div.row.justify-content-center.row-cols-1.row-cols-md-2.g-4(v-else)
-        div.col(v-for="index in [0, 1, 2]" :key="index")
+        div.col(
+            v-for="index in [0, 1, 2]"
+            :key="index"
+        )
             PlaceholderCard
 </template>
 

@@ -1,7 +1,10 @@
 <template lang="pug">
 ul.list-group.mt-4.border.border-danger
     li.list-group-item.list-group-item-danger Booking dates
-    li.list-group-item.text-danger(v-for="(dateItem, index) in bookingDates" :key="`is-booking-${index}`")
+    li.list-group-item.text-danger(
+        v-for="(dateItem, index) in bookingDates"
+        :key="`is-booking-${index}`"
+    )
         span.item-small
             | From {{ dateItem.start }} to {{ dateItem.end }}
 </template>
