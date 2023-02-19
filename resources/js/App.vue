@@ -1,11 +1,9 @@
 <template lang="pug">
 div
-    nav(class="navbar bg-light border-bottom navbar-light")
-        div(class="container-fluid")
-            router-link(
-                class="navbar-brand me-auto"
-                :to="{name: 'home'}") {{ appName }}
-    div(class="container py-4 px-3 mx-auto")
+    nav.navbar.bg-light.border-bottom.navbar-light
+        div.container.container-fluid
+            router-link.navbar-brand.me-auto(:to="{name: 'home'}") {{ appName }}
+    div.container.py-4.px-3.mx-auto
         router-view
 </template>
 

@@ -12,13 +12,18 @@ class Bookable extends Model
 {
     use HasFactory, HasUuids;
 
-    public function booking(): HasMany
+    public function bookings(): HasMany
     {
         return $this->hasMany(Booking::class);
     }
 
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
+
     public function availableForDate(string $start, string $end): Collection
     {
-        return $this->booking()->betweenDates($start, $end)->get();
+        return $this->bookings()->betweenDates($start, $end)->get();
     }
 }

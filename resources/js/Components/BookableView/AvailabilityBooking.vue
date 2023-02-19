@@ -17,37 +17,31 @@ div
                 :min="data.startMin"
                 :class="{'is-invalid': startFieldError}"
                 :disabled="isLoading"
-                @change="resetBookingAvailability"
-            )
+                @change="resetBookingAvailability")
             label.text-secondary.col-form-label-sm(for="dateFrom") Date from
             div.invalid-feedback(
                 v-for="(error, index) in startFieldError"
-                :key="`start_${index}`"
-            ) {{ error }}
+                :key="`start_${index}`") {{ error }}
         div.col-md.form-floating.mb-3
             input#dateTo.form-control-sm.form-control(
-                v-model="data.end"
-                type="date"
-                placeholder="Date to"
-                :min="data.endMin"
-                :class="{'is-invalid': endFieldError}"
-                :disabled="isLoading"
-                @change="resetBookingAvailability"
-            )
+                    v-model="data.end"
+                    type="date"
+                    placeholder="Date to"
+                    :min="data.endMin"
+                    :class="{'is-invalid': endFieldError}"
+                    :disabled="isLoading"
+                    @change="resetBookingAvailability")
             label.text-secondary.col-form-label-sm(for="dateTo") Date to
             div.invalid-feedback(
                 v-for="(error, index) in endFieldError"
-                :key="`end_${index}`"
-            ) {{error}}
+                :key="`end_${index}`") {{error}}
     ButtonWithLoading.btn.btn-secondary.w-100(
         :is-loading="isLoading"
         title="Check dates 🔎"
-        @click="check"
-    )
+        @click="check")
     BookingDates(
         v-if="bookingAvailability && bookingAvailability.data.length"
-        :items="bookingAvailability"
-    )
+        :items="bookingAvailability")
 </template>
 
 <script setup lang="ts">

@@ -5,8 +5,7 @@ ul.list-group.mt-4.border.border-danger
         v-for="(dateItem, index) in bookingDates"
         :key="`is-booking-${index}`"
     )
-        span.item-small
-            | From {{ dateItem.start }} to {{ dateItem.end }}
+        span.item-small From {{ dateItem.start }} to {{ dateItem.end }}
 </template>
 
 <script setup lang="ts">
