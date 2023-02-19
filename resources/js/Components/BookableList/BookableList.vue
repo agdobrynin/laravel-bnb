@@ -4,10 +4,16 @@ div
         div.alert.alert-danger(v-if="apiError") {{ apiError }}
         div(v-else-if="bookables.length === 0") Not found books.
         template(v-else)
-            div.col.d-flex.align-items-stretch(v-for="bookable in bookables" :key="bookable.id")
+            div.col.d-flex.align-items-stretch(
+                v-for="bookable in bookables"
+                :key="bookable.id"
+            )
                 BookableItem(:item="bookable")
     div.row.justify-content-center.row-cols-1.row-cols-md-2.g-4(v-else)
-        div.col(v-for="index in [0, 1, 2]" :key="index")
+        div.col(
+            v-for="index in Array(4)"
+            :key="index"
+        )
             PlaceholderCard
 </template>
 
@@ -16,7 +22,7 @@ import type { Ref } from 'vue'
 import { computed, onMounted, ref } from 'vue'
 
 import BookableItem from '@/Components/BookableList/BookableListItem.vue'
-import PlaceholderCard from '@/Components/PlaceholderCard/PlaceholderCard.vue'
+import PlaceholderCard from '@/Components/UI/PlaceholderCard.vue'
 import HttpService from '@/Services/HttpService'
 import type { InterfaceApiError } from '@/Services/Interfaces/InterfaceApiError'
 import type { IBookableList } from '@/Types/IBookableList'

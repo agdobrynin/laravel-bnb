@@ -1,27 +1,30 @@
 <template lang="pug">
 div
+    .alert.alert-danger(v-if="apiError")
+        | #[h5 Bookable error] {{ apiError }}
     PlaceholderCard(v-if="loading")
-    div.alert.alert-danger(v-else-if="apiError")
-        | {{ apiError }}
     div(v-else)
         div.row
             div.col-md-8.mb-4
-                div.card
+                div.card.mb-4
                     div.card-body
                         h2 {{ bookable.title }}
                         hr
                         article {{ bookable.description }}
+                div.mb-4.mx-1
+                    ReviewList(:bookabled-id="bookable.id")
             div.col-md-4.mb-4
-                Availability(:id="bookable.id")
+                AvailabilityBooking(:id="bookable.id")
 </template>
 
 <script setup lang="ts">
 import type { ComputedRef, Ref } from 'vue'
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
-import Availability from '@/Components/BookableView/Availability.vue'
-import PlaceholderCard from '@/Components/PlaceholderCard/PlaceholderCard.vue'
+import AvailabilityBooking from '@/Components/BookableView/AvailabilityBooking.vue'
+import ReviewList from '@/Components/Review/ReviewList.vue'
+import PlaceholderCard from '@/Components/UI/PlaceholderCard.vue'
 import HttpService from '@/Services/HttpService'
 import type { InterfaceApiError } from '@/Services/Interfaces/InterfaceApiError'
 import type { IBookable } from '@/Types/IBookable'
@@ -31,14 +34,15 @@ const route = useRoute()
 const id: string = route.params.id as string
 
 const loading: Ref<boolean> = ref(true)
-const bookableItem: Ref<IBookableItem|null> = ref(null)
+const bookableItem: Ref<IBookableItem | null> = ref(null)
 const apiError: Ref<string|null> = ref(null)
 
-const bookable: ComputedRef<IBookable| null> = computed(() => bookableItem.value?.data || null)
+const bookable: ComputedRef<IBookable | null> = computed(() => bookableItem.value?.data || null)
 
-new HttpService()
-    .getBookable(id)
-    .then((response) => bookableItem.value = response as IBookableItem)
-    .catch((error: InterfaceApiError) => apiError.value = error.backendMessage)
-    .finally(() => loading.value = false)
+onMounted(() => {
+    new HttpService().getBookable(id)
+        .then(response => bookableItem.value = response as IBookableItem)
+        .catch((error: InterfaceApiError) => apiError.value = error.backendMessage)
+        .finally(() =>  loading.value = false)
+})
 </script>

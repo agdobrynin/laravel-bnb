@@ -34,7 +34,7 @@ class BookableWithBookingDatesSeeder extends Seeder
                     $bookings->push($booking);
                 }
 
-                $bookable->booking()->saveMany($bookings);
+                $bookable->bookings()->saveMany($bookings);
             });
     }
 }
