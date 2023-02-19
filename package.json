@@ -29,6 +29,8 @@
         "vue-tsc": "^1.0.24"
     },
     "dependencies": {
+        "@jamescoyle/vue-icon": "^0.1.2",
+        "@mdi/js": "^7.1.96",
         "@popperjs/core": "^2.11.6",
         "bootstrap": "^5.2.3",
         "timeago.js": "^4.0.2",

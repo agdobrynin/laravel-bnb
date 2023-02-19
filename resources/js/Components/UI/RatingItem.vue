@@ -2,15 +2,30 @@
 span(:title="currentRating")
     span(
         v-for="fullStar in fullStars"
-        :key="`full-${fullStar}`") 🟢
-    span(v-if="halfStar" ) 🟡
+        :key="`full-${fullStar}`"
+    )
+        SvgIcon(
+            type="mdi"
+            :path="mdiStar")
+    span(v-if="halfStar")
+        SvgIcon(
+            type="mdi"
+            :path="mdiStarHalfFull")
     span(
         v-for="emptyStar in emptyStars"
-        :key="`full-${emptyStar}`") ⚪
+        :key="`full-${emptyStar}`"
+    )
+        SvgIcon(
+            type="mdi"
+            :path="mdiStarOutline")
+
     span.badge.bg-secondary.ms-2 {{ rating }}
 </template>
 
 <script lang="ts" setup>
+//@ts-ignore
+import SvgIcon from '@jamescoyle/vue-icon'
+import { mdiStar, mdiStarHalfFull, mdiStarOutline } from '@mdi/js'
 import { computed, defineProps, withDefaults } from 'vue'
 
 const props = withDefaults(
