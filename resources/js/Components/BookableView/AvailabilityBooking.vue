@@ -1,5 +1,5 @@
 <template lang="pug">
-div
+form(@submit.prevent="check")
     h6.text-uppercase.text-secondary
         span.text-success(v-if="bookingAvailability && bookingAvailability.data.length === 0")
             | Available for booking
@@ -36,9 +36,9 @@ div
                 v-for="(error, index) in endFieldError"
                 :key="`end_${index}`") {{error}}
     ButtonWithLoading.btn.btn-secondary.w-100(
+        type="submit"
         :is-loading="isLoading"
-        title="Check dates 🔎"
-        @click="check")
+        title="Check dates 🔎")
     BookingDates(
         v-if="bookingAvailability && bookingAvailability.data.length"
         :items="bookingAvailability")
@@ -72,6 +72,8 @@ const isLoading: Ref<boolean> = ref(false)
 const bookingAvailability: Ref<IBookingAvailability|null> = ref(null)
 
 const resetBookingAvailability = () => bookingAvailability.value = null
+
+const submit = () => alert(1)
 const check = () => {
     isLoading.value = true
     apiError.value = null

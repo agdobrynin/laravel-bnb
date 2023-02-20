@@ -23,7 +23,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 import AvailabilityBooking from '@/Components/BookableView/AvailabilityBooking.vue'
-import ReviewList from '@/Components/Review/ReviewList.vue'
+import ReviewList from '@/Components/BookableView/Review/ReviewList.vue'
 import PlaceholderCard from '@/Components/UI/PlaceholderCard.vue'
 import HttpService from '@/Services/HttpService'
 import type { InterfaceApiError } from '@/Services/Interfaces/InterfaceApiError'

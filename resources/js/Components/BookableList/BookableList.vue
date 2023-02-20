@@ -2,7 +2,7 @@
 div
     div.row.justify-content-center.row-cols-1.row-cols-md-2.row-cols-lg-3.row-cols-xl-4.g-4(v-if="loading === false")
         div.alert.alert-danger(v-if="apiError") {{ apiError }}
-        div(v-else-if="bookables.length === 0") Not found books.
+        div(v-else-if="bookables.length === 0") Not found bookable objects.
         template(v-else)
             div.col.d-flex.align-items-stretch(
                 v-for="bookable in bookables"

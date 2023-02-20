@@ -21,7 +21,7 @@ div
 import type { ComputedRef, Ref } from 'vue'
 import { computed, defineProps, onMounted, ref } from 'vue'
 
-import ReviewItem from '@/Components/Review/ReviewItem.vue'
+import ReviewItem from '@/Components/BookableView/Review/ReviewItem.vue'
 import PlaceholderCard from '@/Components/UI/PlaceholderCard.vue'
 import HttpService from '@/Services/HttpService'
 import type { InterfaceApiError } from '@/Services/Interfaces/InterfaceApiError'

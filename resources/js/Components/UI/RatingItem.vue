@@ -3,23 +3,29 @@ span(:title="currentRating")
     span(
         v-for="fullStar in fullStars"
         :key="`full-${fullStar}`"
+        :title="fullStar"
+        @click="$emit('update:modelValue', fullStar)"
     )
         SvgIcon(
             type="mdi"
+            :size="iconSize"
             :path="mdiStar")
     span(v-if="halfStar")
         SvgIcon(
             type="mdi"
+            :size="iconSize"
             :path="mdiStarHalfFull")
     span(
         v-for="emptyStar in emptyStars"
-        :key="`full-${emptyStar}`"
-    )
+        :key="`empty-${emptyStar}`"
+        :title="fullStars + emptyStar"
+        @click="$emit('update:modelValue', (fullStars + emptyStar))")
         SvgIcon(
             type="mdi"
+            :size="iconSize"
             :path="mdiStarOutline")
 
-    span.badge.bg-secondary.ms-2 {{ rating }}
+    span.badge.bg-secondary.ms-2 {{ currentRating }}
 </template>
 
 <script lang="ts" setup>
@@ -29,13 +35,14 @@ import { mdiStar, mdiStarHalfFull, mdiStarOutline } from '@mdi/js'
 import { computed, defineProps, withDefaults } from 'vue'
 
 const props = withDefaults(
-    defineProps<{ rating: number, maxRating?: number }>(),
+    defineProps<{ modelValue: number, maxRating?: number, iconSize?: number }>(),
     {
-        maxRating: 5
+        maxRating: 5,
+        iconSize: 24,
     }
 )
 
-const currentRating = computed(() => props.rating > props.maxRating ? 0 : props.rating)
+const currentRating = computed(() => props.modelValue > props.maxRating ? 0 : props.modelValue)
 
 const halfStar = computed( ()=> {
     const partOfHalf = +((currentRating.value % 1) * 100).toFixed()
@@ -46,4 +53,8 @@ const halfStar = computed( ()=> {
 const fullStars = computed(() => Math.round(currentRating.value))
 
 const emptyStars = computed(() => props.maxRating - Math.ceil(currentRating.value))
+
+defineEmits<{
+    (e: 'update:modelValue', rate: number): void
+}>()
 </script>

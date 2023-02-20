@@ -15,7 +15,7 @@ class BookableFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => fake()->city,
+            'title' => fake()->city.' '. \Arr::random(['room', 'villa', 'house', 'cottage', 'fancy room', 'luxury apartment']),
             'description' => fake()->realTextBetween(100, 300),
         ];
     }
