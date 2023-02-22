@@ -7,7 +7,9 @@ form(@submit.prevent="check")
             | Not available for booking
         span(v-else)
             | Check availability
-    div.alert.alert-danger(v-if="apiError") {{ apiError }}
+    ApiErrorDisplay(
+        v-if="apiError"
+        :icon-size="60") {{ apiError }}
     div.row.gap-2
         div.col-md.form-floating.mb-3
             input#dateFrom.form-control.form-control-sm(
@@ -49,6 +51,7 @@ import type { Ref } from 'vue'
 import { computed, reactive, ref } from 'vue'
 
 import BookingDates from '@/Components/BookableView/BookingDates.vue'
+import ApiErrorDisplay from '@/Components/UI/ApiErrorDisplay.vue'
 import ButtonWithLoading from '@/Components/UI/ButtonWithLoading.vue'
 import { DateRange } from '@/Models/DateRange'
 import { ApiError } from '@/Services/ApiError'
@@ -73,7 +76,6 @@ const bookingAvailability: Ref<IBookingAvailability|null> = ref(null)
 
 const resetBookingAvailability = () => bookingAvailability.value = null
 
-const submit = () => alert(1)
 const check = () => {
     isLoading.value = true
     apiError.value = null

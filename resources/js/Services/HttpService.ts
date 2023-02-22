@@ -25,21 +25,21 @@ export default class HttpService implements InterfaceHttpService {
         }
     }
 
-    getBookables(): Promise<IBookableList|InterfaceApiError> {
+    getBookables(): Promise<IBookableList | InterfaceApiError> {
         return axios
             .get(`${this.endpoint}/bookables`)
             .then((response: AxiosResponse<IBookableList>) => response.data)
             .catch((reason: AxiosError) => Promise.reject(new ApiError(reason)))
     }
 
-    getBookable(id: string): Promise<IBookableItem|InterfaceApiError> {
+    getBookable(id: string): Promise<IBookableItem | InterfaceApiError> {
         return axios
             .get(`${this.endpoint}/bookables/${id}`)
             .then((reason: AxiosResponse<IBookableItem>) => reason.data)
             .catch((reason: AxiosError) => Promise.reject(new ApiError(reason)))
     }
 
-    checkBookableAvailability(id: string, start: string, end: string): Promise<IBookingAvailability|InterfaceApiError|IApiValidationError> {
+    checkBookableAvailability(id: string, start: string, end: string): Promise<IBookingAvailability | InterfaceApiError | InterfaceApiValidationError> {
         return axios
             .get(`${this.endpoint}/bookables/${id}/availability`, {
                 params: {
@@ -59,7 +59,7 @@ export default class HttpService implements InterfaceHttpService {
             })
     }
 
-    getBookableReviews(id: string): Promise<IReviewCollection|InterfaceApiError> {
+    getBookableReviews(id: string): Promise<IReviewCollection | InterfaceApiError> {
         return axios
             .get(`${this.endpoint}/bookables/${id}/reviews`)
             .then((response: AxiosResponse<IReviewCollection>) => response.data)

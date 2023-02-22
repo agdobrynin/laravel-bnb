@@ -1,9 +1,8 @@
 <template lang="pug">
 div
-    div.alert.alert-danger(v-if="apiError") {{ apiError }}
+    ApiErrorDisplay(v-if="apiError") {{ apiError }}
     div(v-else)
-        div(v-if="isLoading")
-            PlaceholderCard
+        PlaceholderCard(v-if="isLoading")
         div(v-else)
             div(v-if="isReviewExist")
                 h3.text-center.text-success You already left reviewed for this booking
@@ -19,10 +18,10 @@ div
                 .col-md-8
                     .alert.alert-danger(
                         v-for="(error, index) in errorId"
-                        :key="`err_id_${index}`") {{ error }}
+                        :key="`err_id_${index}`") Field "review key" has error: {{ error }}
                     .mb-3
                         label.form-label(for="rating") Set rating (1 is worst &mdash; 5 is best)
-                        RatingItem.hand.form-control.border-0.ps-0#rating(
+                        RatingItem.form-control.ps-3#rating(
                             v-model="review.rating"
                             :max-rating="5"
                             :icon-size="43"
@@ -33,7 +32,6 @@ div
                     .mb-3.form-floating
                         textarea#description.form-control.description-field(
                             v-model="review.description"
-                            name="description"
                             :disabled="isSending"
                             :class="{'is-invalid': errorDescription.length}")
                         label.form-label(for="description") Describe your experience with
@@ -52,6 +50,7 @@ import type { Ref } from 'vue'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
+import ApiErrorDisplay from '@/Components/UI/ApiErrorDisplay.vue'
 import ButtonWithLoading from '@/Components/UI/ButtonWithLoading.vue'
 import PlaceholderCard from '@/Components/UI/PlaceholderCard.vue'
 import RatingItem from '@/Components/UI/RatingItem.vue'
@@ -84,9 +83,12 @@ const bookingByReviewKey: Ref<IBookingByReviewKey | null> = ref(null)
 const apiError: Ref<string | null> = ref(null)
 const validationError: Ref<InterfaceApiValidationError|null> = ref( null)
 
-const errorDescription = computed<string[]>(() => validationError.value?.getErrorsByField('description') || [])
-const errorRating = computed<string[]>(() => validationError.value?.getErrorsByField('rating') || [])
-const errorId = computed<string[]>(() => validationError.value?.getErrorsByField('id') || [])
+const validationErrors = (field: string) => validationError.value?.getErrorsByField(field) || []
+
+const errorDescription = computed<string[]>(() => validationErrors('description'))
+const errorRating = computed<string[]>(() => validationErrors('rating'))
+const errorId = computed<string[]>(() => validationErrors('id'))
+
 
 const booking = computed<IBookingByReviewKeyBase | null>(() => {
     if (bookingByReviewKey.value?.data) {
@@ -149,7 +151,7 @@ onMounted(async () => {
             isLoading.value = false
         })
 
-    if(isReviewExist.value === false) {
+    if(!isReviewExist.value) {
         isLoading.value = true
 
         httpSrv.getBookingByReviewKey(review.id)
@@ -166,11 +168,7 @@ onMounted(async () => {
 })
 </script>
 
-<style scoped lang="css">
-.hand {
-    cursor: pointer;
-}
-
+<style scoped>
 .description-field {
     height: 8rem;
 }

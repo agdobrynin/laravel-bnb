@@ -1,5 +1,5 @@
 <template lang="pug">
-span(:title="currentRating")
+span.hand(:title="currentRating")
     span(
         v-for="fullStar in fullStars"
         :key="`full-${fullStar}`"
@@ -25,7 +25,7 @@ span(:title="currentRating")
             :size="iconSize"
             :path="mdiStarOutline")
 
-    span.badge.bg-secondary.ms-2 {{ currentRating }}
+    em.badge.bg-secondary.ms-2 {{ currentRating }}
 </template>
 
 <script lang="ts" setup>
@@ -44,7 +44,7 @@ const props = withDefaults(
 
 const currentRating = computed(() => props.modelValue > props.maxRating ? 0 : props.modelValue)
 
-const halfStar = computed( ()=> {
+const halfStar = computed(() => {
     const partOfHalf = +((currentRating.value % 1) * 100).toFixed()
 
     return partOfHalf > 0 && partOfHalf < 50
@@ -58,3 +58,10 @@ defineEmits<{
     (e: 'update:modelValue', rate: number): void
 }>()
 </script>
+
+
+<style scoped lang="css">
+.hand > span {
+    cursor: pointer;
+}
+</style>

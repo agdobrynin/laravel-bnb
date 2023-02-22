@@ -1,6 +1,5 @@
 import type { InterfaceApiError } from '@/Services/Interfaces/InterfaceApiError'
 import { InterfaceApiValidationError } from '@/Services/Interfaces/InterfaceApiValidationError'
-import type { IApiValidationError } from '@/Types/IApiValidationError'
 import type { IBookableItem } from '@/Types/IBookableItem'
 import type { IBookableList } from '@/Types/IBookableList'
 import type { IBookingAvailability } from '@/Types/IBookingAvailability'
@@ -23,16 +22,16 @@ export interface InterfaceHttpService {
     /**
      * Check ability booking between dates
      */
-    checkBookableAvailability(id: string, start: string, end: string): Promise<IBookingAvailability|InterfaceApiError|IApiValidationError>
+    checkBookableAvailability(id: string, start: string, end: string): Promise<IBookingAvailability | InterfaceApiError | InterfaceApiValidationError>
 
     /**
      * Get collection of review for bookable item
      */
-    getBookableReviews(id: string): Promise<IReviewCollection|InterfaceApiError>
+    getBookableReviews(id: string): Promise<IReviewCollection | InterfaceApiError>
 
     getReview(id: string): Promise<boolean|InterfaceApiError>
 
-    getBookingByReviewKey(id: string): Promise<IBookingByReviewKey|InterfaceApiError>
+    getBookingByReviewKey(id: string): Promise<IBookingByReviewKey | InterfaceApiError>
 
     storeReview(review: IReviewItem): Promise<IReviewResourceExist | InterfaceApiError | InterfaceApiValidationError>
 }

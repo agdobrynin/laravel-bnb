@@ -1,7 +1,6 @@
 <template lang="pug">
 div
-    .alert.alert-danger(v-if="apiError")
-        | #[h5 Bookable error] {{ apiError }}
+    ApiErrorDisplay(v-if="apiError") {{ apiError }}
     PlaceholderCard(v-if="loading")
     div(v-else)
         div.row
@@ -24,6 +23,7 @@ import { useRoute } from 'vue-router'
 
 import AvailabilityBooking from '@/Components/BookableView/AvailabilityBooking.vue'
 import ReviewList from '@/Components/BookableView/Review/ReviewList.vue'
+import ApiErrorDisplay from '@/Components/UI/ApiErrorDisplay.vue'
 import PlaceholderCard from '@/Components/UI/PlaceholderCard.vue'
 import HttpService from '@/Services/HttpService'
 import type { InterfaceApiError } from '@/Services/Interfaces/InterfaceApiError'

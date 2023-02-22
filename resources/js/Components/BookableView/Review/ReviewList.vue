@@ -6,8 +6,7 @@ div
             :key="`place-holder${index}`"
             class="mb-4")
     div(v-else)
-        .alert.alert-danger(v-if="apiError")
-            | #[h5 Review list error] {{ apiError }}
+        ApiErrorDisplay(v-if="apiError") {{ apiError }}
         div(v-else)
             h6.text-uppercase(v-if="reviews.length") Review List
             h6.text-uppercase(v-else) Review List is Empty
@@ -22,6 +21,7 @@ import type { ComputedRef, Ref } from 'vue'
 import { computed, defineProps, onMounted, ref } from 'vue'
 
 import ReviewItem from '@/Components/BookableView/Review/ReviewItem.vue'
+import ApiErrorDisplay from '@/Components/UI/ApiErrorDisplay.vue'
 import PlaceholderCard from '@/Components/UI/PlaceholderCard.vue'
 import HttpService from '@/Services/HttpService'
 import type { InterfaceApiError } from '@/Services/Interfaces/InterfaceApiError'
