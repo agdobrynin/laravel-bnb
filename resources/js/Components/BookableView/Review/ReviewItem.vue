@@ -18,9 +18,9 @@ import { defineProps } from 'vue'
 
 import RatingItem from '@/Components/UI/RatingItem.vue'
 import { timeAgo } from '@/Composable/useDateTime'
-import type { IReviewItem } from '@/Types/IReviewItem'
+import type { IReviewExistItem } from '@/Types/IReviewExistItem'
 
-interface IProps extends IReviewItem{}
+interface IProps extends IReviewExistItem{}
 
 const props = defineProps<{item: IProps}>()
 

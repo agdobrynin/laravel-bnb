@@ -1,9 +1,13 @@
-import { InterfaceApiError } from '@/Services/Interfaces/InterfaceApiError'
-import { IApiValidationError } from '@/Types/IApiValidationError'
+import type { InterfaceApiError } from '@/Services/Interfaces/InterfaceApiError'
+import { InterfaceApiValidationError } from '@/Services/Interfaces/InterfaceApiValidationError'
+import type { IApiValidationError } from '@/Types/IApiValidationError'
 import type { IBookableItem } from '@/Types/IBookableItem'
-import { IBookableList } from '@/Types/IBookableList'
-import { IBookingAvailability } from '@/Types/IBookingAvailability'
-import { IReviewCollection } from '@/Types/IReviewItem'
+import type { IBookableList } from '@/Types/IBookableList'
+import type { IBookingAvailability } from '@/Types/IBookingAvailability'
+import type { IBookingByReviewKey } from '@/Types/IBookingByReviewKey'
+import type { IReviewCollection } from '@/Types/IReviewExistItem'
+import type { IReviewItem } from '@/Types/IReviewExistItem'
+import type { IReviewResourceExist } from '@/Types/IReviewResourceExist'
 
 export interface InterfaceHttpService {
     /**
@@ -25,4 +29,10 @@ export interface InterfaceHttpService {
      * Get collection of review for bookable item
      */
     getBookableReviews(id: string): Promise<IReviewCollection|InterfaceApiError>
+
+    getReview(id: string): Promise<boolean|InterfaceApiError>
+
+    getBookingByReviewKey(id: string): Promise<IBookingByReviewKey|InterfaceApiError>
+
+    storeReview(review: IReviewItem): Promise<IReviewResourceExist | InterfaceApiError | InterfaceApiValidationError>
 }
