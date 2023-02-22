@@ -59,7 +59,6 @@ defineEmits<{
 }>()
 </script>
 
-
 <style scoped lang="css">
 .hand > span {
     cursor: pointer;
