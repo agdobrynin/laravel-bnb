@@ -29,15 +29,11 @@ div
                         div.invalid-feedback(
                             v-for="(error, index) in errorRating"
                             :key="`rating_${index}`") {{ error }}
-                    .mb-3.form-floating
-                        textarea#description.form-control.description-field(
-                            v-model="review.description"
-                            :disabled="isSending"
-                            :class="{'is-invalid': errorDescription.length}")
-                        label.form-label(for="description") Describe your experience with
-                        div.invalid-feedback(
-                            v-for="(error, index) in errorDescription"
-                            :key="`desc_${index}`") {{ error }}
+                    .mb-3
+                        TextareaUI(
+                            v-model.trim="review.description"
+                            label="Describe your experience with"
+                            :errors="errorDescription")
                     ButtonWithLoading.btn.btn-primary.w-100(
                         title="Send"
                         :is-loading="isSending"
@@ -54,6 +50,7 @@ import ApiErrorDisplay from '@/Components/UI/ApiErrorDisplay.vue'
 import ButtonWithLoading from '@/Components/UI/ButtonWithLoading.vue'
 import PlaceholderCard from '@/Components/UI/PlaceholderCard.vue'
 import RatingItem from '@/Components/UI/RatingItem.vue'
+import TextareaUI from '@/Components/UI/TextareaUI.vue'
 import { ApiValidationError } from '@/Services/ApiValidationError'
 import HttpService from '@/Services/HttpService'
 import type { InterfaceApiError } from '@/Services/Interfaces/InterfaceApiError'
@@ -88,7 +85,6 @@ const validationErrors = (field: string) => validationError.value?.getErrorsByFi
 const errorDescription = computed<string[]>(() => validationErrors('description'))
 const errorRating = computed<string[]>(() => validationErrors('rating'))
 const errorId = computed<string[]>(() => validationErrors('id'))
-
 
 const booking = computed<IBookingByReviewKeyBase | null>(() => {
     if (bookingByReviewKey.value?.data) {
@@ -167,9 +163,3 @@ onMounted(async () => {
     }
 })
 </script>
-
-<style scoped>
-.description-field {
-    height: 8rem;
-}
-</style>

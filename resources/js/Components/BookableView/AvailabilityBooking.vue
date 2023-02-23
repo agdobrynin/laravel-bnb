@@ -9,34 +9,30 @@ form(@submit.prevent="check")
             | Check availability
     ApiErrorDisplay(
         v-if="apiError"
-        :icon-size="60") {{ apiError }}
+        :icon-size="60" ) {{ apiError }}
     div.row.gap-2
-        div.col-md.form-floating.mb-3
-            input#dateFrom.form-control.form-control-sm(
+        div.col-md.mb-3
+            InputUI(
                 v-model="data.start"
+                label="Date from"
                 type="date"
-                placeholder="Date from"
                 :min="data.startMin"
-                :class="{'is-invalid': startFieldError}"
+                input-class="form-control-sm"
+                label-class="col-form-label-sm"
                 :disabled="isLoading"
-                @change="resetBookingAvailability")
-            label.text-secondary.col-form-label-sm(for="dateFrom") Date from
-            div.invalid-feedback(
-                v-for="(error, index) in startFieldError"
-                :key="`start_${index}`") {{ error }}
-        div.col-md.form-floating.mb-3
-            input#dateTo.form-control-sm.form-control(
-                    v-model="data.end"
-                    type="date"
-                    placeholder="Date to"
-                    :min="data.endMin"
-                    :class="{'is-invalid': endFieldError}"
-                    :disabled="isLoading"
-                    @change="resetBookingAvailability")
-            label.text-secondary.col-form-label-sm(for="dateTo") Date to
-            div.invalid-feedback(
-                v-for="(error, index) in endFieldError"
-                :key="`end_${index}`") {{error}}
+                :errors="startFieldError"
+            )
+        div.col-md.mb-3
+            InputUI(
+                v-model="data.end"
+                label="Date to"
+                type="date"
+                :min="data.endMin"
+                input-class="form-control-sm"
+                label-class="col-form-label-sm"
+                :disabled="isLoading"
+                :errors="endFieldError"
+            )
     ButtonWithLoading.btn.btn-secondary.w-100(
         type="submit"
         :is-loading="isLoading"
@@ -53,6 +49,7 @@ import { computed, reactive, ref } from 'vue'
 import BookingDates from '@/Components/BookableView/BookingDates.vue'
 import ApiErrorDisplay from '@/Components/UI/ApiErrorDisplay.vue'
 import ButtonWithLoading from '@/Components/UI/ButtonWithLoading.vue'
+import InputUI from '@/Components/UI/InputUI.vue'
 import { DateRange } from '@/Models/DateRange'
 import { ApiError } from '@/Services/ApiError'
 import { ApiValidationError } from '@/Services/ApiValidationError'
@@ -73,8 +70,6 @@ const endFieldError = computed(() => apiValidationError.value?.getErrorsByField(
 const isLoading: Ref<boolean> = ref(false)
 
 const bookingAvailability: Ref<IBookingAvailability|null> = ref(null)
-
-const resetBookingAvailability = () => bookingAvailability.value = null
 
 const check = () => {
     isLoading.value = true

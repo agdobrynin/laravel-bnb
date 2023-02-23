@@ -40,6 +40,8 @@ export class DateRange {
                     this.dateEnd = this.nextDate(this.dateStart, this.offsetEnd)
                 }
             }
+        } else {
+            this.dateStart = this.dateToday
         }
     }
 
