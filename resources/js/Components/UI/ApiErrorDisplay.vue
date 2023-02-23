@@ -7,6 +7,8 @@ div.text-center.fs-1.text-muted
     )
     p(:class="mtClass")
         slot
+            h1.mt-4 We've encountered a problem
+            h2 Unfortunately we cannot proceed
 </template>
 
 <script lang="ts" setup>
