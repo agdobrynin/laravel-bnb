@@ -25,6 +25,7 @@ div
                             v-model="review.rating"
                             :max-rating="5"
                             :icon-size="43"
+                            :read-only="false"
                             :class="{'is-invalid': errorRating.length}")
                         div.invalid-feedback(
                             v-for="(error, index) in errorRating"
@@ -51,10 +52,11 @@ import ButtonWithLoading from '@/Components/UI/ButtonWithLoading.vue'
 import PlaceholderCard from '@/Components/UI/PlaceholderCard.vue'
 import RatingItem from '@/Components/UI/RatingItem.vue'
 import TextareaUI from '@/Components/UI/TextareaUI.vue'
+import { ApiError } from '@/Services/ApiError'
 import { ApiValidationError } from '@/Services/ApiValidationError'
 import HttpService from '@/Services/HttpService'
-import type { InterfaceApiError } from '@/Services/Interfaces/InterfaceApiError'
-import type { InterfaceApiValidationError } from '@/Services/Interfaces/InterfaceApiValidationError'
+import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
+import type { ApiValidationErrorInterface } from '@/Services/Interfaces/ApiValidationErrorInterface'
 import type {
     IBookingByReviewKey,
     IBookingByReviewKeyBase,
@@ -78,7 +80,7 @@ const isReviewExist: Ref<boolean> = ref(false)
 const bookingByReviewKey: Ref<IBookingByReviewKey | null> = ref(null)
 
 const apiError: Ref<string | null> = ref(null)
-const validationError: Ref<InterfaceApiValidationError|null> = ref( null)
+const validationError: Ref<ApiValidationErrorInterface|null> = ref( null)
 
 const validationErrors = (field: string) => validationError.value?.getErrorsByField(field) || []
 
@@ -110,56 +112,46 @@ const bookable = computed<IBookingByReviewKeyBookableInfo | null>(() => {
     return null
 })
 
-const storeReview = () => {
+const storeReview = async (): Promise<void> => {
     isSending.value = true
     apiError.value = null
     validationError.value = null
 
-    new HttpService()
-        .storeReview(review)
-        .then((): void => {
-            router.push({ name: 'bookable', params: { id: bookable.value?.id } })
-        })
-        .catch((reason: InterfaceApiValidationError|InterfaceApiError): void => {
-            if(reason instanceof ApiValidationError) {
-                validationError.value = reason
-            } else {
-                apiError.value = (reason as InterfaceApiError).backendMessage
-            }
-        })
-        .finally((): void => {
-            isSending.value = false
-        })
+    try {
+        await new HttpService().storeReview(review)
+        await router.push({ name: 'bookable', params: { id: bookable.value?.id } })
+    } catch (reason) {
+        const error = reason as Error | ApiErrorInterface | ApiValidationErrorInterface
+
+        if (error instanceof ApiValidationError) {
+            validationError.value = error
+        } else if (error instanceof ApiError) {
+            apiError.value = error.backendMessage
+        } else {
+            apiError.value = (error as Error).message
+        }
+    }
+
+    isSending.value = false
 }
 
-onMounted(async () => {
+onMounted(async (): Promise<void> => {
     const httpSrv = new HttpService()
     review.id = route.params.id as string
 
-    await httpSrv.getReview(review.id)
-        .then((result): void => {
-            isReviewExist.value = result as boolean
-        })
-        .catch((reason: InterfaceApiError): void => {
-            apiError.value = (reason.backendResponse?.message || reason.requestErrorMessage)
-        })
-        .finally((): void => {
-            isLoading.value = false
-        })
+    try {
+        const result = await httpSrv.getReview(review.id)
+        isReviewExist.value = result as boolean
 
-    if(!isReviewExist.value) {
-        isLoading.value = true
-
-        httpSrv.getBookingByReviewKey(review.id)
-            .then((result): void => {
-                bookingByReviewKey.value = result as IBookingByReviewKey
-            })
-            .catch((reason: InterfaceApiError): void => {
-                apiError.value = reason.backendResponse?.message || reason.requestErrorMessage
-            })
-            .finally((): void => {
-                isLoading.value = false
-            })
+        if(!isReviewExist.value) {
+            bookingByReviewKey.value = await httpSrv.getBookingByReviewKey(review.id) as IBookingByReviewKey
+        }
+    } catch (reason) {
+        const error = reason as ApiErrorInterface
+        apiError.value = (error.backendResponse?.message || error.requestErrorMessage)
     }
+
+    isLoading.value = false
+
 })
 </script>

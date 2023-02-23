@@ -54,6 +54,8 @@ import { DateRange } from '@/Models/DateRange'
 import { ApiError } from '@/Services/ApiError'
 import { ApiValidationError } from '@/Services/ApiValidationError'
 import HttpService from '@/Services/HttpService'
+import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
+import type { ApiValidationErrorInterface } from '@/Services/Interfaces/ApiValidationErrorInterface'
 import type { IBookingAvailability } from '@/Types/IBookingAvailability'
 
 const props = defineProps<{id: string}>()
@@ -71,25 +73,28 @@ const isLoading: Ref<boolean> = ref(false)
 
 const bookingAvailability: Ref<IBookingAvailability|null> = ref(null)
 
-const check = () => {
+const check = async () => {
     isLoading.value = true
     apiError.value = null
     apiValidationError.value = null
     bookingAvailability.value = null
 
-    new HttpService()
-        .checkBookableAvailability(props.id, data.start, data.end)
-        .then(response => {
-            bookingAvailability.value = response as IBookingAvailability
-        })
-        .catch((result: ApiValidationError|ApiError) => {
-            if(result instanceof ApiError) {
-                apiError.value = result.backendMessage
-            } else {
-                apiValidationError.value = result
-            }
-        })
-        .finally(() => isLoading.value = false)
+    try {
+        bookingAvailability.value = await new HttpService()
+            .checkBookableAvailability(props.id, data.start, data.end)
+    } catch (reason) {
+        const error = reason as Error | ApiErrorInterface | ApiValidationErrorInterface
+
+        if (error instanceof ApiValidationError) {
+            apiValidationError.value = error
+        } else if (error instanceof ApiError) {
+            apiError.value = error.backendMessage
+        } else {
+            apiError.value = (error as Error).message
+        }
+    }
+
+    isLoading.value = false
 }
 </script>
 

@@ -3,10 +3,7 @@ import axios from 'axios'
 
 import { ApiError } from '@/Services/ApiError'
 import { ApiValidationError } from '@/Services/ApiValidationError'
-import type { InterfaceApiError } from '@/Services/Interfaces/InterfaceApiError'
-import { InterfaceApiValidationError } from '@/Services/Interfaces/InterfaceApiValidationError'
-import type { InterfaceHttpService } from '@/Services/Interfaces/InterfaceHttpService'
-import type { IApiValidationError } from '@/Types/IApiValidationError'
+import type { HttpServiceInterface } from '@/Services/Interfaces/HttpServiceInterface'
 import type { IBookableItem } from '@/Types/IBookableItem'
 import type { IBookableList } from '@/Types/IBookableList'
 import type { IBookingAvailability } from '@/Types/IBookingAvailability'
@@ -14,86 +11,92 @@ import type { IBookingByReviewKey } from '@/Types/IBookingByReviewKey'
 import type { IReviewCollection, IReviewItem } from '@/Types/IReviewExistItem'
 import type { IReviewResourceExist } from '@/Types/IReviewResourceExist'
 
-export default class HttpService implements InterfaceHttpService {
+export default class HttpService implements HttpServiceInterface {
     private readonly endpoint: string
     constructor(endpoint?:string) {
-        if (endpoint === undefined) {
-            //@ts-ignore
-            this.endpoint = import.meta.env.VITE_API_ENDPOINT
-        } else {
-            this.endpoint = endpoint
+        this.endpoint = endpoint === undefined
+            ? import.meta.env.VITE_API_ENDPOINT
+            : this.endpoint = endpoint
+    }
+
+    async getBookables(): Promise<IBookableList | never> {
+        try {
+            return <IBookableList>((await axios.get(`${this.endpoint}/bookables`)).data)
+        } catch (reason) {
+            throw new ApiError(<AxiosError>reason)
         }
     }
 
-    getBookables(): Promise<IBookableList | InterfaceApiError> {
-        return axios
-            .get(`${this.endpoint}/bookables`)
-            .then((response: AxiosResponse<IBookableList>) => response.data)
-            .catch((reason: AxiosError) => Promise.reject(new ApiError(reason)))
+    async getBookable(id: string): Promise<IBookableItem | never> {
+        try {
+            return <IBookableItem>((await axios.get(`${this.endpoint}/bookables/${id}`)).data)
+        } catch (reason) {
+            throw new ApiError(<AxiosError>reason)
+        }
     }
 
-    getBookable(id: string): Promise<IBookableItem | InterfaceApiError> {
-        return axios
-            .get(`${this.endpoint}/bookables/${id}`)
-            .then((reason: AxiosResponse<IBookableItem>) => reason.data)
-            .catch((reason: AxiosError) => Promise.reject(new ApiError(reason)))
+    async checkBookableAvailability(id: string, start: string, end: string): Promise<IBookingAvailability | never> {
+        try {
+            const config = { params: { start, end } }
+
+            return <IBookingAvailability>((await axios.get(
+                `${this.endpoint}/bookables/${id}/availability`,
+                config
+            )).data)
+        } catch (reason) {
+            this.throwErrorByCode(reason)
+        }
     }
 
-    checkBookableAvailability(id: string, start: string, end: string): Promise<IBookingAvailability | InterfaceApiError | InterfaceApiValidationError> {
-        return axios
-            .get(`${this.endpoint}/bookables/${id}/availability`, {
-                params: {
-                    start,
-                    end,
-                }
-            })
-            .then((response: AxiosResponse<IBookingAvailability>) => response.data)
-            .catch((reason: AxiosError) => {
-                const { response } = reason
-
-                if (response?.status === 422) {
-                    return Promise.reject(new ApiValidationError(<IApiValidationError>response.data))
-                }
-
-                return Promise.reject(new ApiError(reason))
-            })
+    async getBookableReviews(id: string): Promise<IReviewCollection | never> {
+        try {
+            return <IReviewCollection>((await axios.get(`${this.endpoint}/bookables/${id}/reviews`)).data)
+        } catch (reason) {
+            this.throwErrorByCode(reason)
+        }
     }
 
-    getBookableReviews(id: string): Promise<IReviewCollection | InterfaceApiError> {
-        return axios
-            .get(`${this.endpoint}/bookables/${id}/reviews`)
-            .then((response: AxiosResponse<IReviewCollection>) => response.data)
-            .catch((reason: AxiosError) => Promise.reject(new ApiError(reason)))
+    async getReview(id: string): Promise<boolean | never> {
+        try {
+            const result: AxiosResponse<IReviewResourceExist> = await axios.get(`${this.endpoint}/reviews/${id}`)
+
+            return result.data.data.hasReview
+        } catch (reason) {
+            const error = <AxiosError>reason
+
+            if (error.response?.status === 404) {
+                return false
+            }
+
+            throw new ApiError(error)
+        }
     }
 
-    getReview(id: string): Promise<boolean | InterfaceApiError> {
-        return axios
-            .get(`${this.endpoint}/reviews/${id}`)
-            .then((response: AxiosResponse<IReviewResourceExist>) => response.data.data.hasReview)
-            .catch((reason: AxiosError) => {
-                return reason.status === 404 ? Promise.reject(false) : Promise.reject(new ApiError(reason))
-            })
+    async getBookingByReviewKey(id: string): Promise<IBookingByReviewKey | never> {
+        try {
+            return <IBookingByReviewKey>((await axios.get(`${this.endpoint}/booking-by-review/${id}`)).data)
+        } catch (reason) {
+            this.throwErrorByCode(reason)
+        }
     }
 
-    getBookingByReviewKey(id: string): Promise<IBookingByReviewKey | InterfaceApiError> {
-        return axios
-            .get(`${this.endpoint}/booking-by-review/${id}`)
-            .then((response: AxiosResponse<IBookingByReviewKey>) => response.data)
-            .catch((reason: AxiosError) => Promise.reject(new ApiError(reason)))
+    async storeReview(review: IReviewItem): Promise<boolean> {
+        try {
+            const result: AxiosResponse<IReviewResourceExist> = await axios.post(`${this.endpoint}/reviews`, review)
+
+            return result.data.data.hasReview
+        } catch (reason) {
+            this.throwErrorByCode(reason)
+        }
     }
 
-    storeReview(review: IReviewItem): Promise<IReviewResourceExist | InterfaceApiError | InterfaceApiValidationError> {
-        return axios.post(`${this.endpoint}/reviews`, review)
-            .then((response: AxiosResponse<IReviewResourceExist>) => response.data)
-            .catch((reason: AxiosError<InterfaceApiError|IApiValidationError>) => {
-                const { response } = reason
+    private throwErrorByCode(reason: unknown): never {
+        const error = <AxiosError>reason
 
-                if (response?.status === 422) {
-                    return Promise.reject(new ApiValidationError(<IApiValidationError>response.data))
-                }
+        if (error.response?.status === 422) {
+            throw new ApiValidationError(error)
+        }
 
-                return Promise.reject(new ApiError(reason))
-            })
-
+        throw new ApiError(error)
     }
 }

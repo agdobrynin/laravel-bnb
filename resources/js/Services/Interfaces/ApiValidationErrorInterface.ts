@@ -1,4 +1,4 @@
-export interface InterfaceApiValidationError {
+export interface ApiValidationErrorInterface {
     /**
      * First validation message (main).
      */

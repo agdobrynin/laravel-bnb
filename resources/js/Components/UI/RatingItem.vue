@@ -1,10 +1,11 @@
 <template lang="pug">
-span.hand(:title="currentRating")
+span(:title="currentRating")
     span(
         v-for="fullStar in fullStars"
         :key="`full-${fullStar}`"
         :title="fullStar"
-        @click="$emit('update:modelValue', fullStar)"
+        :class="{'hand' : !readOnly}"
+        @click="update(fullStar)"
     )
         SvgIcon(
             type="mdi"
@@ -19,7 +20,8 @@ span.hand(:title="currentRating")
         v-for="emptyStar in emptyStars"
         :key="`empty-${emptyStar}`"
         :title="fullStars + emptyStar"
-        @click="$emit('update:modelValue', (fullStars + emptyStar))")
+        :class="{'hand' : !readOnly}"
+        @click="update(fullStars + emptyStar)")
         SvgIcon(
             type="mdi"
             :size="iconSize"
@@ -35,10 +37,11 @@ import { mdiStar, mdiStarHalfFull, mdiStarOutline } from '@mdi/js'
 import { computed, defineProps, withDefaults } from 'vue'
 
 const props = withDefaults(
-    defineProps<{ modelValue: number, maxRating?: number, iconSize?: number }>(),
+    defineProps<{ modelValue: number, maxRating?: number, iconSize?: number, readOnly?: boolean }>(),
     {
         maxRating: 5,
         iconSize: 24,
+        readOnly: true,
     }
 )
 
@@ -54,13 +57,23 @@ const fullStars = computed(() => Math.round(currentRating.value))
 
 const emptyStars = computed(() => props.maxRating - Math.ceil(currentRating.value))
 
-defineEmits<{
+const emit = defineEmits<{
     (e: 'update:modelValue', rate: number): void
 }>()
+
+const update = (rate: number) => {
+    if (!props.readOnly) {
+        emit('update:modelValue', rate)
+    }
+}
 </script>
 
 <style scoped lang="css">
-.hand > span {
+.hand {
     cursor: pointer;
+}
+em {
+    font-style: normal;
+    padding: 0.8em;
 }
 </style>

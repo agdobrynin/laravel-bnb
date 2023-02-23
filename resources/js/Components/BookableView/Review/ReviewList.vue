@@ -24,7 +24,7 @@ import ReviewItem from '@/Components/BookableView/Review/ReviewItem.vue'
 import ApiErrorDisplay from '@/Components/UI/ApiErrorDisplay.vue'
 import PlaceholderCard from '@/Components/UI/PlaceholderCard.vue'
 import HttpService from '@/Services/HttpService'
-import type { InterfaceApiError } from '@/Services/Interfaces/InterfaceApiError'
+import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
 import type { IReviewCollection, IReviewExistItem } from '@/Types/IReviewExistItem'
 
 const props = defineProps<{bookabledId: string}>()
@@ -35,10 +35,14 @@ const reviewCollection: Ref<IReviewCollection | null> = ref(null)
 
 const reviews: ComputedRef<IReviewExistItem[]> = computed(() => reviewCollection.value?.data || [])
 
-onMounted(() => {
-    new HttpService().getBookableReviews(props.bookabledId)
-        .then(response => reviewCollection.value = response as IReviewCollection)
-        .catch((error: InterfaceApiError) => apiError.value = error.backendMessage)
-        .finally(() => loading.value = false)
-})
+onMounted(async () => {
+    try {
+        reviewCollection.value = await new HttpService().getBookableReviews(props.bookabledId)
+    } catch (reason) {
+        const error = reason as ApiErrorInterface
+        apiError.value = error.backendMessage || error.requestErrorMessage
+    }
+
+    loading.value = false
+ })
 </script>
