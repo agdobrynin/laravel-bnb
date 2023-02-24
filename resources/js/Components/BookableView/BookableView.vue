@@ -43,7 +43,7 @@ onMounted(async () => {
         bookableItem.value = await new HttpService().getBookable(id)
     } catch (reason) {
         const error = reason as ApiErrorInterface
-        apiError.value = error.backendMessage || error.requestErrorMessage
+        apiError.value = error.apiError?.message || error.requestError
     }
 
     loading.value = false

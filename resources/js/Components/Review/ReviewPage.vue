@@ -126,7 +126,7 @@ const storeReview = async (): Promise<void> => {
         if (error instanceof ApiValidationError) {
             validationError.value = error
         } else if (error instanceof ApiError) {
-            apiError.value = error.backendMessage
+            apiError.value = error.apiError?.message || error.requestError
         } else {
             apiError.value = (error as Error).message
         }
@@ -148,7 +148,7 @@ onMounted(async (): Promise<void> => {
         }
     } catch (reason) {
         const error = reason as ApiErrorInterface
-        apiError.value = (error.backendResponse?.message || error.requestErrorMessage)
+        apiError.value = (error.apiError?.message || error.requestError)
     }
 
     isLoading.value = false

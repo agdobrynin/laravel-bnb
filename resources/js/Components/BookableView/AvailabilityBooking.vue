@@ -88,7 +88,7 @@ const check = async () => {
         if (error instanceof ApiValidationError) {
             apiValidationError.value = error
         } else if (error instanceof ApiError) {
-            apiError.value = error.backendMessage
+            apiError.value = error.apiError?.message || error.requestError
         } else {
             apiError.value = (error as Error).message
         }
