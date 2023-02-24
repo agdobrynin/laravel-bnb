@@ -19,7 +19,7 @@ export default class HttpService implements HttpServiceInterface {
             : this.endpoint = endpoint
     }
 
-    async getBookables(): Promise<IBookableList | never> {
+    async getBookables(): Promise<IBookableList> | never {
         try {
             return <IBookableList>((await axios.get(`${this.endpoint}/bookables`)).data)
         } catch (reason) {
@@ -27,7 +27,7 @@ export default class HttpService implements HttpServiceInterface {
         }
     }
 
-    async getBookable(id: string): Promise<IBookableItem | never> {
+    async getBookable(id: string): Promise<IBookableItem> | never {
         try {
             return <IBookableItem>((await axios.get(`${this.endpoint}/bookables/${id}`)).data)
         } catch (reason) {
@@ -35,7 +35,7 @@ export default class HttpService implements HttpServiceInterface {
         }
     }
 
-    async checkBookableAvailability(id: string, start: string, end: string): Promise<IBookingAvailability | never> {
+    async checkBookableAvailability(id: string, start: string, end: string): Promise<IBookingAvailability> | never {
         try {
             const config = { params: { start, end } }
 
@@ -44,19 +44,19 @@ export default class HttpService implements HttpServiceInterface {
                 config
             )).data)
         } catch (reason) {
-            this.throwErrorByCode(reason)
+            throw this.throwErrorByCode(reason)
         }
     }
 
-    async getBookableReviews(id: string): Promise<IReviewCollection | never> {
+    async getBookableReviews(id: string): Promise<IReviewCollection> | never {
         try {
             return <IReviewCollection>((await axios.get(`${this.endpoint}/bookables/${id}/reviews`)).data)
         } catch (reason) {
-            this.throwErrorByCode(reason)
+            throw this.throwErrorByCode(reason)
         }
     }
 
-    async getReview(id: string): Promise<boolean | never> {
+    async getReview(id: string): Promise<boolean> | never {
         try {
             const result: AxiosResponse<IReviewResourceExist> = await axios.get(`${this.endpoint}/reviews/${id}`)
 
@@ -72,11 +72,12 @@ export default class HttpService implements HttpServiceInterface {
         }
     }
 
-    async getBookingByReviewKey(id: string): Promise<IBookingByReviewKey | never> {
+
+    async getBookingByReviewKey(id: string): Promise<IBookingByReviewKey> | never {
         try {
             return <IBookingByReviewKey>((await axios.get(`${this.endpoint}/booking-by-review/${id}`)).data)
         } catch (reason) {
-            this.throwErrorByCode(reason)
+            throw this.throwErrorByCode(reason)
         }
     }
 
@@ -86,17 +87,13 @@ export default class HttpService implements HttpServiceInterface {
 
             return result.data.data.hasReview
         } catch (reason) {
-            this.throwErrorByCode(reason)
+            throw this.throwErrorByCode(reason)
         }
     }
 
-    private throwErrorByCode(reason: unknown): never {
+    private throwErrorByCode(reason: unknown): ApiValidationError | ApiError {
         const error = <AxiosError>reason
 
-        if (error.response?.status === 422) {
-            throw new ApiValidationError(error)
-        }
-
-        throw new ApiError(error)
+        return (error.response?.status === 422) ? new ApiValidationError(error) : new ApiError(error)
     }
 }

@@ -12,35 +12,35 @@ export interface HttpServiceInterface {
      * Get list of bookable items
      * @throws ApiErrorInterface
      */
-    getBookables(): Promise<IBookableList | never>
+    getBookables(): Promise<IBookableList> | never
 
     /**
      * Get bookable item by id
      * @throws ApiErrorInterface
      */
-    getBookable(id: string): Promise<IBookableItem | never>
+    getBookable(id: string): Promise<IBookableItem> | never
 
     /**
      * Check ability booking between dates
      * @throws ApiErrorInterface|ApiValidationErrorInterface
      */
-    checkBookableAvailability(id: string, start: string, end: string): Promise<IBookingAvailability | never>
+    checkBookableAvailability(id: string, start: string, end: string): Promise<IBookingAvailability> | never
 
     /**
      * Get collection of review for bookable item
      * @throws ApiErrorInterface
      */
-    getBookableReviews(id: string): Promise<IReviewCollection | never>
+    getBookableReviews(id: string): Promise<IReviewCollection> | never
 
     /**
      * @throws ApiErrorInterface
      */
-    getReview(id: string): Promise<boolean | never>
+    getReview(id: string): Promise<boolean> | never
 
     /**
      * @throws ApiErrorInterface
      */
-    getBookingByReviewKey(id: string): Promise<IBookingByReviewKey | never>
+    getBookingByReviewKey(id: string): Promise<IBookingByReviewKey> | never
 
     /**
      * @throws ApiErrorInterface|ApiValidationErrorInterface
