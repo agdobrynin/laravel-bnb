@@ -18,7 +18,7 @@ div
 
 <script lang="ts" setup>
 import type { ComputedRef, Ref } from 'vue'
-import { computed, defineProps, onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 import ReviewItem from '@/Components/BookableView/Review/ReviewItem.vue'
 import ApiErrorDisplay from '@/Components/UI/ApiErrorDisplay.vue'

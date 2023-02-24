@@ -15,8 +15,7 @@ div.text-center.fs-1.text-muted
 //@ts-ignore
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiAlertOctagramOutline } from '@mdi/js'
-import { computed, defineProps, withDefaults } from 'vue'
-
+import { computed } from 'vue'
 
 const props = withDefaults(
     defineProps<{ iconSize?: number }>(),{ iconSize: 120 }
