@@ -2,7 +2,7 @@
 div
     ApiErrorDisplay(v-if="apiError") {{ apiError }}
     PlaceholderCard(v-if="loading")
-    div(v-else)
+    div(v-if="!apiError && !loading" )
         div.row
             div.col-md-8.mb-4
                 div.card.mb-4
