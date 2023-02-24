@@ -1,7 +1,6 @@
 <template lang="pug">
 div
-    .alert.alert-danger(v-if="apiError")
-        | #[h5 Bookable error] {{ apiError }}
+    ApiErrorDisplay(v-if="apiError") {{ apiError }}
     PlaceholderCard(v-if="loading")
     div(v-else)
         div.row
@@ -23,15 +22,15 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 import AvailabilityBooking from '@/Components/BookableView/AvailabilityBooking.vue'
-import ReviewList from '@/Components/Review/ReviewList.vue'
+import ReviewList from '@/Components/BookableView/Review/ReviewList.vue'
+import ApiErrorDisplay from '@/Components/UI/ApiErrorDisplay.vue'
 import PlaceholderCard from '@/Components/UI/PlaceholderCard.vue'
 import HttpService from '@/Services/HttpService'
-import type { InterfaceApiError } from '@/Services/Interfaces/InterfaceApiError'
+import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
 import type { IBookable } from '@/Types/IBookable'
 import type { IBookableItem } from '@/Types/IBookableItem'
 
-const route = useRoute()
-const id: string = route.params.id as string
+const id: string = useRoute().params.id as string
 
 const loading: Ref<boolean> = ref(true)
 const bookableItem: Ref<IBookableItem | null> = ref(null)
@@ -39,10 +38,14 @@ const apiError: Ref<string|null> = ref(null)
 
 const bookable: ComputedRef<IBookable | null> = computed(() => bookableItem.value?.data || null)
 
-onMounted(() => {
-    new HttpService().getBookable(id)
-        .then(response => bookableItem.value = response as IBookableItem)
-        .catch((error: InterfaceApiError) => apiError.value = error.backendMessage)
-        .finally(() =>  loading.value = false)
+onMounted(async () => {
+    try {
+        bookableItem.value = await new HttpService().getBookable(id)
+    } catch (reason) {
+        const error = reason as ApiErrorInterface
+        apiError.value = error.backendMessage || error.requestErrorMessage
+    }
+
+    loading.value = false
 })
 </script>

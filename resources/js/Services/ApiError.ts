@@ -1,9 +1,9 @@
 import { AxiosError } from 'axios'
 
-import type { InterfaceApiError } from '@/Services/Interfaces/InterfaceApiError'
+import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
 import type { IApiError } from '@/Types/IApiError'
 
-export class ApiError implements InterfaceApiError {
+export class ApiError implements ApiErrorInterface {
     constructor(private readonly axiosError: AxiosError) {
     }
 

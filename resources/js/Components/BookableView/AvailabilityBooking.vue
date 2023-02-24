@@ -1,5 +1,5 @@
 <template lang="pug">
-div
+form(@submit.prevent="check")
     h6.text-uppercase.text-secondary
         span.text-success(v-if="bookingAvailability && bookingAvailability.data.length === 0")
             | Available for booking
@@ -7,38 +7,36 @@ div
             | Not available for booking
         span(v-else)
             | Check availability
-    div.alert.alert-danger(v-if="apiError") {{ apiError }}
+    ApiErrorDisplay(
+        v-if="apiError"
+        :icon-size="60" ) {{ apiError }}
     div.row.gap-2
-        div.col-md.form-floating.mb-3
-            input#dateFrom.form-control.form-control-sm(
+        div.col-md.mb-3
+            InputUI(
                 v-model="data.start"
+                label="Date from"
                 type="date"
-                placeholder="Date from"
                 :min="data.startMin"
-                :class="{'is-invalid': startFieldError}"
+                input-class="form-control-sm"
+                label-class="col-form-label-sm"
                 :disabled="isLoading"
-                @change="resetBookingAvailability")
-            label.text-secondary.col-form-label-sm(for="dateFrom") Date from
-            div.invalid-feedback(
-                v-for="(error, index) in startFieldError"
-                :key="`start_${index}`") {{ error }}
-        div.col-md.form-floating.mb-3
-            input#dateTo.form-control-sm.form-control(
-                    v-model="data.end"
-                    type="date"
-                    placeholder="Date to"
-                    :min="data.endMin"
-                    :class="{'is-invalid': endFieldError}"
-                    :disabled="isLoading"
-                    @change="resetBookingAvailability")
-            label.text-secondary.col-form-label-sm(for="dateTo") Date to
-            div.invalid-feedback(
-                v-for="(error, index) in endFieldError"
-                :key="`end_${index}`") {{error}}
+                :errors="startFieldError"
+            )
+        div.col-md.mb-3
+            InputUI(
+                v-model="data.end"
+                label="Date to"
+                type="date"
+                :min="data.endMin"
+                input-class="form-control-sm"
+                label-class="col-form-label-sm"
+                :disabled="isLoading"
+                :errors="endFieldError"
+            )
     ButtonWithLoading.btn.btn-secondary.w-100(
+        type="submit"
         :is-loading="isLoading"
-        title="Check dates 🔎"
-        @click="check")
+        title="Check dates 🔎")
     BookingDates(
         v-if="bookingAvailability && bookingAvailability.data.length"
         :items="bookingAvailability")
@@ -49,11 +47,15 @@ import type { Ref } from 'vue'
 import { computed, reactive, ref } from 'vue'
 
 import BookingDates from '@/Components/BookableView/BookingDates.vue'
+import ApiErrorDisplay from '@/Components/UI/ApiErrorDisplay.vue'
 import ButtonWithLoading from '@/Components/UI/ButtonWithLoading.vue'
+import InputUI from '@/Components/UI/InputUI.vue'
 import { DateRange } from '@/Models/DateRange'
 import { ApiError } from '@/Services/ApiError'
 import { ApiValidationError } from '@/Services/ApiValidationError'
 import HttpService from '@/Services/HttpService'
+import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
+import type { ApiValidationErrorInterface } from '@/Services/Interfaces/ApiValidationErrorInterface'
 import type { IBookingAvailability } from '@/Types/IBookingAvailability'
 
 const props = defineProps<{id: string}>()
@@ -71,26 +73,28 @@ const isLoading: Ref<boolean> = ref(false)
 
 const bookingAvailability: Ref<IBookingAvailability|null> = ref(null)
 
-const resetBookingAvailability = () => bookingAvailability.value = null
-const check = () => {
+const check = async () => {
     isLoading.value = true
     apiError.value = null
     apiValidationError.value = null
     bookingAvailability.value = null
 
-    new HttpService()
-        .checkBookableAvailability(props.id, data.start, data.end)
-        .then(response => {
-            bookingAvailability.value = response as IBookingAvailability
-        })
-        .catch((result: ApiValidationError|ApiError) => {
-            if(result instanceof ApiError) {
-                apiError.value = result.backendMessage
-            } else {
-                apiValidationError.value = result
-            }
-        })
-        .finally(() => isLoading.value = false)
+    try {
+        bookingAvailability.value = await new HttpService()
+            .checkBookableAvailability(props.id, data.start, data.end)
+    } catch (reason) {
+        const error = reason as Error | ApiErrorInterface | ApiValidationErrorInterface
+
+        if (error instanceof ApiValidationError) {
+            apiValidationError.value = error
+        } else if (error instanceof ApiError) {
+            apiError.value = error.backendMessage
+        } else {
+            apiError.value = (error as Error).message
+        }
+    }
+
+    isLoading.value = false
 }
 </script>
 

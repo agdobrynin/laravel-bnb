@@ -4,8 +4,9 @@
         div.col-md-6 {{ item.name || 'Anonymous' }}
         div.col-md-6.d-md-flex.justify-content-end
             RatingItem(
-                :rating="item.rating"
-                :max-rating="5")
+                :model-value="item.rating"
+                :max-rating="5"
+                :icon-size="26")
     .row
         .col-md-12.text-muted was added {{ timeFormatted }}
     .row
@@ -17,9 +18,9 @@ import { defineProps } from 'vue'
 
 import RatingItem from '@/Components/UI/RatingItem.vue'
 import { timeAgo } from '@/Composable/useDateTime'
-import type { IReviewItem } from '@/Types/IReviewItem'
+import type { IReviewExistItem } from '@/Types/IReviewExistItem'
 
-interface IProps extends IReviewItem{}
+interface IProps extends IReviewExistItem{}
 
 const props = defineProps<{item: IProps}>()
 

@@ -1,15 +1,21 @@
-import { InterfaceApiValidationError } from '@/Services/Interfaces/InterfaceApiValidationError'
+import { AxiosError } from 'axios'
+
+import { ApiValidationErrorInterface } from '@/Services/Interfaces/ApiValidationErrorInterface'
 import { IApiValidationError } from '@/Types/IApiValidationError'
 
-export class ApiValidationError implements  InterfaceApiValidationError {
-    constructor(private readonly data: IApiValidationError) {
+export class ApiValidationError implements  ApiValidationErrorInterface {
+    constructor(private readonly axiosError: AxiosError) {
     }
 
     get message(): string {
-        return this.data.message
+        const { message }  = this.axiosError.response?.data  as IApiValidationError || 'Unknown error'
+
+        return message
     }
 
     getErrorsByField(fieldName: string): undefined | string[] {
-        return this.data.errors[fieldName]
+        const { errors } = this.axiosError.response?.data as IApiValidationError || []
+
+        return errors[fieldName]
     }
 }
