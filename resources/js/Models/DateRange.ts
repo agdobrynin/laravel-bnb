@@ -1,6 +1,8 @@
+import { IBookingDates } from '@/Types/IBookingAvailability'
+
 export class DateRange {
     private dateEnd: Date | undefined
-    constructor(private dateStart: Date, private offsetEnd: number = 1) {
+    constructor(private dateStart: Date = new Date(), private offsetEnd: number = 1) {
         this.dateEnd = this.nextDate(dateStart, offsetEnd)
     }
 
@@ -48,8 +50,18 @@ export class DateRange {
     get start (): string {
         return this.formatted(this.dateStart)
     }
+
     get startMin (): string {
         return this.formatted(this.dateToday)
+    }
+
+    get bookingDates() : IBookingDates {
+        return { start: this.start, end: this.end }
+    }
+
+    setDates(dates: IBookingDates): void {
+        this.start = dates.start
+        this.end = dates.end
     }
 
     private formatted(date: Date): string {
