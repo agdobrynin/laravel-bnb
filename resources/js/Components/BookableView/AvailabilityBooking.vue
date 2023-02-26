@@ -37,14 +37,16 @@ form(@submit.prevent="check")
         type="submit"
         :is-loading="isLoading"
         title="Check dates 🔎")
-    BookingDates(
-        v-if="bookingAvailability && bookingAvailability.data.length"
-        :items="bookingAvailability")
+    Transition(name="slide-fade")
+        BookingDates(
+            v-if="bookingAvailability && bookingAvailability.data.length"
+            :items="bookingAvailability")
 </template>
 
 <script setup lang="ts">
 import type { Ref } from 'vue'
 import { computed, reactive, ref } from 'vue'
+import { useStore } from 'vuex'
 
 import BookingDates from '@/Components/BookableView/BookingDates.vue'
 import ApiErrorDisplay from '@/Components/UI/ApiErrorDisplay.vue'
@@ -56,11 +58,14 @@ import { ApiValidationError } from '@/Services/ApiValidationError'
 import HttpService from '@/Services/HttpService'
 import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
 import type { ApiValidationErrorInterface } from '@/Services/Interfaces/ApiValidationErrorInterface'
+import { bookingStateKey } from '@/store/Booking'
 import type { IBookingAvailability } from '@/Types/IBookingAvailability'
 
 const props = defineProps<{id: string}>()
+const store = useStore(bookingStateKey)
 
-const dateRange: DateRange = new DateRange(new Date(), 4)
+
+const dateRange: DateRange = store.getters.lastSearchBookingDates
 const data = reactive(dateRange)
 
 const apiError: Ref<string|null> = ref(null)
@@ -82,13 +87,15 @@ const check = async () => {
     try {
         bookingAvailability.value = await new HttpService()
             .checkBookableAvailability(props.id, data.start, data.end)
+
+        await store.dispatch('saveLastSearchBookingDates', data.bookingDates)
     } catch (reason) {
         const error = reason as Error | ApiErrorInterface | ApiValidationErrorInterface
 
         if (error instanceof ApiValidationError) {
             apiValidationError.value = error
         } else if (error instanceof ApiError) {
-            apiError.value = error.backendMessage
+            apiError.value = error.apiError?.message || error.requestError
         } else {
             apiError.value = (error as Error).message
         }
@@ -103,5 +110,19 @@ const check = async () => {
     label {
         left: 1.2rem
     }
+}
+
+.slide-fade-enter-active {
+    transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+    transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+    transform: translateX(20px);
+    opacity: 0;
 }
 </style>

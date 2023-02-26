@@ -18,7 +18,7 @@ div
 
 <script lang="ts" setup>
 import type { ComputedRef, Ref } from 'vue'
-import { computed, defineProps, onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 import ReviewItem from '@/Components/BookableView/Review/ReviewItem.vue'
 import ApiErrorDisplay from '@/Components/UI/ApiErrorDisplay.vue'
@@ -40,7 +40,7 @@ onMounted(async () => {
         reviewCollection.value = await new HttpService().getBookableReviews(props.bookabledId)
     } catch (reason) {
         const error = reason as ApiErrorInterface
-        apiError.value = error.backendMessage || error.requestErrorMessage
+        apiError.value = error.apiError?.message || error.requestError
     }
 
     loading.value = false

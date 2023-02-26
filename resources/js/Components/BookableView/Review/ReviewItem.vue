@@ -14,8 +14,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue'
-
 import RatingItem from '@/Components/UI/RatingItem.vue'
 import { timeAgo } from '@/Composable/useDateTime'
 import type { IReviewExistItem } from '@/Types/IReviewExistItem'

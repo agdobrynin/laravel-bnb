@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineProps, withDefaults } from 'vue'
+import { computed } from 'vue'
 
 import { randomString } from '@/Composable/utils'
 

@@ -34,7 +34,7 @@ span(:title="currentRating")
 //@ts-ignore
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiStar, mdiStarHalfFull, mdiStarOutline } from '@mdi/js'
-import { computed, defineProps, withDefaults } from 'vue'
+import { computed } from 'vue'
 
 const props = withDefaults(
     defineProps<{ modelValue: number, maxRating?: number, iconSize?: number, readOnly?: boolean }>(),
