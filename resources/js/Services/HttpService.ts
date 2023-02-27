@@ -8,12 +8,14 @@ import type { IBookableItem } from '@/Types/IBookableItem'
 import type { IBookableList } from '@/Types/IBookableList'
 import type { IBookingAvailability } from '@/Types/IBookingAvailability'
 import type { IBookingByReviewKey } from '@/Types/IBookingByReviewKey'
+import { ICalculateBooking } from '@/Types/ICalculateBooking'
 import type { IReviewCollection, IReviewItem } from '@/Types/IReviewExistItem'
 import type { IReviewResourceExist } from '@/Types/IReviewResourceExist'
 
 export default class HttpService implements HttpServiceInterface {
     private readonly endpoint: string
-    constructor(endpoint?:string) {
+
+    constructor(endpoint?: string) {
         this.endpoint = endpoint === undefined
             ? import.meta.env.VITE_API_ENDPOINT
             : this.endpoint = endpoint
@@ -41,6 +43,20 @@ export default class HttpService implements HttpServiceInterface {
 
             return <IBookingAvailability>((await axios.get(
                 `${this.endpoint}/bookables/${id}/availability`,
+                config
+            )).data)
+        } catch (reason) {
+            throw this.errorClassForThrow(reason)
+        }
+    }
+
+
+    async calculateBooking(id: string, start: string, end: string): Promise<ICalculateBooking | never> {
+        try {
+            const config = { params: { start, end } }
+
+            return <ICalculateBooking>((await axios.get(
+                `${this.endpoint}/bookables/${id}/calculate`,
                 config
             )).data)
         } catch (reason) {

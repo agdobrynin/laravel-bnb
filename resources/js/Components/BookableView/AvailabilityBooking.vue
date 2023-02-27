@@ -60,6 +60,7 @@ import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
 import type { ApiValidationErrorInterface } from '@/Services/Interfaces/ApiValidationErrorInterface'
 import { bookingStateKey } from '@/store/Booking'
 import type { IBookingAvailability } from '@/Types/IBookingAvailability'
+import type { IBookingDates } from '@/Types/IBookingAvailability'
 
 const props = defineProps<{id: string}>()
 const store = useStore(bookingStateKey)
@@ -78,17 +79,29 @@ const isLoading: Ref<boolean> = ref(false)
 
 const bookingAvailability: Ref<IBookingAvailability|null> = ref(null)
 
+const emit = defineEmits<{
+    (e: 'isAvailability', value: IBookingDates | null): void
+}>()
+
 const check = async () => {
     isLoading.value = true
     apiError.value = null
     apiValidationError.value = null
     bookingAvailability.value = null
+    emit('isAvailability', null)
 
     try {
+        // store last dates for booking
+        await store.dispatch('saveLastSearchBookingDates', data.bookingDates)
+
         bookingAvailability.value = await new HttpService()
             .checkBookableAvailability(props.id, data.start, data.end)
 
-        await store.dispatch('saveLastSearchBookingDates', data.bookingDates)
+        const isAvailabilityDates: IBookingDates | null = bookingAvailability.value?.data.length === 0
+            ? { start: data.start, end: data.end }
+            : null
+
+        emit('isAvailability', isAvailabilityDates)
     } catch (reason) {
         const error = reason as Error | ApiErrorInterface | ApiValidationErrorInterface
 

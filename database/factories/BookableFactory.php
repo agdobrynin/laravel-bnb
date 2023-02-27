@@ -14,9 +14,14 @@ class BookableFactory extends Factory
 
     public function definition(): array
     {
+        $regularPrice = rand(5, 100);
+        $weekendPrice = (int)($regularPrice + ($regularPrice * 0.15));
+
         return [
             'title' => fake()->city.' '. \Arr::random(['room', 'villa', 'house', 'cottage', 'fancy room', 'luxury apartment']),
             'description' => fake()->realTextBetween(100, 300),
+            'price' => $regularPrice,
+            'price_weekend' => $weekendPrice,
         ];
     }
 }

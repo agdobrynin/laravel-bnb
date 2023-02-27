@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\BookableAvailabilityController;
 use App\Http\Controllers\Api\BookableController;
+use App\Http\Controllers\Api\CalculateBookingController;
 use App\Http\Controllers\Api\BookableReviewController;
 use App\Http\Controllers\Api\BookingByReviewController;
 use App\Http\Controllers\Api\ReviewController;
@@ -28,6 +29,9 @@ Route::apiResource('bookables', BookableController::class)
 
 Route::get('bookables/{bookable}/availability', BookableAvailabilityController::class)
     ->name('bookables.availability.show');
+
+Route::get('bookables/{bookable}/calculate', CalculateBookingController::class)
+    ->name('bookables.calculate.booking');
 
 Route::get('bookables/{bookable}/reviews', BookableReviewController::class)
     ->name('bookables.reviews.index');

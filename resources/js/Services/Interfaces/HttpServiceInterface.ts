@@ -4,6 +4,7 @@ import type { IBookableItem } from '@/Types/IBookableItem'
 import type { IBookableList } from '@/Types/IBookableList'
 import type { IBookingAvailability } from '@/Types/IBookingAvailability'
 import type { IBookingByReviewKey } from '@/Types/IBookingByReviewKey'
+import type { ICalculateBooking } from '@/Types/ICalculateBooking'
 import type { IReviewCollection } from '@/Types/IReviewExistItem'
 import type { IReviewItem } from '@/Types/IReviewExistItem'
 
@@ -46,4 +47,10 @@ export interface HttpServiceInterface {
      * @throws ApiErrorInterface|ApiValidationErrorInterface
      */
     storeReview(review: IReviewItem): Promise<boolean | never>
+
+    /**
+     * Calculate price for booking days
+     * @throws ApiErrorInterface|ApiValidationErrorInterface
+     */
+    calculateBooking(id: string, start: string, end: string): Promise<ICalculateBooking | never>
 }

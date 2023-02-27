@@ -2,7 +2,7 @@ export interface ApiValidationErrorInterface {
     /**
      * First validation message (main).
      */
-    get message(): string
+    message: string
 
     /**
      * Get validation messages for field in form.
@@ -10,4 +10,6 @@ export interface ApiValidationErrorInterface {
      * @param fieldName Field name in form
      */
     getErrorsByField(fieldName: string): undefined | string[]
+
+    validationErrors: string[]
 }

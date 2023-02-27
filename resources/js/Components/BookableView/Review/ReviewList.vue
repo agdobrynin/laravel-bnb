@@ -10,7 +10,7 @@ div
         div(v-else)
             h6.text-uppercase(v-if="reviews.length") Review List
             h6.text-uppercase(v-else) Review List is Empty
-            ReviewItem.d-sm-none.d-md-block(
+            ReviewItem.d-none.d-md-block(
                     v-for="review in reviews"
                     :key="review.id"
                     :item="review")

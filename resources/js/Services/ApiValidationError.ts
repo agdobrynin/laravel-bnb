@@ -18,4 +18,14 @@ export class ApiValidationError implements  ApiValidationErrorInterface {
 
         return errors[fieldName]
     }
+
+    get validationErrors(): string[] {
+        const { errors } = this.axiosError.response?.data as IApiValidationError || []
+
+        return Object.keys(errors).reduce((acc: string[], errField: string) => {
+            acc.push(...errors[errField])
+
+            return acc
+        }, [])
+    }
 }
