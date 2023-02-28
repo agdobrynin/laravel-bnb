@@ -1,72 +1,68 @@
 <template lang="pug">
 div
-    h6.text-uppercase.text-secondary price breakdown
+    h6.text-uppercase.text-secondary(v-if="$slots.header" )
+        slot(name="header")
     table.table.table-striped.table-bordered
         tbody
             tr.text-center(
-                v-for="(item, index) in formattedTable"
+                v-for="(item, index) in table"
                 :key="`breakdown-${index}`"
             )
-                td(:class="{'fw-bold': lastRow === index}") {{ item.title }}
-                td(:class="{'fw-bold': lastRow === index}")
-                    span(v-if="!(lastRow === index)" ) {{ item.days }} &times; {{ item.price }}
-                    span(v-else) {{ item.days }}
-                td(:class="{'fw-bold': lastRow === index}") {{ item.total }}
+                td {{ item.title }}
+                td {{ item.days }} &times; {{ item.pricePerDay }}
+                td {{ item.total }}
+        tfoot(v-if="table.length")
+            tr
+                td.fw-bolder.text-end(colspan="2") Total
+                td.fw-bolder.text-center {{ totalPrice }}
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue'
 
 import { priceUsdFormat } from '@/Composable/useMoney'
-import type { ICalculateBooking, ICalculateBreakdownItem } from '@/Types/ICalculateBooking'
+import type { ICalculateBookingInfo, ICalculateBreakdownItem } from '@/Types/ICalculateBooking'
+import { BreakdownPriceEnum } from '@/Types/ICalculateBooking'
 
-const props = defineProps<{calculateBooking: ICalculateBooking}>()
+const props = defineProps<{calculateBooking: ICalculateBookingInfo}>()
 
-const regularPrice = computed<ICalculateBreakdownItem | undefined>(() => props.calculateBooking?.data?.breakdown?.regular)
-const weekendPrice = computed<ICalculateBreakdownItem | undefined>(() => props.calculateBooking?.data?.breakdown?.weekend)
+const totalPrice = computed<string>(() => priceUsdFormat(props.calculateBooking.totalPrice || 0))
+
+const titleBreakdown = (item: BreakdownPriceEnum) => {
+    const titles = {
+        [BreakdownPriceEnum.REGULAR]: 'Regular days',
+        [BreakdownPriceEnum.WEEKEND]: 'Weekend days',
+    }
+
+    return titles[item] || 'Unknown days'
+}
+
+const table = computed<IFormattedTable[]>(() => {
+    return Object.entries(props.calculateBooking.breakdown || {})
+        .reduce((acc: IFormattedTable[], [breakdownPrice, val]) => {
+            const item: ICalculateBreakdownItem = val
+            const title = titleBreakdown(breakdownPrice as BreakdownPriceEnum)
+
+            acc.push(makeItem(title, item.days, item.pricePerDay, item.totalPrice))
+
+            return acc
+        }, [])
+})
+
 interface IFormattedTable {
     title: string,
     days: string,
-    price: string,
+    pricePerDay: string,
     total: string,
 }
 
-const formattedTable = computed<IFormattedTable[]>(() => {
-    const formattedTable: IFormattedTable[] = []
-    let totalDays: number = 0
-    let totalPrice: number = 0
 
-    const { days: daysRegular, pricePerDay: pricePerDayRegular } = regularPrice.value || {}
-
-    if (daysRegular && pricePerDayRegular) {
-        formattedTable.push(makeItem('Regular days', daysRegular, pricePerDayRegular))
-        totalDays +=daysRegular
-        totalPrice += (daysRegular * pricePerDayRegular)
-    }
-
-    const { days: daysWeekend, pricePerDay: pricePerDayWeekend } = weekendPrice.value || {}
-
-    if (daysWeekend && pricePerDayWeekend) {
-        formattedTable.push(makeItem('Weekend days', daysWeekend, pricePerDayWeekend))
-        totalDays +=daysWeekend
-        totalPrice += (daysWeekend * pricePerDayWeekend)
-    }
-
-    if (totalDays && totalPrice) {
-        formattedTable.push(makeItem('Total', totalDays, totalPrice))
-    }
-
-    return formattedTable
-})
-
-const lastRow = computed<number>(() => formattedTable.value.length -1)
-
-const makeItem = (title: string, days: number, price: number): IFormattedTable => {
+const makeItem = (title: string, days: number, pricePerDay: number, total: number): IFormattedTable => {
     return {
         title,
         days: `${days} days`,
-        price: priceUsdFormat(price),
-        total: priceUsdFormat(days * price)
+        pricePerDay: priceUsdFormat(pricePerDay),
+        total: priceUsdFormat(total)
     }
 }
 </script>

@@ -5,7 +5,9 @@ namespace App\Dto;
 
 readonly class PriceBreakdownItemDto
 {
+    public int $totalPrice;
     public function __construct(public int $pricePerDay, public int $days)
     {
+        $this->totalPrice = $pricePerDay * $this->days;
     }
 }

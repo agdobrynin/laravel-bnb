@@ -26,6 +26,7 @@ div
                     PriceBrekadown.mt-4(
                         v-if="calculate"
                         :calculate-booking="calculate")
+                        template(#header) Booking price
                 Transition.mt-4(name="bounce")
                     ButtonWithLoading.btn.btn-outline-success.mt-4.w-100(
                         v-if="calculate"
@@ -52,14 +53,14 @@ import type { ApiValidationErrorInterface } from '@/Services/Interfaces/ApiValid
 import type { IBookable } from '@/Types/IBookable'
 import type { IBookableItem } from '@/Types/IBookableItem'
 import type { IBookingDates } from '@/Types/IBookingAvailability'
-import type { ICalculateBooking } from '@/Types/ICalculateBooking'
+import type { ICalculateBooking, ICalculateBookingInfo } from '@/Types/ICalculateBooking'
 
 const id: string = useRoute().params.id as string
 
 const loading: Ref<boolean> = ref(true)
 const bookableItem: Ref<IBookableItem | null> = ref(null)
 const apiError: Ref<string|null> = ref(null)
-const calculate: Ref<ICalculateBooking|null> = ref(null)
+const calculate: Ref<ICalculateBookingInfo|null> = ref(null)
 const calculatePriceError: Ref<string[]| null> = ref(null)
 
 const bookable: ComputedRef<IBookable | null> = computed(() => bookableItem.value?.data || null)
@@ -70,8 +71,9 @@ const checkPrice = async (isAvailable: IBookingDates | undefined): Promise<void>
 
     if (isAvailable && bookable.value?.id) {
         try {
-            calculate.value = await new HttpService()
-                 .calculateBooking(bookable.value.id, isAvailable.start, isAvailable.end)
+            const calculateResponse: ICalculateBooking = await new HttpService()
+                .calculateBooking(bookable.value.id, isAvailable.start, isAvailable.end)
+            calculate.value = calculateResponse.data.calculate
         } catch (reason) {
             const error = reason as Error | ApiErrorInterface | ApiValidationErrorInterface
             if (error instanceof ApiValidationError) {
