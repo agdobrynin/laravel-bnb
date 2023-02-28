@@ -1,7 +1,9 @@
+import { GetterTree } from 'vuex'
+
 import { DateRange } from '@/Models/DateRange'
 import { IBookingState } from '@/store/Booking/Types/IBookingState'
 
-export default {
+const getters: GetterTree<IBookingState, any> = {
     lastSearchBookingDates: (state: IBookingState): DateRange => {
             const dateRange = new DateRange(new Date(), 4)
 
@@ -13,3 +15,5 @@ export default {
             return dateRange
     }
 }
+
+export default getters

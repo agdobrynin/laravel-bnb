@@ -1,4 +1,4 @@
-import { ActionContext } from 'vuex'
+import { ActionContext, ActionTree } from 'vuex'
 
 import { IBookingState } from '@/store/Booking/Types/IBookingState'
 import { IBookingDates } from '@/Types/IBookingAvailability'
@@ -6,7 +6,7 @@ import { IBookingDates } from '@/Types/IBookingAvailability'
 
 const KEY_LAST_SEARCH_BOOKING_DATES = 'LastSearchBookingDates'
 
-export default {
+const actions: ActionTree<IBookingState, any> = {
     async saveLastSearchBookingDates(context: ActionContext<IBookingState, IBookingState>, payload: IBookingDates): Promise<void> {
         localStorage.setItem(KEY_LAST_SEARCH_BOOKING_DATES, JSON.stringify(payload))
         context.commit('lastSearchBookingDates', payload)
@@ -20,3 +20,4 @@ export default {
         }
     }
 }
+export default actions
