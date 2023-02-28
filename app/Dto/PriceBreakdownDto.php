@@ -8,16 +8,17 @@ use Carbon\CarbonPeriod;
 
 readonly class PriceBreakdownDto
 {
+    public string $bookableId;
     public ?int $totalPrice;
     /**
      * @var PriceBreakdownItemDto[]
      */
     public ?array $breakdown;
-    // public ?PriceBreakdownItemDto $weekend;
-    // public ?PriceBreakdownItemDto $regular;
 
     public function __construct(Bookable $bookable, public string $dateStart, public string $dateEnd)
     {
+        $this->bookableId = $bookable->id;
+
         $carbonPeriod = CarbonPeriod::create($dateStart, $dateEnd);
         $weekendDayCount = 0;
         $regularDayCount = 0;

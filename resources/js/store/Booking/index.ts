@@ -12,7 +12,8 @@ const storeBooking = createStore<IBookingState>({
     state: {
         abilityBooking: {
             dateRange: null,
-        }
+        },
+        basket: [],
     },
     actions,
     getters,

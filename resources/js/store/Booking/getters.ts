@@ -2,6 +2,7 @@ import { GetterTree } from 'vuex'
 
 import { DateRange } from '@/Models/DateRange'
 import { IBookingState } from '@/store/Booking/Types/IBookingState'
+import { ICalculateBookingInfo } from '@/Types/ICalculateBooking'
 
 const getters: GetterTree<IBookingState, any> = {
     lastSearchBookingDates: (state: IBookingState): DateRange => {
@@ -13,6 +14,12 @@ const getters: GetterTree<IBookingState, any> = {
             }
 
             return dateRange
+    },
+
+    basketCount: (state: IBookingState): number => state.basket.length,
+
+    hasInBasket: (state: IBookingState) => (bookableId: string): boolean => {
+        return Boolean(state.basket.find((item: ICalculateBookingInfo) => item.bookableId === bookableId))
     }
 }
 

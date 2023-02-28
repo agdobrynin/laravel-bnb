@@ -5,6 +5,7 @@ export interface ICalculateBooking {
 }
 
 export interface ICalculateBookingInfo {
+    bookableId: string,
     breakdown?: IBreakdownPrice,
     /**
      * Total price
