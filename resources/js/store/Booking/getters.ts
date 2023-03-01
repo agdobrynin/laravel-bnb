@@ -18,9 +18,11 @@ const getters: GetterTree<IBookingState, any> = {
 
     basketCount: (state: IBookingState): number => state.basket.length,
 
-    hasInBasket: (state: IBookingState) => (bookableId: string): boolean => {
-        return Boolean(state.basket.find((item: ICalculateBookingInfo) => item.bookableId === bookableId))
-    }
+    inBasket: (state: IBookingState) => (bookableId: string): ICalculateBookingInfo | undefined => {
+        return state.basket.find((item: ICalculateBookingInfo) => item.bookableId === bookableId)
+    },
+
+    hasInBasket: (state: IBookingState, getters) => (bookableId: string): boolean =>  Boolean(getters.inBasket(bookableId)),
 }
 
 export default getters
