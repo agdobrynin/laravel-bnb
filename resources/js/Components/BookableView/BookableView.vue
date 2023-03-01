@@ -72,6 +72,7 @@ import type { IBookable } from '@/Types/IBookable'
 import type { IBookableItem } from '@/Types/IBookableItem'
 import type { IBookingDates } from '@/Types/IBookingAvailability'
 import type { ICalculateBooking, ICalculateBookingInfo } from '@/Types/ICalculateBooking'
+import type  { ICalculateBookingInfoWithBookableTitle } from '@/Types/ICalculateBooking'
 
 const id: string = useRoute().params.id as string
 const store = useStore(bookingStateKey)
@@ -119,8 +120,14 @@ const checkPrice = async (isAvailable: IBookingDates | undefined): Promise<void>
 }
 
 const addToBasket = (): void => {
-    if (null !== calculate.value) {
-        store.dispatch('addToBasket', calculate.value)
+    if (null !== calculate.value && bookable.value?.id) {
+
+        const payload:  ICalculateBookingInfoWithBookableTitle = {
+            ...calculate.value,
+            ... { bookableTitle: bookable.value?.title || bookable.value.id }
+        }
+
+        store.dispatch('addToBasket', payload)
     }
 }
 

@@ -23,6 +23,8 @@ const getters: GetterTree<IBookingState, any> = {
     },
 
     hasInBasket: (state: IBookingState, getters) => (bookableId: string): boolean =>  Boolean(getters.inBasket(bookableId)),
+
+    basket: (state: IBookingState): ICalculateBookingInfo[] => state.basket,
 }
 
 export default getters

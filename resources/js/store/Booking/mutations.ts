@@ -2,14 +2,14 @@ import { MutationTree } from 'vuex'
 
 import { IBookingState } from '@/store/Booking/Types/IBookingState'
 import { IBookingDates } from '@/Types/IBookingAvailability'
-import { ICalculateBookingInfo } from '@/Types/ICalculateBooking'
+import { ICalculateBookingInfo, ICalculateBookingInfoWithBookableTitle } from '@/Types/ICalculateBooking'
 
 const mutations: MutationTree<IBookingState> = {
     lastSearchBookingDates(state: IBookingState, payload: IBookingDates | null): void {
         state.abilityBooking.dateRange = payload
     },
 
-    addToBasket(state: IBookingState, item: ICalculateBookingInfo): void {
+    addToBasket(state: IBookingState, item: ICalculateBookingInfoWithBookableTitle): void {
         state.basket.push(item)
     },
 

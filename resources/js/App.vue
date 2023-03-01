@@ -3,7 +3,7 @@ div
     nav.navbar.bg-light.border-bottom.navbar-light
         div.container.container-fluid
             router-link.navbar-brand.me-auto(:to="{name: 'home'}") {{ appName }}
-            router-link.nav-link(:to="{name: 'home'}") Basket
+            router-link.nav-link(:to="{name: 'basket_and_checkout'}") Basket
                 span.badge.bg-secondary.m-2(v-if="basketCount" ) {{ basketCount }}
     div.container.py-4.px-3.mx-auto
         router-view

@@ -26,7 +26,7 @@ import { randomString } from '@/Composable/utils'
 const props = withDefaults(
     defineProps<{
         modelValue: string,
-        type: string,
+        type?: string,
         errors?: string[],
         label?: string,
         id?: string,

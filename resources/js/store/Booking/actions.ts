@@ -2,7 +2,7 @@ import { ActionContext, ActionTree } from 'vuex'
 
 import { IBookingState } from '@/store/Booking/Types/IBookingState'
 import { IBookingDates } from '@/Types/IBookingAvailability'
-import { ICalculateBookingInfo } from '@/Types/ICalculateBooking'
+import { ICalculateBookingInfoWithBookableTitle } from '@/Types/ICalculateBooking'
 
 
 const KEY_LAST_SEARCH_BOOKING_DATES = 'LastSearchBookingDates'
@@ -22,7 +22,7 @@ const actions: ActionTree<IBookingState, any> = {
         }
     },
 
-    async addToBasket({ state, commit }: ActionContext<IBookingState, IBookingState>, payload: ICalculateBookingInfo): Promise<void> {
+    async addToBasket({ state, commit }: ActionContext<IBookingState, IBookingState>, payload: ICalculateBookingInfoWithBookableTitle): Promise<void> {
         commit('addToBasket', payload)
         localStorage.setItem(KEY_BOOKING_BASKET, JSON.stringify(state.basket))
     },
@@ -36,10 +36,10 @@ const actions: ActionTree<IBookingState, any> = {
         const basketSrc: string | null = localStorage.getItem(KEY_BOOKING_BASKET)
 
         if (null !== basketSrc) {
-            const basket: ICalculateBookingInfo[] = JSON.parse(basketSrc)
+            const basket: ICalculateBookingInfoWithBookableTitle[] = JSON.parse(basketSrc)
 
             if (Array.isArray(basket)) {
-                basket.forEach((item: ICalculateBookingInfo) => {
+                basket.forEach((item: ICalculateBookingInfoWithBookableTitle) => {
                     commit('addToBasket', item)
                 })
             }

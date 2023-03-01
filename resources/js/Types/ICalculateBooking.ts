@@ -21,6 +21,10 @@ export interface ICalculateBookingInfo {
     dateEnd: string,
 }
 
+export interface ICalculateBookingInfoWithBookableTitle extends ICalculateBookingInfo {
+    bookableTitle: string,
+}
+
 export interface IBreakdownPrice {
     [BreakdownPriceEnum.WEEKEND]?: ICalculateBreakdownItem,
     [BreakdownPriceEnum.REGULAR]?: ICalculateBreakdownItem,
