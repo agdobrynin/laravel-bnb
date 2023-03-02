@@ -67,6 +67,14 @@ composer install --ignore-platform-reqs --no-scripts
     ```shell
     ./vendor/bin/sail artisan migrate --seeder
     ```
+2. Собрать фронт 
+    ```shell
+    ./vendor/bin/sail npm install
+    ```
+    ```shell
+    ./vendor/bin/sail npm run build
+    ```
+
 
 ### Доступные сайты в dev окружении
 
