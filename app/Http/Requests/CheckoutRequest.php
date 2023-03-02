@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Bookable;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CheckoutRequest extends FormRequest
@@ -36,7 +37,13 @@ class CheckoutRequest extends FormRequest
             'bookings.*' => [
                 'required',
                 function ($attribute, $value, $fail) {
-                    $bookable = Bookable::findOrFail($value['bookable_id']);
+                    $bookableId = $value['bookable_id'];
+
+                    $bookable = Bookable::findOr($bookableId, static function () use ($bookableId) {
+                        $message = sprintf('Bookable with id "%s" not found', $bookableId);
+
+                        throw new ModelNotFoundException($message);
+                    });
 
                     if ($bookable->availableForDate($value['start'], $value['end'])->count()) {
                         $fail('Object is not available for given dates');

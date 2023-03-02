@@ -14,10 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::table('bookings', function (Blueprint $table) {
-            $table->unsignedInteger('price')->nullable();
+            $table->unsignedInteger('price');
 
             $table->foreignIdFor(\App\Models\PersonAddress::class, 'person_address_id')
-                ->nullable()
                 ->constrained('person_addresses');
         });
     }
