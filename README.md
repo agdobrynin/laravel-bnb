@@ -46,7 +46,7 @@ docker run --rm --interactive --tty \
 проекта выполнив команду
 
 ```shell
-composer install
+composer install --ignore-platform-reqs --no-scripts
 ```
 
 на этом подготовка к работе с Laravel Sail закончен.
@@ -54,7 +54,10 @@ composer install
 ### Запуск проекта
 Поднять docker контейнеры с помощтю Laravel Sail
 ```shell
-./vendor/bin/sale up -d
+./vendor/bin/sail up -d
+```
+```shell
+./vendor/bin/sail composer install
 ```
 доступные команды по остановке или пересборке контейнеров можно узнать на странице
 [Laravel Sail](https://laravel.com/docs/9.x/sail)
