@@ -2,37 +2,38 @@
 .row
     .col-lg-8
         form
-            fieldset(:disabled="!basketItems.items.length")
+            fieldset(:disabled="!checkoutForm.bookings.length")
                 .row
                     .mb-3.col-md-6
                         InputUI(
-                            v-model="personWithAddress.firstName"
+                            v-model="checkoutForm.person.firstName"
                             label="First name")
                     .mb-3.col-md-6
                         InputUI(
-                            v-model="personWithAddress.lastName"
+                            v-model="checkoutForm.person.lastName"
                             label="Last name")
                 .row
                     .mb-3.col-12
                         InputUI(
-                            v-model="personWithAddress.address"
+                            v-model="checkoutForm.person.address"
                             label="Address")
                 .row
                     .mb-3.col-md-6
                         InputUI(
-                            v-model="personWithAddress.email"
+                            v-model="checkoutForm.person.email"
                             label="Email"
                             type="email")
                     .mb-3.col-md-6
                         InputUI(
-                            v-model="personWithAddress.phone"
+                            v-model="checkoutForm.person.phone"
                             label="Contact phone"
                             type="tel")
                 .row
                     .mb-3.col-12
                         ButtonWithLoading.btn.btn-primary.w-100(
                             :is-loading="false"
-                            title="Booking now!")
+                            title="Booking now!"
+                            @click.prevent="checkout")
     .col-lg-4.rounded-2.border.px-3.pt-3(v-if="basketItems.items.length")
         .d-flex.flex-row.gap-4.justify-content-between.pb-3
             .cols #[h5.text-primary Your booking items]
@@ -91,36 +92,12 @@ import { dateAsLocaleString } from '@/Composable/useDateTime'
 import { priceUsdFormat } from '@/Composable/useMoney'
 import { bookingStateKey } from '@/store/Booking'
 import type { ICalculateBookingInfoWithBookableTitle } from '@/Types/ICalculateBooking'
+import type { IBasketTable, ICheckoutBookingItem } from '@/Types/ICheckout'
 
 const store = useStore(bookingStateKey)
 
-const personWithAddress = reactive({
-    firstName: 'Ivan',
-    lastName: 'Petrov',
-    address: 'Canada, Toronto, First street',
-    email: 'aaa@canada.ca',
-    phone: ''
-})
-
-interface IBasketItem {
-    bookableId: string,
-    title: string,
-    total: number,
-    start: string | null,
-    end: string | null,
-    days: number,
-}
-
-interface IBasketTable {
-    items: IBasketItem[],
-    total: number,
-}
-
 const basketItems = computed<IBasketTable>(() => {
-    const basketTable: IBasketTable = {
-        total: 0,
-        items: [],
-    }
+    const basketTable: IBasketTable = { total: 0, items: [] }
 
     store.getters.basket.forEach((item: ICalculateBookingInfoWithBookableTitle) => {
         const { regular: { days: rDays = 0 } = {}, weekend: { days: wDays  = 0 } = {} } = item.breakdown || {}
@@ -140,7 +117,34 @@ const basketItems = computed<IBasketTable>(() => {
     return basketTable
 })
 
+const bookings = computed<ICheckoutBookingItem[]>(() => {
+    return store.getters.basket.reduce((acc: ICheckoutBookingItem[], item: ICalculateBookingInfoWithBookableTitle) => {
+        acc.push({
+            bookableId: item.bookableId,
+            start: item.dateStart,
+            end: item.dateEnd,
+        })
+
+        return acc
+    } , [])
+})
+
+const checkoutForm = reactive({
+    person: {
+        firstName: 'Ivan',
+        lastName: 'Petrov',
+        address: 'Canada, Toronto, First street',
+        email: 'aaa@canada.ca',
+        phone: '',
+    },
+    bookings
+})
+
 const removeFromBasket = (bookableId: string) => store.dispatch('removeFromBasket', bookableId)
+
+const checkout = () => {
+    console.log(checkoutForm)
+}
 
 </script>
 
