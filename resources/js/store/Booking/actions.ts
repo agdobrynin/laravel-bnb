@@ -3,10 +3,12 @@ import { ActionContext, ActionTree } from 'vuex'
 import { IBookingState } from '@/store/Booking/Types/IBookingState'
 import { IBookingDates } from '@/Types/IBookingAvailability'
 import { ICalculateBookingInfoWithBookableTitle } from '@/Types/ICalculateBooking'
+import { ICheckoutPeron } from '@/Types/ICheckout'
 
 
 const KEY_LAST_SEARCH_BOOKING_DATES = 'LastSearchBookingDates'
 const KEY_BOOKING_BASKET = 'BookingBasket'
+const KEY_CHECKOUT_PERSON = 'CheckoutPerson'
 
 const actions: ActionTree<IBookingState, any> = {
     async saveLastSearchBookingDates({ commit }: ActionContext<IBookingState, IBookingState>, payload: IBookingDates): Promise<void> {
@@ -32,6 +34,11 @@ const actions: ActionTree<IBookingState, any> = {
         localStorage.setItem(KEY_BOOKING_BASKET, JSON.stringify(state.basket))
     },
 
+    async emptyBasket({ commit }: ActionContext<IBookingState, IBookingState>): Promise<void> {
+        commit('emptyBasket')
+        localStorage.removeItem(KEY_BOOKING_BASKET)
+    },
+
     async restoreBasket({ commit }: ActionContext<IBookingState, IBookingState>): Promise<void> {
         const basketSrc: string | null = localStorage.getItem(KEY_BOOKING_BASKET)
 
@@ -44,6 +51,17 @@ const actions: ActionTree<IBookingState, any> = {
                 })
             }
         }
+    },
+
+    async saveCheckoutPerson({ state, commit }: ActionContext<IBookingState, IBookingState>, person: ICheckoutPeron|null): Promise<void> {
+        commit('setCheckoutPerson', person)
+        localStorage.setItem(KEY_CHECKOUT_PERSON, JSON.stringify(state.checkoutPerson))
+    },
+
+    async restoreCheckoutPerson({ commit }: ActionContext<IBookingState, IBookingState>): Promise<void> {
+        const srcPerson: string|null = localStorage.getItem(KEY_CHECKOUT_PERSON)
+
+        commit('setCheckoutPerson', srcPerson ? JSON.parse(srcPerson) : null)
     }
 }
 export default actions

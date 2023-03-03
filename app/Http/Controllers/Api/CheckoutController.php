@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Dto\PriceBreakdownDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CheckoutRequest;
+use App\Http\Resources\CheckoutSuccessResource;
 use App\Models\Bookable;
 use App\Models\Booking;
 use App\Models\PersonAddress;
@@ -17,8 +18,7 @@ class CheckoutController extends Controller
         $data = $request->validated();
         $personAddress = PersonAddress::create($data['person']);
 
-        return collect($data['bookings'])->map(static function (array $bookingData) use ($personAddress) {
-            // TODO:(REF) May be use select collection as once query and filter in collection
+        $bookings = collect($data['bookings'])->map(static function (array $bookingData) use ($personAddress) {
             $bookableId = $bookingData['bookable_id'];
 
             $bookable = Bookable::findOr($bookableId, static function () use ($bookableId) {
@@ -38,5 +38,7 @@ class CheckoutController extends Controller
 
             return $booking;
         });
+
+        return CheckoutSuccessResource::collection($bookings);
     }
 }

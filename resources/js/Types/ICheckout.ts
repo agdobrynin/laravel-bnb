@@ -1,6 +1,6 @@
 export interface ICheckout {
     person: ICheckoutPeron,
-    booking: ICheckoutBookingItem[]
+    bookings: ICheckoutBookingItem[]
 }
 
 export interface ICheckoutPeron {
@@ -8,7 +8,7 @@ export interface ICheckoutPeron {
     lastName: string,
     address: string,
     email: string,
-    phone: string | null,
+    phone: string | null | undefined,
 
 }
 export interface ICheckoutBookingItem {
@@ -28,5 +28,28 @@ export interface IBasketItem {
 
 export interface IBasketTable {
     items: IBasketItem[],
-    total: number,
+    total: string,
+}
+
+export interface ICheckoutSuccess {
+    data: ICheckoutSuccessItem[]
+}
+
+export interface ICheckoutSuccessItem {
+    /**
+     * date from formta YYYY-MM-YY
+     */
+    start: string,
+    /**
+     * date from formta YYYY-MM-YY
+     */
+    end: string,
+    /**
+     * Total booking price
+     */
+    price: number,
+    bookable: {
+        id: string,
+        title: string,
+    }
 }

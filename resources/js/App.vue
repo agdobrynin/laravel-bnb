@@ -25,5 +25,7 @@ onBeforeMount(async () => {
     await store.dispatch('restoreLastSearchBookingDates')
     // restore basket
     await store.dispatch('restoreBasket')
+    // restore person on checkout page
+    await store.dispatch('restoreCheckoutPerson')
 })
 </script>

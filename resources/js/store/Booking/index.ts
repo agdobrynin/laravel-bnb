@@ -14,6 +14,7 @@ const storeBooking = createStore<IBookingState>({
             dateRange: null,
         },
         basket: [],
+        checkoutPerson: null,
     },
     actions,
     getters,

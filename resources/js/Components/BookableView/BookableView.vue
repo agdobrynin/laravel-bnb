@@ -3,16 +3,24 @@ div
     ApiErrorDisplay(v-if="apiError") {{ apiError }}
     PlaceholderCard(v-if="loading")
     div(v-if="!apiError && !loading" )
-        div.row
-            div.col-md-8.mb-4
-                div.card.mb-4
-                    div.card-body
-                        h2 {{ bookable.title }}
-                        hr
-                        article {{ bookable.description }}
-                div.mb-4.mx-1
+        .row
+            .col-md-8.mb-4
+                .card.mb-4
+                    .card-header #[h2 {{ bookable?.title }}]
+                    .card-body
+                        article {{ bookable?.description }}
+                    .card-footer
+                        .d-flex.justify-content-between
+                            .text-muted Regular price per day
+                            .flex-fill.border-bottom.mx-2
+                            .text-muted {{ prices.price }} per day
+                        .d-flex.justify-content-between
+                            .text-muted Weekend price per day
+                            .flex-fill.border-bottom.mx-2
+                            .text-muted {{ prices.price_weekend }} per day
+                .mb-4.mx-1
                     ReviewList(:bookabled-id="bookable.id")
-            div.col-md-4.mb-4
+            .col-md-4.mb-4
                 AvailabilityBooking(
                     :id="bookable.id"
                     @is-availability="checkPrice")
@@ -62,6 +70,7 @@ import ApiErrorDisplay from '@/Components/UI/ApiErrorDisplay.vue'
 import ButtonWithLoading from '@/Components/UI/ButtonWithLoading.vue'
 import PlaceholderCard from '@/Components/UI/PlaceholderCard.vue'
 import { dateAsLocaleString } from '@/Composable/useDateTime'
+import { priceUsdFormat } from '@/Composable/useMoney'
 import { ApiError } from '@/Services/ApiError'
 import { ApiValidationError } from '@/Services/ApiValidationError'
 import HttpService from '@/Services/HttpService'
@@ -84,6 +93,12 @@ const calculate: Ref<ICalculateBookingInfo|null> = ref(null)
 const calculatePriceError: Ref<string[]| null> = ref(null)
 
 const bookable = computed<IBookable | null>(() => bookableItem.value?.data || null)
+const prices = computed(() => {
+    return {
+        price: priceUsdFormat(bookable.value?.price || 0),
+        price_weekend: priceUsdFormat(bookable.value?.price_weekend || 0),
+    }
+})
 const hasInBasket = computed<boolean>(() => store.getters.hasInBasket(bookable.value?.id))
 const inBasket = computed<ICalculateBookingInfo | undefined>(() => store.getters.inBasket(bookable.value?.id))
 

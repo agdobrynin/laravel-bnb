@@ -5,6 +5,8 @@ import type { IBookableList } from '@/Types/IBookableList'
 import type { IBookingAvailability } from '@/Types/IBookingAvailability'
 import type { IBookingByReviewKey } from '@/Types/IBookingByReviewKey'
 import type { ICalculateBooking } from '@/Types/ICalculateBooking'
+import type { ICheckout } from '@/Types/ICheckout'
+import type { ICheckoutSuccess } from '@/Types/ICheckout'
 import type { IReviewCollection } from '@/Types/IReviewExistItem'
 import type { IReviewItem } from '@/Types/IReviewExistItem'
 
@@ -53,4 +55,10 @@ export interface HttpServiceInterface {
      * @throws ApiErrorInterface|ApiValidationErrorInterface
      */
     calculateBooking(id: string, start: string, end: string): Promise<ICalculateBooking | never>
+
+    /**
+     * Booking from basket
+     * @throws ApiErrorInterface|ApiValidationErrorInterface
+     */
+    booking(checkout: ICheckout): Promise<ICheckoutSuccess | never>
 }

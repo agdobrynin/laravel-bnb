@@ -1,75 +1,92 @@
 <template lang="pug">
 .row
-    .col-lg-8
+    .col-12(v-if="apiError")
+        ApiErrorDisplay.alert.alert-danger(:icon-size="40")
+            p.fs-5 {{ apiError }}
+    .col-lg-8(v-if="bookingAttempt")
+        CheckoutSuccess(:data="bookingAttempt")
+    .col-lg-8(v-else)
         form
-            fieldset(:disabled="!checkoutForm.bookings.length")
+            fieldset(:disabled="!checkoutForm.bookings.length || isLoading")
                 .row
                     .mb-3.col-md-6
                         InputUI(
                             v-model="checkoutForm.person.firstName"
+                            :errors="validationFieldPerson.firstName"
                             label="First name")
                     .mb-3.col-md-6
                         InputUI(
                             v-model="checkoutForm.person.lastName"
+                            :errors="validationFieldPerson.lastName"
                             label="Last name")
                 .row
                     .mb-3.col-12
                         InputUI(
                             v-model="checkoutForm.person.address"
+                            :errors="validationFieldPerson.address"
                             label="Address")
                 .row
                     .mb-3.col-md-6
                         InputUI(
                             v-model="checkoutForm.person.email"
+                            :errors="validationFieldPerson.email"
                             label="Email"
                             type="email")
                     .mb-3.col-md-6
                         InputUI(
                             v-model="checkoutForm.person.phone"
+                            :errors="validationFieldPerson.phone"
                             label="Contact phone"
                             type="tel")
                 .row
                     .mb-3.col-12
                         ButtonWithLoading.btn.btn-primary.w-100(
-                            :is-loading="false"
+                            :is-loading="isLoading"
                             title="Booking now!"
                             @click.prevent="checkout")
-    .col-lg-4.rounded-2.border.px-3.pt-3(v-if="basketItems.items.length")
+    .col-lg-4.rounded-2.border.px-3.pt-3(v-if="basket.items.length")
         .d-flex.flex-row.gap-4.justify-content-between.pb-3
             .cols #[h5.text-primary Your booking items]
-            .cols Total booking
-                span.badge.bg-primary.p-2.ms-2
+            .cols
+                h5 Total booking
                     SvgIcon.mx-2(
                         type="mdi"
                         size="18"
                         :path="mdiBasket"
                     )
-                    | {{ basketItems.items.length }}
+                    | {{ basket.total }}
         TransitionGroup.container-transition(
             tag="ul"
             name="list"
         )
             div.border-top.py-2(
-                v-for="(item, index) in basketItems.items"
+                v-for="(item, index) in basket.items"
                 :key="index"
                 :data-index="index"
             )
-                .d-flex.flex-row.gap-4.justify-content-between.mb-4
-                    .cols.flex-fill
-                        router-link.text-success(:to="{name: 'bookable', params: {id: item.bookableId}}") {{ item.title }}
-                    .cols {{ item.days }} days
-                    .cols.fw-bold {{ priceUsdFormat(item.total) }}
-                .d-flex.flex-row.gap-4.justify-content-between.mb-2
-                    .cols From {{ item.start }}
-                    .cols To {{ item.end }}
-                    .cols
-                        button.btn.btn-sm.btn-outline-secondary(@click.prevent="removeFromBasket(item.bookableId)")
-                            SvgIcon.me-2(
-                                type="mdi"
-                                size="24"
-                                :path="mdiTrashCanOutline"
+                div.text-danger.mb-2.mx-3(
+                    v-for="(error, errIndex) in getValidationByKey(`bookings.${index}`)"
+                    :key="`error_booking_${index}_${errIndex}`") {{ error }}
+                div(:class="{'alert alert-danger': getValidationByKey(`bookings.${index}`).length}")
+                    .d-flex.flex-row.gap-4.justify-content-between.mb-4
+                        .cols.flex-fill
+                            router-link.text-success(:to="{name: 'bookable', params: {id: item.bookableId}}") {{ item.title }}
+                        .cols {{ item.days }} days
+                        .cols.fw-bold {{ priceUsdFormat(item.total) }}
+                    .d-flex.flex-row.gap-4.justify-content-between.mb-2
+                        .cols From {{ item.start }}
+                        .cols To {{ item.end }}
+                        .cols
+                            button.btn.btn-sm.btn-outline-secondary(
+                                :disabled="isLoading"
+                                @click.prevent="removeFromBasket(item.bookableId)"
                             )
-                            | Remove
+                                SvgIcon.me-2(
+                                    type="mdi"
+                                    size="24"
+                                    :path="mdiTrashCanOutline"
+                                )
+                                | Remove
     .col-md-4.p-2.rounded-3.border(v-else)
         SvgIcon.mx-2(
             type="mdi"
@@ -82,22 +99,31 @@
 <script lang="ts" setup>
 //@ts-ignore
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdiBasket, mdiTrashCanOutline } from '@mdi/js'
-import { computed, reactive } from 'vue'
+import { mdiBasket , mdiTrashCanOutline } from '@mdi/js'
+import { computed, reactive, ref } from 'vue'
 import { useStore } from 'vuex'
 
+import CheckoutSuccess from '@/Components/Basket/CheckoutSuccess.vue'
+import ApiErrorDisplay from '@/Components/UI/ApiErrorDisplay.vue'
 import ButtonWithLoading from '@/Components/UI/ButtonWithLoading.vue'
 import InputUI from '@/Components/UI/InputUI.vue'
 import { dateAsLocaleString } from '@/Composable/useDateTime'
 import { priceUsdFormat } from '@/Composable/useMoney'
+import { ApiError } from '@/Services/ApiError'
+import { ApiValidationError } from '@/Services/ApiValidationError'
+import HttpService from '@/Services/HttpService'
+import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
+import type { ApiValidationErrorInterface } from '@/Services/Interfaces/ApiValidationErrorInterface'
 import { bookingStateKey } from '@/store/Booking'
 import type { ICalculateBookingInfoWithBookableTitle } from '@/Types/ICalculateBooking'
-import type { IBasketTable, ICheckoutBookingItem } from '@/Types/ICheckout'
+import type { IBasketTable, ICheckout, ICheckoutBookingItem, ICheckoutPeron } from '@/Types/ICheckout'
+import type { ICheckoutSuccess } from '@/Types/ICheckout'
 
 const store = useStore(bookingStateKey)
 
-const basketItems = computed<IBasketTable>(() => {
-    const basketTable: IBasketTable = { total: 0, items: [] }
+const basket = computed<IBasketTable>(() => {
+    const basketTable: IBasketTable = { total: '0', items: [] }
+    let totalBasket = 0
 
     store.getters.basket.forEach((item: ICalculateBookingInfoWithBookableTitle) => {
         const { regular: { days: rDays = 0 } = {}, weekend: { days: wDays  = 0 } = {} } = item.breakdown || {}
@@ -111,8 +137,10 @@ const basketItems = computed<IBasketTable>(() => {
             days: rDays + wDays,
         })
 
-        basketTable.total += item.totalPrice || 0
+        totalBasket += item.totalPrice || 0
     })
+
+    basketTable.total = priceUsdFormat(totalBasket)
 
     return basketTable
 })
@@ -129,23 +157,57 @@ const bookings = computed<ICheckoutBookingItem[]>(() => {
     } , [])
 })
 
-const checkoutForm = reactive({
-    person: {
-        firstName: 'Ivan',
-        lastName: 'Petrov',
-        address: 'Canada, Toronto, First street',
-        email: 'aaa@canada.ca',
-        phone: '',
-    },
-    bookings
+const person = computed<ICheckoutPeron>(() => {
+    return bookings.value.length
+        ? store.getters.checkoutPerson
+        : { }
+})
+
+const checkoutForm: ICheckout = reactive({ person, bookings })
+
+const isLoading = ref<boolean>(false)
+const apiError = ref<string | null>(null)
+const validationError = ref<ApiValidationErrorInterface|null>( null)
+const bookingAttempt = ref<ICheckoutSuccess|null>(null)
+
+const getValidationByKey = (errorKey: string) => validationError.value?.getErrorsByField(errorKey) || []
+
+const validationFieldPerson = computed(() => {
+    return {
+        firstName: getValidationByKey('person.first_name'),
+        lastName: getValidationByKey('person.last_name'),
+        address: getValidationByKey('person.address'),
+        email: getValidationByKey('person.email'),
+        phone: getValidationByKey('person.phone'),
+    }
 })
 
 const removeFromBasket = (bookableId: string) => store.dispatch('removeFromBasket', bookableId)
 
-const checkout = () => {
-    console.log(checkoutForm)
-}
+const checkout = async () => {
+    isLoading.value = true
+    bookingAttempt.value = null
+    apiError.value = null
+    validationError.value = null
+    await store.dispatch('saveCheckoutPerson', checkoutForm.person)
 
+    try {
+        bookingAttempt.value = await new HttpService().booking(checkoutForm)
+        await store.dispatch('emptyBasket')
+    } catch (reason) {
+        const error = reason as Error | ApiErrorInterface | ApiValidationErrorInterface
+
+        if (error instanceof ApiValidationError) {
+            validationError.value = error
+        } else if (error instanceof ApiError) {
+            apiError.value = error.apiError?.message || error.requestError
+        } else {
+            apiError.value = (error as Error).message
+        }
+    }
+
+    isLoading.value = false
+}
 </script>
 
 <style scoped>
