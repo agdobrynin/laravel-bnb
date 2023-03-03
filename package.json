@@ -33,6 +33,7 @@
         "@mdi/js": "^7.1.96",
         "@popperjs/core": "^2.11.6",
         "bootstrap": "^5.2.3",
+        "snakecase-keys": "^5.4.5",
         "timeago.js": "^4.0.2",
         "vue": "^3.2.36",
         "vue-router": "^4.1.6",

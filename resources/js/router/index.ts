@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
+import BasketAndCheckout from '@/Components/Basket/BasketAndCheckout.vue'
 import BookableList from '@/Components/BookableList/BookableList.vue'
 import BookableView from '@/Components/BookableView/BookableView.vue'
 import ReviewPage from '@/Components/Review/ReviewPage.vue'
@@ -19,6 +20,11 @@ const routes: RouteRecordRaw[] = [
         name: 'reviewPage',
         path: '/review/:id',
         component: ReviewPage
+    },
+    {
+        name: 'basket_and_checkout',
+        path: '/basket',
+        component: BasketAndCheckout
     }
 ]
 

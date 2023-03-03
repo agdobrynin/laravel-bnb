@@ -17,7 +17,7 @@ class CalculateBookingController extends Controller
 
         return response()->json([
             'data' => [
-                 'breakdown' => $priceBreakdownDto,
+                 'calculate' => $priceBreakdownDto,
             ],
         ]);
     }

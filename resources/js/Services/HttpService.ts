@@ -1,5 +1,6 @@
 import type { AxiosError, AxiosResponse } from 'axios'
 import axios from 'axios'
+import snakecaseKeys from 'snakecase-keys'
 
 import { ApiError } from '@/Services/ApiError'
 import { ApiValidationError } from '@/Services/ApiValidationError'
@@ -9,6 +10,7 @@ import type { IBookableList } from '@/Types/IBookableList'
 import type { IBookingAvailability } from '@/Types/IBookingAvailability'
 import type { IBookingByReviewKey } from '@/Types/IBookingByReviewKey'
 import { ICalculateBooking } from '@/Types/ICalculateBooking'
+import { ICheckout, ICheckoutSuccess } from '@/Types/ICheckout'
 import type { IReviewCollection, IReviewItem } from '@/Types/IReviewExistItem'
 import type { IReviewResourceExist } from '@/Types/IReviewResourceExist'
 
@@ -102,6 +104,16 @@ export default class HttpService implements HttpServiceInterface {
             const result: AxiosResponse<IReviewResourceExist> = await axios.post(`${this.endpoint}/reviews`, review)
 
             return result.data.data.hasReview
+        } catch (reason) {
+            throw this.errorClassForThrow(reason)
+        }
+    }
+
+    async booking(checkout: ICheckout): Promise<ICheckoutSuccess | never>
+    {
+        try {
+            // api get all keys as snake case mode
+            return <ICheckoutSuccess>((await axios.post(`${this.endpoint}/checkout`, snakecaseKeys(checkout))).data)
         } catch (reason) {
             throw this.errorClassForThrow(reason)
         }

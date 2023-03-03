@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class BookableIndexResource extends JsonResource
+class CheckoutSuccessBookableResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,9 +17,6 @@ class BookableIndexResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'description' => \Str::limit($this->description, 80),
-            'price' => $this->price,
-            'price_weekend' => $this->price_weekend,
         ];
     }
 }

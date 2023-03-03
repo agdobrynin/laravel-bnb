@@ -8,11 +8,17 @@ use Carbon\CarbonPeriod;
 
 readonly class PriceBreakdownDto
 {
-    public ?PriceBreakdownItemDto $weekend;
-    public ?PriceBreakdownItemDto $regular;
+    public string $bookableId;
+    public ?int $totalPrice;
+    /**
+     * @var PriceBreakdownItemDto[]
+     */
+    public ?array $breakdown;
 
     public function __construct(Bookable $bookable, public string $dateStart, public string $dateEnd)
     {
+        $this->bookableId = $bookable->id;
+
         $carbonPeriod = CarbonPeriod::create($dateStart, $dateEnd);
         $weekendDayCount = 0;
         $regularDayCount = 0;
@@ -25,12 +31,24 @@ readonly class PriceBreakdownDto
             }
         }
 
+        $totalPrice = 0;
+        $breakdown = [];
+
         if ($weekendDayCount) {
-            $this->weekend = new PriceBreakdownItemDto($bookable->price_weekend, $weekendDayCount);
+            $weekendDto = new PriceBreakdownItemDto($bookable->price_weekend, $weekendDayCount);
+            $breakdown['weekend'] = $weekendDto;
+            $totalPrice += $weekendDto->totalPrice;
         }
 
         if ($regularDayCount) {
-            $this->regular = new PriceBreakdownItemDto($bookable->price, $regularDayCount);
+            $regularDto = new PriceBreakdownItemDto($bookable->price, $regularDayCount);
+            $breakdown['regular'] = $regularDto;
+            $totalPrice += $regularDto->totalPrice;
+        }
+
+        if ($totalPrice && $breakdown) {
+            $this->totalPrice = $totalPrice;
+            $this->breakdown = $breakdown;
         }
     }
 }
