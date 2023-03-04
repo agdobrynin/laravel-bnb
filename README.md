@@ -65,7 +65,7 @@ composer install --ignore-platform-reqs --no-scripts
 
 1.  Выполинть миграции и заполинть таблицы тестовыми данными
     ```shell
-    ./vendor/bin/sail artisan migrate --seeder
+    ./vendor/bin/sail artisan migrate --seed
     ```
 2. Собрать фронт 
     ```shell
