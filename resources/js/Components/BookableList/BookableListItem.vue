@@ -6,13 +6,9 @@
         p.card-text {{ item.description }}
     .card-body.fw-light
         .d-flex.justify-content-between
-            .text-muted Regular price per day
+            .text-muted Price per day
             .flex-fill.border-bottom.mx-2
-            .text-muted {{ prices.price }} per day
-        .d-flex.justify-content-between
-            .text-muted Weekend price per day
-            .flex-fill.border-bottom.mx-2
-            .text-muted {{ prices.price_weekend }} per day
+            .text-muted {{ prices.price }} &mdash; {{ prices.price_weekend }}
     .card-footer.text-end
         router-link.btn.btn-primary(:to="{name: 'bookable', params: {id: item.id}}") View
 </template>
