@@ -1,5 +1,5 @@
 import type { AxiosError, AxiosResponse } from 'axios'
-import axios from 'axios'
+import axios, { AxiosInstance } from 'axios'
 import snakecaseKeys from 'snakecase-keys'
 
 import { ApiError } from '@/Services/ApiError'
@@ -16,16 +16,20 @@ import type { IReviewResourceExist } from '@/Types/IReviewResourceExist'
 
 export default class HttpService implements HttpServiceInterface {
     private readonly endpoint: string
+    private client: AxiosInstance
 
     constructor(endpoint?: string) {
         this.endpoint = endpoint === undefined
             ? import.meta.env.VITE_API_ENDPOINT
             : this.endpoint = endpoint
+
+        axios.defaults.withCredentials = true
+        this.client = axios
     }
 
     async getBookables(): Promise<IBookableList | never> {
         try {
-            return <IBookableList>((await axios.get(`${this.endpoint}/bookables`)).data)
+            return <IBookableList>((await this.client.get(`${this.endpoint}/bookables`)).data)
         } catch (reason) {
             throw new ApiError(<AxiosError>reason)
         }
@@ -33,7 +37,7 @@ export default class HttpService implements HttpServiceInterface {
 
     async getBookable(id: string): Promise<IBookableItem | never> {
         try {
-            return <IBookableItem>((await axios.get(`${this.endpoint}/bookables/${id}`)).data)
+            return <IBookableItem>((await this.client.get(`${this.endpoint}/bookables/${id}`)).data)
         } catch (reason) {
             throw new ApiError(<AxiosError>reason)
         }
@@ -43,7 +47,7 @@ export default class HttpService implements HttpServiceInterface {
         try {
             const config = { params: { start, end } }
 
-            return <IBookingAvailability>((await axios.get(
+            return <IBookingAvailability>((await this.client.get(
                 `${this.endpoint}/bookables/${id}/availability`,
                 config
             )).data)
@@ -57,7 +61,7 @@ export default class HttpService implements HttpServiceInterface {
         try {
             const config = { params: { start, end } }
 
-            return <ICalculateBooking>((await axios.get(
+            return <ICalculateBooking>((await this.client.get(
                 `${this.endpoint}/bookables/${id}/calculate`,
                 config
             )).data)
@@ -68,7 +72,7 @@ export default class HttpService implements HttpServiceInterface {
 
     async getBookableReviews(id: string): Promise<IReviewCollection | never> {
         try {
-            return <IReviewCollection>((await axios.get(`${this.endpoint}/bookables/${id}/reviews`)).data)
+            return <IReviewCollection>((await this.client.get(`${this.endpoint}/bookables/${id}/reviews`)).data)
         } catch (reason) {
             throw this.errorClassForThrow(reason)
         }
@@ -76,7 +80,7 @@ export default class HttpService implements HttpServiceInterface {
 
     async getReview(id: string): Promise<boolean | never> {
         try {
-            const result: AxiosResponse<IReviewResourceExist> = await axios.get(`${this.endpoint}/reviews/${id}`)
+            const result: AxiosResponse<IReviewResourceExist> = await this.client.get(`${this.endpoint}/reviews/${id}`)
 
             return result.data.data.hasReview
         } catch (reason) {
@@ -93,7 +97,7 @@ export default class HttpService implements HttpServiceInterface {
 
     async getBookingByReviewKey(id: string): Promise<IBookingByReviewKey | never> {
         try {
-            return <IBookingByReviewKey>((await axios.get(`${this.endpoint}/booking-by-review/${id}`)).data)
+            return <IBookingByReviewKey>((await this.client.get(`${this.endpoint}/booking-by-review/${id}`)).data)
         } catch (reason) {
             throw this.errorClassForThrow(reason)
         }
@@ -101,7 +105,7 @@ export default class HttpService implements HttpServiceInterface {
 
     async storeReview(review: IReviewItem): Promise<boolean | never> {
         try {
-            const result: AxiosResponse<IReviewResourceExist> = await axios.post(`${this.endpoint}/reviews`, review)
+            const result: AxiosResponse<IReviewResourceExist> = await this.client.post(`${this.endpoint}/reviews`, review)
 
             return result.data.data.hasReview
         } catch (reason) {
@@ -113,7 +117,9 @@ export default class HttpService implements HttpServiceInterface {
     {
         try {
             // api get all keys as snake case mode
-            return <ICheckoutSuccess>((await axios.post(`${this.endpoint}/checkout`, snakecaseKeys(checkout))).data)
+            return <ICheckoutSuccess>(
+                (await this.client.post(`${this.endpoint}/checkout`, snakecaseKeys(checkout))).data
+            )
         } catch (reason) {
             throw this.errorClassForThrow(reason)
         }
