@@ -63,11 +63,16 @@ composer install --ignore-platform-reqs --no-scripts
 [Laravel Sail](https://laravel.com/docs/9.x/sail)
 или выполните команду `./vendor/bin/sail` для получения краткой справки о доступных командах.
 
-1.  Выполинть миграции и заполинть таблицы тестовыми данными
+1.  Сгенерировать application key
+    ```shell
+    ./vendor/bin/sail artisan key:generate
+    ```
+
+2.  Выполинть миграции и заполинть таблицы тестовыми данными
     ```shell
     ./vendor/bin/sail artisan migrate --seed
     ```
-2. Собрать фронт 
+3. Собрать фронт 
     ```shell
     ./vendor/bin/sail npm install
     ```
