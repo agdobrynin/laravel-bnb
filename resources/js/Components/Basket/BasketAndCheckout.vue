@@ -178,7 +178,10 @@ const validationFieldPerson = computed(() => {
     }
 })
 
-const removeFromBasket = (bookableId: string) => store.dispatch('removeFromBasket', bookableId)
+const removeFromBasket = (bookableId: string): void => {
+    validationError.value = null
+    store.dispatch('removeFromBasket', bookableId)
+}
 
 const checkout = async () => {
     isLoading.value = true
