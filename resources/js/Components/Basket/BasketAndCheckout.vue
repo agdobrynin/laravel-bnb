@@ -157,11 +157,7 @@ const bookings = computed<ICheckoutBookingItem[]>(() => {
     } , [])
 })
 
-const person = computed<ICheckoutPeron>(() => {
-    return bookings.value.length
-        ? store.getters.checkoutPerson
-        : { }
-})
+const person = computed<ICheckoutPeron>(() => store.getters.checkoutPerson)
 
 const checkoutForm: ICheckout = reactive({ person, bookings })
 
