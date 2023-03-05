@@ -18,15 +18,15 @@ import { useBookingViewStore } from '@/stores/booking-view'
 import { useCheckoutPersonStore } from '@/stores/checkout-person'
 
 const appName = import.meta.env.VITE_APP_NAME || 'Booking BnB'
-const store = useBasketStore()
+const basketStore = useBasketStore()
 
-const { basket } = storeToRefs(store)
+const { basket } = storeToRefs(basketStore)
 
 onBeforeMount(async () => {
     // Restore last dates for booking check
     useBookingViewStore().restoreDateRangeFromStorage()
     // restore basket
-    store.restoreBasketFromStorage()
+    basketStore.restoreFromStorage()
     // restore person on checkout page
     useCheckoutPersonStore().restoreFromStorage()
 })
