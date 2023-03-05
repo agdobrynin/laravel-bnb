@@ -101,7 +101,6 @@
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiBasket , mdiTrashCanOutline } from '@mdi/js'
 import { computed, reactive, ref } from 'vue'
-import { useStore } from 'vuex'
 
 import CheckoutSuccess from '@/Components/Basket/CheckoutSuccess.vue'
 import ApiErrorDisplay from '@/Components/UI/ApiErrorDisplay.vue'
@@ -114,18 +113,20 @@ import { ApiValidationError } from '@/Services/ApiValidationError'
 import HttpService from '@/Services/HttpService'
 import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
 import type { ApiValidationErrorInterface } from '@/Services/Interfaces/ApiValidationErrorInterface'
-import { bookingStateKey } from '@/store/Booking'
+import { useBasketStore } from '@/stores/basket'
+import { useCheckoutPersonStore } from '@/stores/checkout-person'
 import type { ICalculateBookingInfoWithBookableTitle } from '@/Types/ICalculateBooking'
-import type { IBasketTable, ICheckout, ICheckoutBookingItem, ICheckoutPeron } from '@/Types/ICheckout'
+import type { IBasketTable, ICheckout, ICheckoutBookingItem } from '@/Types/ICheckout'
 import type { ICheckoutSuccess } from '@/Types/ICheckout'
 
-const store = useStore(bookingStateKey)
+const basketStore = useBasketStore()
+const checkoutPersonStore = useCheckoutPersonStore()
 
 const basket = computed<IBasketTable>(() => {
     const basketTable: IBasketTable = { total: '0', items: [] }
     let totalBasket = 0
 
-    store.getters.basket.forEach((item: ICalculateBookingInfoWithBookableTitle) => {
+    basketStore.basket.forEach((item: ICalculateBookingInfoWithBookableTitle) => {
         const { regular: { days: rDays = 0 } = {}, weekend: { days: wDays  = 0 } = {} } = item.breakdown || {}
 
         basketTable.items.push({
@@ -146,7 +147,7 @@ const basket = computed<IBasketTable>(() => {
 })
 
 const bookings = computed<ICheckoutBookingItem[]>(() => {
-    return store.getters.basket.reduce((acc: ICheckoutBookingItem[], item: ICalculateBookingInfoWithBookableTitle) => {
+    return basketStore.basket.reduce((acc: ICheckoutBookingItem[], item: ICalculateBookingInfoWithBookableTitle) => {
         acc.push({
             bookableId: item.bookableId,
             start: item.dateStart,
@@ -157,9 +158,7 @@ const bookings = computed<ICheckoutBookingItem[]>(() => {
     } , [])
 })
 
-const person = computed<ICheckoutPeron>(() => store.getters.checkoutPerson)
-
-const checkoutForm: ICheckout = reactive({ person, bookings })
+const checkoutForm: ICheckout = reactive({ person: checkoutPersonStore.person, bookings })
 
 const isLoading = ref<boolean>(false)
 const apiError = ref<string | null>(null)
@@ -180,7 +179,7 @@ const validationFieldPerson = computed(() => {
 
 const removeFromBasket = (bookableId: string): void => {
     validationError.value = null
-    store.dispatch('removeFromBasket', bookableId)
+    basketStore.removeFromBasket(bookableId)
 }
 
 const checkout = async () => {
@@ -188,11 +187,11 @@ const checkout = async () => {
     bookingAttempt.value = null
     apiError.value = null
     validationError.value = null
-    await store.dispatch('saveCheckoutPerson', checkoutForm.person)
+    checkoutPersonStore.saveToStorage()
 
     try {
         bookingAttempt.value = await new HttpService().booking(checkoutForm)
-        await store.dispatch('emptyBasket')
+        basketStore.emptyBasket()
     } catch (reason) {
         const error = reason as Error | ApiErrorInterface | ApiValidationErrorInterface
 

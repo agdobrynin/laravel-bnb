@@ -37,7 +37,7 @@ div
                         template(#header) Checked booking price
                 Transition.mt-4(name="bounce")
                     ButtonWithLoading.btn.btn-outline-success.mt-4.w-100(
-                        v-if="calculate && !hasInBasket"
+                        v-if="calculate && !inBasket"
                         :is-loading="false"
                         title="Booking now"
                         @click.prevent="addToBasket")
@@ -52,7 +52,7 @@ div
                         template(#header) #[div.alert.alert-warning Booking {{ bookingDates }}]
                 Transition
                     button.btn.btn-outline-secondary.w-100(
-                        v-if="hasInBasket"
+                        v-if="inBasket"
                         @click.prevent="removeFromBasket"
                         ) Remove from basket
 </template>
@@ -61,7 +61,6 @@ div
 import type { Ref } from 'vue'
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { useStore } from 'vuex'
 
 import AvailabilityBooking from '@/Components/BookableView/AvailabilityBooking.vue'
 import PriceBreakdown from '@/Components/BookableView/PriceBreakdown.vue'
@@ -76,7 +75,7 @@ import { ApiValidationError } from '@/Services/ApiValidationError'
 import HttpService from '@/Services/HttpService'
 import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
 import type { ApiValidationErrorInterface } from '@/Services/Interfaces/ApiValidationErrorInterface'
-import { bookingStateKey } from '@/store/Booking'
+import { useBasketStore } from '@/stores/basket'
 import type { IBookable } from '@/Types/IBookable'
 import type { IBookableItem } from '@/Types/IBookableItem'
 import type { IBookingDates } from '@/Types/IBookingAvailability'
@@ -84,7 +83,7 @@ import type { ICalculateBooking, ICalculateBookingInfo } from '@/Types/ICalculat
 import type  { ICalculateBookingInfoWithBookableTitle } from '@/Types/ICalculateBooking'
 
 const id: string = useRoute().params.id as string
-const store = useStore(bookingStateKey)
+const store = useBasketStore()
 
 const loading: Ref<boolean> = ref(true)
 const bookableItem: Ref<IBookableItem | null> = ref(null)
@@ -99,14 +98,14 @@ const prices = computed(() => {
         price_weekend: priceUsdFormat(bookable.value?.price_weekend || 0),
     }
 })
-const hasInBasket = computed<boolean>(() => store.getters.hasInBasket(bookable.value?.id))
-const inBasket = computed<ICalculateBookingInfo | undefined>(() => store.getters.inBasket(bookable.value?.id))
+
+const inBasket = computed<ICalculateBookingInfoWithBookableTitle | undefined>(() => {
+    return bookable.value ? store.inBasket(bookable.value.id) : undefined
+})
 
 const bookingDates = computed<string>(() => {
     if (inBasket.value !== undefined) {
-        const { dateStart, dateEnd } = inBasket.value || {}
-
-        return `from ${dateAsLocaleString(dateStart)} to ${dateAsLocaleString(dateEnd)}`
+            return `from ${dateAsLocaleString(inBasket.value.dateStart)} to ${dateAsLocaleString(inBasket.value.dateEnd)}`
     }
 
     return ''
@@ -142,13 +141,13 @@ const addToBasket = (): void => {
             ... { bookableTitle: bookable.value?.title || bookable.value.id }
         }
 
-        store.dispatch('addToBasket', payload)
+        store.addToBasket(payload)
     }
 }
 
 const removeFromBasket = (): void => {
-    if (hasInBasket.value && bookable.value?.id) {
-        store.dispatch('removeFromBasket', bookable.value?.id)
+    if (bookable.value?.id) {
+        store.removeFromBasket(bookable.value.id)
     }
 }
 
