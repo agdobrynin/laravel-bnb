@@ -20,24 +20,24 @@ export const useBasketStore = defineStore('basket', {
 
         addToBasket(item: ICalculateBookingInfoWithBookableTitle): void {
             this.basket.push(item)
-            this.saveBasketToStorage()
+            this.saveToStorage()
         },
 
         removeFromBasket(bookableId: string): void {
             this.basket = this.basket.filter((item: ICalculateBookingInfo) => item.bookableId !== bookableId)
-            this.saveBasketToStorage()
+            this.saveToStorage()
         },
 
         emptyBasket(): void {
             this.basket = []
-            this.saveBasketToStorage()
+            this.saveToStorage()
         },
 
-        saveBasketToStorage(): void {
+        saveToStorage(): void {
             localStorage.setItem(KEY_BASKET, JSON.stringify(this.basket))
         },
 
-        restoreBasketFromStorage(): void {
+        restoreFromStorage(): void {
             // TODO validate date from storage
             this.basket = JSON.parse(localStorage.getItem(KEY_BASKET) || '[]')
         },
