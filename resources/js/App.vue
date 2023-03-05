@@ -4,28 +4,30 @@ div
         div.container.container-fluid
             router-link.navbar-brand.me-auto(:to="{name: 'home'}") {{ appName }}
             router-link.nav-link(:to="{name: 'basket_and_checkout'}") Basket
-                span.badge.bg-secondary.m-2(v-if="basketCount" ) {{ basketCount }}
+                span.badge.bg-secondary.m-2(v-if="basket.length" ) {{ basket.length }}
     div.container.py-4.px-3.mx-auto
         router-view
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeMount } from 'vue'
-import { useStore } from 'vuex'
+import { storeToRefs } from 'pinia'
+import { onBeforeMount } from 'vue'
 
-import { bookingStateKey } from '@/store/Booking'
+import { useBasketStore } from '@/stores/basket'
+import { useBookingViewStore } from '@/stores/booking-view'
+import { useCheckoutPersonStore } from '@/stores/checkout-person'
 
 const appName = import.meta.env.VITE_APP_NAME || 'Booking BnB'
-const store = useStore(bookingStateKey)
+const store = useBasketStore()
 
-const basketCount = computed<number>(() => store.getters.basketCount)
+const { basket } = storeToRefs(store)
 
 onBeforeMount(async () => {
     // Restore last dates for booking check
-    await store.dispatch('restoreLastSearchBookingDates')
+    useBookingViewStore().restoreDateRangeFromStorage()
     // restore basket
-    await store.dispatch('restoreBasket')
+    store.restoreBasketFromStorage()
     // restore person on checkout page
-    await store.dispatch('restoreCheckoutPerson')
+    useCheckoutPersonStore().restoreFromStorage()
 })
 </script>
