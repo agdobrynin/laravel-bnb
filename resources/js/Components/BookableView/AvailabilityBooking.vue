@@ -13,10 +13,10 @@ form(@submit.prevent="check")
     div.row.gap-2
         div.col-md.mb-3
             InputUI(
-                v-model="data.start"
+                v-model="dateRange.start"
                 label="Date from"
                 type="date"
-                :min="data.startMin"
+                :min="dateRange.startMin"
                 input-class="form-control-sm"
                 label-class="col-form-label-sm"
                 :disabled="isLoading"
@@ -24,10 +24,10 @@ form(@submit.prevent="check")
             )
         div.col-md.mb-3
             InputUI(
-                v-model="data.end"
+                v-model="dateRange.end"
                 label="Date to"
                 type="date"
-                :min="data.endMin"
+                :min="dateRange.endMin"
                 input-class="form-control-sm"
                 label-class="col-form-label-sm"
                 :disabled="isLoading"
@@ -44,30 +44,27 @@ form(@submit.prevent="check")
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
-import { computed, reactive, ref } from 'vue'
-import { useStore } from 'vuex'
+import { computed, ref } from 'vue'
 
 import BookingDates from '@/Components/BookableView/BookingDates.vue'
 import ApiErrorDisplay from '@/Components/UI/ApiErrorDisplay.vue'
 import ButtonWithLoading from '@/Components/UI/ButtonWithLoading.vue'
 import InputUI from '@/Components/UI/InputUI.vue'
-import { DateRange } from '@/Models/DateRange'
 import { ApiError } from '@/Services/ApiError'
 import { ApiValidationError } from '@/Services/ApiValidationError'
 import HttpService from '@/Services/HttpService'
 import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
 import type { ApiValidationErrorInterface } from '@/Services/Interfaces/ApiValidationErrorInterface'
-import { bookingStateKey } from '@/store/Booking'
+import { useBookingViewStore } from '@/stores/booking-view'
 import type { IBookingAvailability } from '@/Types/IBookingAvailability'
 import type { IBookingDates } from '@/Types/IBookingAvailability'
 
 const props = defineProps<{id: string}>()
-const store = useStore(bookingStateKey)
+const store = useBookingViewStore()
 
-
-const dateRange: DateRange = store.getters.lastSearchBookingDates
-const data = reactive(dateRange)
+const { dateRange } = storeToRefs(store)
 
 const apiError: Ref<string|null> = ref(null)
 const apiValidationError: Ref<ApiValidationError|null> = ref(null)
@@ -92,13 +89,13 @@ const check = async () => {
 
     try {
         // store last dates for booking
-        await store.dispatch('saveLastSearchBookingDates', data.bookingDates)
+        store.saveDateRangeToStorage()
 
         bookingAvailability.value = await new HttpService()
-            .checkBookableAvailability(props.id, data.start, data.end)
+            .checkBookableAvailability(props.id, dateRange.value.start, dateRange.value.end)
 
         const isAvailabilityDates: IBookingDates | null = bookingAvailability.value?.data.length === 0
-            ? { start: data.start, end: data.end }
+            ? { start: dateRange.value.start, end: dateRange.value.end }
             : null
 
         emit('isAvailability', isAvailabilityDates)
