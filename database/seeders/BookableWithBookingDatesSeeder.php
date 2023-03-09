@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Dto\PriceBreakdownDto;
+use App\ValueObject\PriceBreakdownVO;
 use App\Models\Bookable;
 use App\Models\Booking;
 use App\Models\PersonAddress;
@@ -28,7 +28,7 @@ class BookableWithBookingDatesSeeder extends Seeder
             ->each(function (Bookable $bookable) use ($personalAddressCollection) {
                 /** @var Booking $booking */
                 $booking = Booking::factory()->make();
-                $priceBreakdown = new PriceBreakdownDto(
+                $priceBreakdown = new PriceBreakdownVO(
                     $bookable,
                     $booking->start->format('Y-m-d'),
                     $booking->end->format('Y-m-d')
@@ -46,7 +46,7 @@ class BookableWithBookingDatesSeeder extends Seeder
 
                     $booking->start = $start;
                     $booking->end = (clone $start)->addDays(rand(4, 10));
-                    $priceBreakdown = new PriceBreakdownDto(
+                    $priceBreakdown = new PriceBreakdownVO(
                         $bookable,
                         $booking->start->format('Y-m-d'),
                         $booking->end->format('Y-m-d')

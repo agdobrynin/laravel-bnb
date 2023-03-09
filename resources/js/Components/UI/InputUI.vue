@@ -1,7 +1,7 @@
 <template lang="pug">
 .form-floating
     input.form-control(
-        :id="id"
+        :id="elId"
         :value="modelValue"
         :type="type"
         :placeholder="placeholder"
@@ -12,14 +12,14 @@
     label.form-label(
         v-if="label"
         :class="labelClass"
-        :for="id") {{ label }}
+        :for="elId") {{ label }}
     div.invalid-feedback(
         v-for="(error, index) in validationErrors"
         :key="`error_${id}_${index}`") {{ error }}
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 
 import { randomString } from '@/Composable/utils'
 
@@ -40,7 +40,7 @@ const props = withDefaults(
         type: 'text',
         errors: undefined,
         label: undefined,
-        id: randomString(),
+        id: undefined,
         disabled: false,
         placeholder: undefined,
         inputClass: undefined,
@@ -50,8 +50,11 @@ const props = withDefaults(
 )
 
 const validationErrors = computed<string[]>(() => props.errors || [])
+const elId = props.id ? props.id : randomString()
 
 defineEmits<{
     (e: 'update:modelValue', value: string): void
 }>()
+
+onMounted(() => {})
 </script>

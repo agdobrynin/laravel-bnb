@@ -10,7 +10,7 @@ import type { ICheckoutSuccess } from '@/Types/ICheckout'
 import type { IReviewCollection } from '@/Types/IReviewExistItem'
 import type { IReviewItem } from '@/Types/IReviewExistItem'
 
-export interface HttpServiceInterface {
+export interface HttpApiServiceInterface {
     /**
      * Get list of bookable items
      * @throws ApiErrorInterface

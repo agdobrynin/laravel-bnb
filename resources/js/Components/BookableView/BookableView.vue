@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-    ApiErrorDisplay(v-if="apiError") {{ apiError }}
+    AlertDisplay(v-if="apiError") {{ apiError }}
     PlaceholderCard(v-if="loading")
     div(v-if="!apiError && !loading" )
         .row
@@ -24,7 +24,7 @@ div
                 AvailabilityBooking(
                     :id="bookable.id"
                     @is-availability="checkPrice")
-                ApiErrorDisplay(
+                AlertDisplay(
                     v-if="calculatePriceError"
                     :icon-size="40")
                         div.alert.alert-danger.fs-6(
@@ -39,8 +39,7 @@ div
                     ButtonWithLoading.btn.btn-outline-success.mt-4.w-100(
                         v-if="calculate && !inBasket"
                         :is-loading="false"
-                        title="Booking now"
-                        @click.prevent="addToBasket")
+                        @click.prevent="addToBasket") Booking now
                 Transition.mt-4
                     .alert.alert-warning.text-center(v-if="inBasket")
                         p &laquo;#[b {{ bookable.title }}]&raquo; already in basket.
@@ -65,14 +64,14 @@ import { useRoute } from 'vue-router'
 import AvailabilityBooking from '@/Components/BookableView/AvailabilityBooking.vue'
 import PriceBreakdown from '@/Components/BookableView/PriceBreakdown.vue'
 import ReviewList from '@/Components/BookableView/Review/ReviewList.vue'
-import ApiErrorDisplay from '@/Components/UI/ApiErrorDisplay.vue'
+import AlertDisplay from '@/Components/UI/AlertDisplay.vue'
 import ButtonWithLoading from '@/Components/UI/ButtonWithLoading.vue'
 import PlaceholderCard from '@/Components/UI/PlaceholderCard.vue'
 import { dateAsLocaleString } from '@/Composable/useDateTime'
 import { priceUsdFormat } from '@/Composable/useMoney'
 import { ApiError } from '@/Services/ApiError'
 import { ApiValidationError } from '@/Services/ApiValidationError'
-import HttpService from '@/Services/HttpService'
+import HttpApiService from '@/Services/HttpApiService'
 import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
 import type { ApiValidationErrorInterface } from '@/Services/Interfaces/ApiValidationErrorInterface'
 import { useBasketStore } from '@/stores/basket'
@@ -117,7 +116,7 @@ const checkPrice = async (isAvailable: IBookingDates | undefined): Promise<void>
 
     if (isAvailable && bookable.value?.id) {
         try {
-            const calculateResponse: ICalculateBooking = await new HttpService()
+            const calculateResponse: ICalculateBooking = await new HttpApiService()
                 .calculateBooking(bookable.value.id, isAvailable.start, isAvailable.end)
             calculate.value = calculateResponse.data.calculate
         } catch (reason) {
@@ -153,7 +152,7 @@ const removeFromBasket = (): void => {
 
 onMounted(async () => {
     try {
-        bookableItem.value = await new HttpService().getBookable(id)
+        bookableItem.value = await new HttpApiService().getBookable(id)
     } catch (reason) {
         const error = reason as ApiErrorInterface
         apiError.value = error.apiError?.message || error.requestError
