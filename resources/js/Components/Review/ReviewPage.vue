@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-    ApiErrorDisplay(v-if="apiError") {{ apiError }}
+    AlertDisplay(v-if="apiError") {{ apiError }}
     div(v-else)
         PlaceholderCard(v-if="isLoading")
         div(v-else)
@@ -36,9 +36,8 @@ div
                             label="Describe your experience with"
                             :errors="errorDescription")
                     ButtonWithLoading.btn.btn-primary.w-100(
-                        title="Send"
                         :is-loading="isSending"
-                        @click.prevent="storeReview")
+                        @click.prevent="doStore") Save
             div(v-else) Can not get info about booking
 </template>
 
@@ -47,14 +46,14 @@ import type { Ref } from 'vue'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-import ApiErrorDisplay from '@/Components/UI/ApiErrorDisplay.vue'
+import AlertDisplay from '@/Components/UI/AlertDisplay.vue'
 import ButtonWithLoading from '@/Components/UI/ButtonWithLoading.vue'
 import PlaceholderCard from '@/Components/UI/PlaceholderCard.vue'
 import RatingItem from '@/Components/UI/RatingItem.vue'
 import TextareaUI from '@/Components/UI/TextareaUI.vue'
 import { ApiError } from '@/Services/ApiError'
 import { ApiValidationError } from '@/Services/ApiValidationError'
-import HttpService from '@/Services/HttpService'
+import HttpApiService from '@/Services/HttpApiService'
 import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
 import type { ApiValidationErrorInterface } from '@/Services/Interfaces/ApiValidationErrorInterface'
 import type {
@@ -112,13 +111,13 @@ const bookable = computed<IBookingByReviewKeyBookableInfo | null>(() => {
     return null
 })
 
-const storeReview = async (): Promise<void> => {
+const doStore = async (): Promise<void> => {
     isSending.value = true
     apiError.value = null
     validationError.value = null
 
     try {
-        await new HttpService().storeReview(review)
+        await new HttpApiService().storeReview(review)
         await router.push({ name: 'bookable', params: { id: bookable.value?.id } })
     } catch (reason) {
         const error = reason as Error | ApiErrorInterface | ApiValidationErrorInterface
@@ -136,7 +135,7 @@ const storeReview = async (): Promise<void> => {
 }
 
 onMounted(async (): Promise<void> => {
-    const httpSrv = new HttpService()
+    const httpSrv = new HttpApiService()
     review.id = route.params.id as string
 
     try {

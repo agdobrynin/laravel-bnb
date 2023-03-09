@@ -1,7 +1,7 @@
 <template lang="pug">
 .row
     .col-12(v-if="apiError")
-        ApiErrorDisplay.alert.alert-danger(:icon-size="40")
+        AlertDisplay.alert.alert-danger(:icon-size="40")
             p.fs-5 {{ apiError }}
     .col-lg-8(v-if="bookingAttempt")
         CheckoutSuccess(:data="bookingAttempt")
@@ -42,8 +42,7 @@
                     .mb-3.col-12
                         ButtonWithLoading.btn.btn-primary.w-100(
                             :is-loading="isLoading"
-                            title="Booking now!"
-                            @click.prevent="checkout")
+                            @click.prevent="checkout") Booking now!
     .col-lg-4.rounded-2.border.px-3.pt-3(v-if="basket.items.length")
         .d-flex.flex-row.gap-4.justify-content-between.pb-3
             .cols #[h5.text-primary Your booking items]
@@ -103,14 +102,14 @@ import { mdiBasket , mdiTrashCanOutline } from '@mdi/js'
 import { computed, reactive, ref } from 'vue'
 
 import CheckoutSuccess from '@/Components/Basket/CheckoutSuccess.vue'
-import ApiErrorDisplay from '@/Components/UI/ApiErrorDisplay.vue'
+import AlertDisplay from '@/Components/UI/AlertDisplay.vue'
 import ButtonWithLoading from '@/Components/UI/ButtonWithLoading.vue'
 import InputUI from '@/Components/UI/InputUI.vue'
 import { dateAsLocaleString } from '@/Composable/useDateTime'
 import { priceUsdFormat } from '@/Composable/useMoney'
 import { ApiError } from '@/Services/ApiError'
 import { ApiValidationError } from '@/Services/ApiValidationError'
-import HttpService from '@/Services/HttpService'
+import HttpApiService from '@/Services/HttpApiService'
 import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
 import type { ApiValidationErrorInterface } from '@/Services/Interfaces/ApiValidationErrorInterface'
 import { useBasketStore } from '@/stores/basket'
@@ -190,7 +189,7 @@ const checkout = async () => {
     checkoutPersonStore.saveToStorage()
 
     try {
-        bookingAttempt.value = await new HttpService().booking(checkoutForm)
+        bookingAttempt.value = await new HttpApiService().booking(checkoutForm)
         basketStore.emptyBasket()
     } catch (reason) {
         const error = reason as Error | ApiErrorInterface | ApiValidationErrorInterface

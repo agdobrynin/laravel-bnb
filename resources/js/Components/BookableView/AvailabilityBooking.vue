@@ -7,7 +7,7 @@ form(@submit.prevent="check")
             | Not available for booking
         span(v-else)
             | Check availability
-    ApiErrorDisplay(
+    AlertDisplay(
         v-if="apiError"
         :icon-size="60" ) {{ apiError }}
     div.row.gap-2
@@ -35,8 +35,7 @@ form(@submit.prevent="check")
             )
     ButtonWithLoading.btn.btn-secondary.w-100(
         type="submit"
-        :is-loading="isLoading"
-        title="Check dates 🔎")
+        :is-loading="isLoading") Check dates 🔎
     Transition(name="slide-fade")
         BookingDates(
             v-if="bookingAvailability && bookingAvailability.data.length"
@@ -49,12 +48,12 @@ import type { Ref } from 'vue'
 import { computed, ref } from 'vue'
 
 import BookingDates from '@/Components/BookableView/BookingDates.vue'
-import ApiErrorDisplay from '@/Components/UI/ApiErrorDisplay.vue'
+import AlertDisplay from '@/Components/UI/AlertDisplay.vue'
 import ButtonWithLoading from '@/Components/UI/ButtonWithLoading.vue'
 import InputUI from '@/Components/UI/InputUI.vue'
 import { ApiError } from '@/Services/ApiError'
 import { ApiValidationError } from '@/Services/ApiValidationError'
-import HttpService from '@/Services/HttpService'
+import HttpApiService from '@/Services/HttpApiService'
 import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
 import type { ApiValidationErrorInterface } from '@/Services/Interfaces/ApiValidationErrorInterface'
 import { useBookingViewStore } from '@/stores/booking-view'
@@ -91,7 +90,7 @@ const check = async () => {
         // store last dates for booking
         store.saveDateRangeToStorage()
 
-        bookingAvailability.value = await new HttpService()
+        bookingAvailability.value = await new HttpApiService()
             .checkBookableAvailability(props.id, dateRange.value.start, dateRange.value.end)
 
         const isAvailabilityDates: IBookingDates | null = bookingAvailability.value?.data.length === 0

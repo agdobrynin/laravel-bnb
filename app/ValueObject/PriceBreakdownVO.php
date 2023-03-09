@@ -1,17 +1,17 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Dto;
+namespace App\ValueObject;
 
 use App\Models\Bookable;
 use Carbon\CarbonPeriod;
 
-readonly class PriceBreakdownDto
+readonly class PriceBreakdownVO
 {
     public string $bookableId;
     public ?int $totalPrice;
     /**
-     * @var PriceBreakdownItemDto[]
+     * @var PriceBreakdownItemVO[]
      */
     public ?array $breakdown;
 
@@ -35,15 +35,15 @@ readonly class PriceBreakdownDto
         $breakdown = [];
 
         if ($weekendDayCount) {
-            $weekendDto = new PriceBreakdownItemDto($bookable->price_weekend, $weekendDayCount);
-            $breakdown['weekend'] = $weekendDto;
-            $totalPrice += $weekendDto->totalPrice;
+            $weekendVO = new PriceBreakdownItemVO($bookable->price_weekend, $weekendDayCount);
+            $breakdown['weekend'] = $weekendVO;
+            $totalPrice += $weekendVO->totalPrice;
         }
 
         if ($regularDayCount) {
-            $regularDto = new PriceBreakdownItemDto($bookable->price, $regularDayCount);
-            $breakdown['regular'] = $regularDto;
-            $totalPrice += $regularDto->totalPrice;
+            $regularVO = new PriceBreakdownItemVO($bookable->price, $regularDayCount);
+            $breakdown['regular'] = $regularVO;
+            $totalPrice += $regularVO->totalPrice;
         }
 
         if ($totalPrice && $breakdown) {
