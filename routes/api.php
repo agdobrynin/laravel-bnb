@@ -39,11 +39,11 @@ Route::get('bookables/{bookable}/reviews', BookableReviewController::class)
     ->name('bookables.reviews.index');
 
 Route::apiResource('reviews', ReviewController::class)
+    ->middleware(['auth:sanctum', 'verified'])
     ->only(['show', 'store']);
 
 Route::get('booking-by-review/{reviewKey}', BookingByReviewController::class)
     ->name('booking.by-review.show');
 
 Route::post('checkout', CheckoutController::class)
-    ->middleware('auth:sanctum')
     ->name('checkout');

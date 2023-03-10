@@ -1,8 +1,7 @@
 <template lang="pug">
 .row
     .col-12(v-if="apiError")
-        AlertDisplay.alert.alert-danger(:icon-size="40")
-            p.fs-5 {{ apiError }}
+        AlertDisplay.alert.alert-danger {{ apiError }}
     .col-lg-8(v-if="bookingAttempt")
         CheckoutSuccess(:data="bookingAttempt")
     .col-lg-8(v-else)
@@ -30,6 +29,7 @@
                         InputUI(
                             v-model="checkoutForm.person.email"
                             :errors="validationFieldPerson.email"
+                            :readonly="Boolean(authStore.user.value)"
                             label="Email"
                             type="email")
                     .mb-3.col-md-6
@@ -99,6 +99,7 @@
 //@ts-ignore
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiBasket , mdiTrashCanOutline } from '@mdi/js'
+import { storeToRefs } from 'pinia'
 import { computed, reactive, ref } from 'vue'
 
 import CheckoutSuccess from '@/Components/Basket/CheckoutSuccess.vue'
@@ -112,6 +113,7 @@ import { ApiValidationError } from '@/Services/ApiValidationError'
 import HttpApiService from '@/Services/HttpApiService'
 import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
 import type { ApiValidationErrorInterface } from '@/Services/Interfaces/ApiValidationErrorInterface'
+import { useAuthStore } from '@/stores/auth'
 import { useBasketStore } from '@/stores/basket'
 import { useCheckoutPersonStore } from '@/stores/checkout-person'
 import type { ICalculateBookingInfoWithBookableTitle } from '@/Types/ICalculateBooking'
@@ -120,6 +122,7 @@ import type { ICheckoutSuccess } from '@/Types/ICheckout'
 
 const basketStore = useBasketStore()
 const checkoutPersonStore = useCheckoutPersonStore()
+const authStore = storeToRefs(useAuthStore())
 
 const basket = computed<IBasketTable>(() => {
     const basketTable: IBasketTable = { total: '0', items: [] }
@@ -158,6 +161,12 @@ const bookings = computed<ICheckoutBookingItem[]>(() => {
 })
 
 const checkoutForm: ICheckout = reactive({ person: checkoutPersonStore.person, bookings })
+
+if (authStore.user.value?.email) {
+    checkoutForm.person.email = authStore.user.value.email
+    checkoutForm.person.firstName = authStore.user.value.name.split(' ')[0]
+    checkoutForm.person.lastName = authStore.user.value.name.split(' ')[1]
+}
 
 const isLoading = ref<boolean>(false)
 const apiError = ref<string | null>(null)

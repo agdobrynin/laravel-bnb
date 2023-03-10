@@ -1,6 +1,7 @@
 <template lang="pug">
 div.card(aria-hidden="true")
     div.card-body
+        slot
         h5.card-title.placeholder-glow
             span.placeholder.col-6.bg-primary
         p.card-text.placeholder-glow

@@ -10,10 +10,11 @@ use App\Models\Bookable;
 use App\Models\Booking;
 use App\Models\PersonAddress;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class CheckoutController extends Controller
 {
-    public function __invoke(CheckoutRequest $request)
+    public function __invoke(CheckoutRequest $request): AnonymousResourceCollection
     {
         $data = $request->validated();
         $personAddress = PersonAddress::create($data['person']);
@@ -38,6 +39,8 @@ class CheckoutController extends Controller
 
             return $booking;
         });
+
+        // send emails for review feedback... maybe with models event?
 
         return CheckoutSuccessResource::collection($bookings);
     }

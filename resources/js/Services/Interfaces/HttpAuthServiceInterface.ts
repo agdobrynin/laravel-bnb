@@ -25,4 +25,10 @@ export interface HttpAuthServiceInterface {
      * @throws ApiErrorInterface|ApiValidationErrorInterface
      */
     register(user: IUserRegister): Promise<unknown | never>
+
+    /**
+     * Register new user
+     * @throws ApiErrorInterface
+     */
+    resendConfirmLink(): Promise<void | never>
 }
