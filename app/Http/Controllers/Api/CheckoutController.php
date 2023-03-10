@@ -17,9 +17,14 @@ class CheckoutController extends Controller
     public function __invoke(CheckoutRequest $request): AnonymousResourceCollection
     {
         $data = $request->validated();
+
+        if ($user = $request->user()) {
+            $data['person']['email'] = $user->email;
+        }
+
         $personAddress = PersonAddress::create($data['person']);
 
-        $bookings = collect($data['bookings'])->map(static function (array $bookingData) use ($personAddress) {
+        $bookings = collect($data['bookings'])->map(static function (array $bookingData) use ($personAddress, $user) {
             $bookableId = $bookingData['bookable_id'];
 
             $bookable = Bookable::findOr($bookableId, static function () use ($bookableId) {
@@ -35,6 +40,11 @@ class CheckoutController extends Controller
             $booking->price = $priceBreakdown->totalPrice;
             $booking->bookable()->associate($bookable);
             $booking->personAddress()->associate($personAddress);
+
+            if ($user) {
+                $booking->user_id = $user->id;
+            }
+
             $booking->save();
 
             return $booking;
