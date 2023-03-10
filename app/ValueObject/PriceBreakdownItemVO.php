@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Dto;
+namespace App\ValueObject;
 
-readonly class PriceBreakdownItemDto
+readonly class PriceBreakdownItemVO
 {
     public int $totalPrice;
     public function __construct(public int $pricePerDay, public int $days)

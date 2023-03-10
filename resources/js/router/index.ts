@@ -1,9 +1,14 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
-import BasketAndCheckout from '@/Components/Basket/BasketAndCheckout.vue'
 import BookableList from '@/Components/BookableList/BookableList.vue'
-import BookableView from '@/Components/BookableView/BookableView.vue'
-import ReviewPage from '@/Components/Review/ReviewPage.vue'
+
+const BookableView = () => import('@/Components/BookableView/BookableView.vue')
+const ReviewPage = () => import('@/Components/Review/ReviewPage.vue')
+const BasketAndCheckout = () => import('@/Components/Basket/BasketAndCheckout.vue')
+const Login = () => import('@/Components/Auth/Login.vue')
+const Registration = () => import('@/Components/Auth/Registeration.vue')
+
+const ResendConfirmLink = () => import('@/Components/Auth/ResendConfirmLink.vue')
 
 const routes: RouteRecordRaw[] = [
     {
@@ -25,6 +30,21 @@ const routes: RouteRecordRaw[] = [
         name: 'basket_and_checkout',
         path: '/basket',
         component: BasketAndCheckout
+    },
+    {
+        name: 'login',
+        path: '/login',
+        component: Login,
+    },
+    {
+        name: 'registration',
+        path: '/registration',
+        component: Registration,
+    },
+    {
+        name: 'resend_confirm_link',
+        path: '/resend-confirm-link',
+        component: ResendConfirmLink,
     }
 ]
 

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Dto\PriceBreakdownDto;
+use App\ValueObject\PriceBreakdownVO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BookingDatesRequest;
 use App\Models\Bookable;
@@ -13,11 +13,11 @@ class CalculateBookingController extends Controller
     public function __invoke(Bookable $bookable, BookingDatesRequest $request): JsonResponse
     {
         $data = $request->validated();
-        $priceBreakdownDto = new PriceBreakdownDto($bookable, $data['start'], $data['end']);
+        $priceBreakdown = new PriceBreakdownVO($bookable, $data['start'], $data['end']);
 
         return response()->json([
             'data' => [
-                 'calculate' => $priceBreakdownDto,
+                 'calculate' => $priceBreakdown,
             ],
         ]);
     }

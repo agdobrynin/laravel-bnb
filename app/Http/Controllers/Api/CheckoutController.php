@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Dto\PriceBreakdownDto;
+use App\ValueObject\PriceBreakdownVO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CheckoutRequest;
 use App\Http\Resources\CheckoutSuccessResource;
@@ -10,15 +10,21 @@ use App\Models\Bookable;
 use App\Models\Booking;
 use App\Models\PersonAddress;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class CheckoutController extends Controller
 {
-    public function __invoke(CheckoutRequest $request)
+    public function __invoke(CheckoutRequest $request): AnonymousResourceCollection
     {
         $data = $request->validated();
+
+        if ($user = $request->user()) {
+            $data['person']['email'] = $user->email;
+        }
+
         $personAddress = PersonAddress::create($data['person']);
 
-        $bookings = collect($data['bookings'])->map(static function (array $bookingData) use ($personAddress) {
+        $bookings = collect($data['bookings'])->map(static function (array $bookingData) use ($personAddress, $user) {
             $bookableId = $bookingData['bookable_id'];
 
             $bookable = Bookable::findOr($bookableId, static function () use ($bookableId) {
@@ -30,14 +36,21 @@ class CheckoutController extends Controller
 
             /** @var Booking $booking */
             $booking = Booking::make($bookingData);
-            $priceBreakdownDto = new PriceBreakdownDto($bookable, $booking->start, $booking->end);
-            $booking->price = $priceBreakdownDto->totalPrice;
+            $priceBreakdown = new PriceBreakdownVO($bookable, $booking->start, $booking->end);
+            $booking->price = $priceBreakdown->totalPrice;
             $booking->bookable()->associate($bookable);
             $booking->personAddress()->associate($personAddress);
+
+            if ($user) {
+                $booking->user_id = $user->id;
+            }
+
             $booking->save();
 
             return $booking;
         });
+
+        // send emails for review feedback... maybe with models event?
 
         return CheckoutSuccessResource::collection($bookings);
     }
