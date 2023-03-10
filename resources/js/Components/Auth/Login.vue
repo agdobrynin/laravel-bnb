@@ -46,12 +46,10 @@ const validation = computed(() => (field: string): string[] => {
     return validationError.value?.getErrorsByField(field) || []
 })
 
-const formData = {
-    email: 'feeney.zackary@example.com',
-    password: 'password',
-}
-
-const form = reactive(formData)
+const form = reactive({
+    email: '',
+    password: '',
+})
 
 const doLogin = async () => {
     validationError.value = null
