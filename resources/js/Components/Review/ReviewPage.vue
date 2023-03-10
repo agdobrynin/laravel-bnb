@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-    AlertDisplay(v-if="apiError") {{ apiError }}
+    AlertDisplay.mx-auto.alert.alert-danger(v-if="apiError") {{ apiError }}
     div(v-else)
         PlaceholderCard(v-if="isLoading")
         div(v-else)
