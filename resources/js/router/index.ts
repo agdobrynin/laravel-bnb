@@ -8,6 +8,8 @@ const BasketAndCheckout = () => import('@/Components/Basket/BasketAndCheckout.vu
 const Login = () => import('@/Components/Auth/Login.vue')
 const Registration = () => import('@/Components/Auth/Registeration.vue')
 
+const ResendConfirmLink = () => import('@/Components/Auth/ResendConfirmLink.vue')
+
 const routes: RouteRecordRaw[] = [
     {
         name: 'home',
@@ -38,6 +40,11 @@ const routes: RouteRecordRaw[] = [
         name: 'registration',
         path: '/registration',
         component: Registration,
+    },
+    {
+        name: 'resend_confirm_link',
+        path: '/resend-confirm-link',
+        component: ResendConfirmLink,
     }
 ]
 

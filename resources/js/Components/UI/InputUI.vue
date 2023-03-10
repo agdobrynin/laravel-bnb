@@ -8,6 +8,7 @@
         :min="min"
         :class="[{'is-invalid': validationErrors.length}, inputClass]"
         :disabled="disabled"
+        :readonly="readonly"
         @input="$emit('update:modelValue', $event.target.value)")
     label.form-label(
         v-if="label"
@@ -19,7 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted } from 'vue'
+import { computed } from 'vue'
 
 import { randomString } from '@/Composable/utils'
 
@@ -31,6 +32,7 @@ const props = withDefaults(
         label?: string,
         id?: string,
         disabled?: boolean,
+        readonly?: boolean,
         placeholder?: string,
         inputClass?: string,
         labelClass?: string,
@@ -42,6 +44,7 @@ const props = withDefaults(
         label: undefined,
         id: undefined,
         disabled: false,
+        readonly: false,
         placeholder: undefined,
         inputClass: undefined,
         labelClass: undefined,
@@ -55,6 +58,12 @@ const elId = props.id ? props.id : randomString()
 defineEmits<{
     (e: 'update:modelValue', value: string): void
 }>()
-
-onMounted(() => {})
 </script>
+
+<style scoped>
+input[readonly] {
+    background: #EEE;
+    color: #666;
+    border: solid 1px #CCC;
+}
+</style>

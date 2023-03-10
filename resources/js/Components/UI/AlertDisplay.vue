@@ -4,7 +4,7 @@ div.fs-1.text-muted.d-flex.align-items-center
         SvgIcon(
             type="mdi"
             :size="iconSize"
-            :path="mdiAlertOctagramOutline"
+            :path="icon"
         )
     div.ms-4
         slot
@@ -16,8 +16,11 @@ div.fs-1.text-muted.d-flex.align-items-center
 //@ts-ignore
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiAlertOctagramOutline } from '@mdi/js'
+import { computed } from 'vue'
 
-withDefaults(
-    defineProps<{ iconSize?: number }>(),{ iconSize: 120 }
+const props = withDefaults(
+    defineProps<{ iconSize?: number, svgIcon?: string }>(),{ iconSize: 120, svgIcon: undefined }
 )
+
+const icon = computed(() => props.svgIcon || mdiAlertOctagramOutline)
 </script>

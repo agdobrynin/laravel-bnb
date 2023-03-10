@@ -32,17 +32,27 @@ div
                         router-link.nav-link(:to="{name: 'basket_and_checkout'}") Basket
                             span.badge.bg-secondary.ms-2(v-if="basket.length" ) {{ basket.length }}
     div.container.py-4.px-3.mx-auto
+        Transition
+            AlertDisplay.alert.alert-warning.w-50.mx-auto(
+                v-if="!isSendVerifyLink && user && !user.isVerified"
+                :svg-icon="mdiInformationOutline"
+            )
+                .fs-5
+                    p Your email not confirmed
+                    p Please check your email box and confirm your account by verification link.
+                    p.text-primary Resend confirmation link to your email #[router-link(:to="{name: 'resend_confirm_link'}") again].
         router-view
 </template>
 
 <script setup lang="ts">
 //@ts-ignore
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdiAccount } from '@mdi/js'
+import { mdiAccount, mdiInformationOutline } from '@mdi/js'
 import { storeToRefs } from 'pinia'
-import { onBeforeMount, ref } from 'vue'
+import { computed, onBeforeMount, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+import AlertDisplay from '@/Components/UI/AlertDisplay.vue'
 import { HttpAuthService } from '@/Services/HttpAuthService'
 import { useAuthStore } from '@/stores/auth'
 import { useBasketStore } from '@/stores/basket'
@@ -58,6 +68,8 @@ const { basket } = storeToRefs(basketStore)
 const { user } = storeToRefs(authStore)
 const isLoading = ref<boolean>(false)
 const displayMenu = ref<boolean>(false)
+
+const isSendVerifyLink = computed(() => router.currentRoute.value.name === 'resend_confirm_link')
 
 const srv = new HttpAuthService()
 const doLogout = async () => {

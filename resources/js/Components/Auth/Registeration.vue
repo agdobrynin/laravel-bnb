@@ -1,10 +1,11 @@
 <template lang="pug">
 div
     transition
-        AlertDisplay.alert.alert-danger(
-            v-if="apiError"
-            ) {{ apiError }}
-    form(@submit.prevent="doRegistration")
+        AlertDisplay.alert.alert-danger(v-if="apiError") {{ apiError }}
+    form(
+        v-if="!success"
+        @submit.prevent="doRegistration"
+    )
         .row.justify-content-center
             .mb-3.col-12.col-md-6
                 InputUI(
@@ -55,6 +56,7 @@ import { useAuthStore } from '@/stores/auth'
 import type { IUserRegister } from '@/Types/IUser'
 
 const isLoading = ref<boolean>(false)
+const success = ref<boolean>(false)
 const router = useRouter()
 const authStore = useAuthStore()
 
@@ -70,10 +72,10 @@ const validationError = ref<ApiValidationErrorInterface|null>(null)
 
 const validation = computed(() => (field: string): string[] => validationError.value?.getErrorsByField(field) || [])
 
-
 const doRegistration = async () => {
     isLoading.value = true
     validationError.value = null
+    success.value = false
 
     try {
         const srv = new HttpAuthService()
@@ -81,7 +83,7 @@ const doRegistration = async () => {
         await srv.register(form)
         await authStore.fetchUser()
 
-        await router.push({ name: 'home' })
+        success.value = true
     } catch (reason) {
         const error = reason as Error | ApiErrorInterface | ApiValidationErrorInterface
 

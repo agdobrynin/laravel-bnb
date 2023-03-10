@@ -1,5 +1,7 @@
+import { AxiosError } from 'axios'
 import snakecaseKeys from 'snakecase-keys'
 
+import { ApiError } from '@/Services/ApiError'
 import { HttpServiceAbstract } from '@/Services/HttpServiceAbstract'
 import { HttpAuthServiceInterface } from '@/Services/Interfaces/HttpAuthServiceInterface'
 import { IUser, IUserRegister } from '@/Types/IUser'
@@ -38,6 +40,14 @@ export class HttpAuthService extends HttpServiceAbstract implements HttpAuthServ
             await this.client.post('/register', snakecaseKeys(user))
         } catch (e) {
             throw this.errorClassForThrow(e)
+        }
+    }
+
+    async resendConfirmLink(): Promise<void | never> {
+        try {
+            await this.client.post('/email/verification-notification')
+        } catch (e) {
+            throw new ApiError(e as AxiosError)
         }
     }
 }
