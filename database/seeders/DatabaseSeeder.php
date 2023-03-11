@@ -12,7 +12,9 @@ class DatabaseSeeder extends Seeder
         $this->call(UserSeeder::class);
 
         $this->call([
-            BookableWithBookingDatesSeeder::class,
+            BookableSeeder::class,
+            PersonalAddressSeeder::class,
+            BookingDatesSeeder::class,
             ReviewForBookablesSeeder::class,
         ]);
     }
