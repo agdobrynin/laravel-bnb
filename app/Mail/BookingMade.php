@@ -7,6 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Queue\SerializesModels;
 
 class BookingMade extends Mailable
@@ -41,8 +42,23 @@ class BookingMade extends Mailable
      */
     public function content()
     {
+        $mailMsg = (new MailMessage)
+            ->greeting(sprintf('Hello %s!', $this->booking->personAddress->first_name))
+            ->line(
+                sprintf(
+                    'Your booking "%s" from %s to %s.',
+                    $this->booking->bookable->title,
+                    $this->booking->start,
+                    $this->booking->end,
+                )
+            )
+            ->action(
+                'Leave a review with a rating',
+                env('APP_URL').'/review/'.$this->booking->review_key
+            );
+
         return (new Content(
-            text: 'mails.booking_made-text',
+            htmlString: $mailMsg->render()
         ))->with('booking', $this->booking);
     }
 
