@@ -44,7 +44,7 @@ class Booking extends Model
 
     public static function findByReviewKey(string $reviewKey): ?Booking
     {
-        return static::where('review_key', $reviewKey)->with('bookable')->get()->first();
+        return static::where('review_key', $reviewKey)->with(['bookable', 'user'])->get()->first();
     }
 
     protected static function boot()

@@ -13,6 +13,7 @@ div
                 th Bookable object
                 th Booking dates
                 th Price
+                th Feedback
         tbody
             tr(
                 v-for="(item, index) in successTable.items"
@@ -22,10 +23,17 @@ div
                     router-link(:to="{name: 'bookable', params: {id: item.bookableId}}") {{ item.bookableTitle }}
                 td From {{ item.start }} to {{ item.end }}
                 td {{ item.price }}
+                td
+                    router-link(
+                        v-if="item.reviewKey"
+                        :to="{ name: 'reviewPage', params: { id: item.reviewKey } }"
+                    ) Leave feedback now or later
+                    span(v-else) no feedback
         tfoot
             tr.fw-bold
                 td.text-end(colspan="2") Total
                 td {{ successTable.total }}
+                td
 </template>
 
 <script setup lang="ts">
@@ -50,6 +58,7 @@ interface ICheckoutSuccessTableRow {
     start: string,
     end: string,
     price: string,
+    reviewKey?: string,
 }
 
 const successTable = computed<ICheckoutSuccessTable>(() => {
@@ -62,7 +71,8 @@ const successTable = computed<ICheckoutSuccessTable>(() => {
             bookableTitle: item.bookable.title,
             start: dateAsLocaleString(item.start) || item.start,
             end: dateAsLocaleString(item.end) || item.end,
-            price: priceUsdFormat(item.price)
+            price: priceUsdFormat(item.price),
+            reviewKey: item.reviewKey,
         })
 
         totalSum += item.price

@@ -48,6 +48,10 @@ export interface ICheckoutSuccessItem {
      * Total booking price
      */
     price: number,
+    /**
+     * Review key for feedback.
+     */
+    reviewKey?: string,
     bookable: {
         id: string,
         title: string,
