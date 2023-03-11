@@ -31,8 +31,6 @@ div
                     type="password"
                     :errors="validation('password_confirmed')")
         .row.justify-content-center
-
-        .row.justify-content-center
             .mb-3.col-12
                 ButtonWithLoading.btn.btn-primary.w-100(
                     :is-loading="isLoading"
