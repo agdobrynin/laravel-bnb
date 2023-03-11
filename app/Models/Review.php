@@ -13,7 +13,7 @@ class Review extends Model
 
     protected $fillable = ['id', 'rating', 'description'];
 
-    public function bookables(): BelongsTo
+    public function bookable(): BelongsTo
     {
         return $this->belongsTo(Bookable::class);
     }

@@ -31,6 +31,10 @@ class Booking extends Model
         return $this->belongsTo(PersonAddress::class);
     }
 
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class)->withDefault();
+    }
 
     public function scopeBetweenDates(Builder $builder, string $start, string $end): Builder
     {

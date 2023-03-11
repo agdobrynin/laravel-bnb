@@ -2,12 +2,14 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use App\ValueObject\PriceBreakdownVO;
 use App\Models\Bookable;
 use App\Models\Booking;
 use App\Models\PersonAddress;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
 
 class BookableWithBookingDatesSeeder extends Seeder
@@ -21,11 +23,12 @@ class BookableWithBookingDatesSeeder extends Seeder
     {
         /** @var Collection $personalAddressCollection */
         $personalAddressCollection = PersonAddress::factory()->count(25)->create();
+        $userCollection = User::all(['id']);
 
         Bookable::factory()
             ->count(50)
             ->create()
-            ->each(function (Bookable $bookable) use ($personalAddressCollection) {
+            ->each(function (Bookable $bookable) use ($personalAddressCollection, $userCollection) {
                 /** @var Booking $booking */
                 $booking = Booking::factory()->make();
                 $priceBreakdown = new PriceBreakdownVO(
@@ -36,6 +39,7 @@ class BookableWithBookingDatesSeeder extends Seeder
                 $booking->price = $priceBreakdown->totalPrice;
                 $personal = $personalAddressCollection->random();
                 $booking->personAddress()->associate($personal);
+                $booking->user()->associate($userCollection->random());
 
                 $bookings = collect([$booking]);
 
@@ -54,6 +58,8 @@ class BookableWithBookingDatesSeeder extends Seeder
                     $booking->price = $priceBreakdown->totalPrice;
                     $personal = $personalAddressCollection->random();
                     $booking->personAddress()->associate($personal);
+                    $user = rand(0, 1) ?  : null;
+                    $booking->user()->associate($user);
 
                     $bookings->push($booking);
                 }
