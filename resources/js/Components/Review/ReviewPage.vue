@@ -6,15 +6,15 @@ div
         div(v-else)
             div(v-if="isReviewExist")
                 h3.text-center.text-success You already left reviewed for this booking
-            div.row(v-else-if="bookable && booking" )
+            div.row(v-else-if="bookable !== null && booking")
                 .col-md-4
                     .card
                         .card-header.fs-5 State at
                             router-link(
-                                :to="{name: 'bookable', params: {id: bookable.id}}"
-                                class="ms-3") {{ bookable.title }}
+                                :to="{name: 'bookable', params: {id: bookable?.id}}"
+                                class="ms-3") {{ bookable?.title }}
                         .card-body
-                            | booking from {{ booking.start }} to {{ booking.end }}
+                            | booking from {{ booking?.start }} to {{ booking?.end }}
                 .col-md-8
                     .alert.alert-danger(
                         v-for="(error, index) in errorId"
@@ -30,6 +30,14 @@ div
                         div.invalid-feedback(
                             v-for="(error, index) in errorRating"
                             :key="`rating_${index}`") {{ error }}
+                    .mb-3
+                        InputUI(
+                            :disabled="true"
+                            label="Review as user"
+                            :class="{'is-invalid': errorVerifyEmail.length}"
+                            :errors="errorVerifyEmail"
+                            :model-value="bookingReviewer"
+                        )
                     .mb-3
                         TextareaUI(
                             v-model.trim="review.description"
@@ -48,6 +56,7 @@ import { useRoute, useRouter } from 'vue-router'
 
 import AlertDisplay from '@/Components/UI/AlertDisplay.vue'
 import ButtonWithLoading from '@/Components/UI/ButtonWithLoading.vue'
+import InputUI from '@/Components/UI/InputUI.vue'
 import PlaceholderCard from '@/Components/UI/PlaceholderCard.vue'
 import RatingItem from '@/Components/UI/RatingItem.vue'
 import TextareaUI from '@/Components/UI/TextareaUI.vue'
@@ -85,6 +94,7 @@ const validationErrors = (field: string) => validationError.value?.getErrorsByFi
 
 const errorDescription = computed<string[]>(() => validationErrors('description'))
 const errorRating = computed<string[]>(() => validationErrors('rating'))
+const errorVerifyEmail = computed<string[]>(() => validationErrors('verify-email'))
 const errorId = computed<string[]>(() => validationErrors('id'))
 
 const booking = computed<IBookingByReviewKeyBase | null>(() => {
@@ -92,12 +102,20 @@ const booking = computed<IBookingByReviewKeyBase | null>(() => {
         return {
             id: bookingByReviewKey.value.data.id,
             start: new Date(bookingByReviewKey.value.data.start).toDateString(),
-            end:  new Date(bookingByReviewKey.value.data.end).toDateString()
+            end:  new Date(bookingByReviewKey.value.data.end).toDateString(),
+            user: bookingByReviewKey.value?.data.user,
         }
     }
 
     return null
+})
 
+const bookingReviewer = computed<string>(() => {
+    if (bookingByReviewKey.value?.data?.user?.name) {
+        return `${bookingByReviewKey.value.data.user.name} (${bookingByReviewKey.value.data.user.email})`
+    }
+
+    return 'Anonymous'
 })
 
 const bookable = computed<IBookingByReviewKeyBookableInfo | null>(() => {

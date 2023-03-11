@@ -12,6 +12,11 @@ export interface IBookingByReviewKeyBase {
      */
     end: string,
     bookable?: IBookingByReviewKeyBookableInfo,
+    user: null | {
+        id: number,
+        name: string,
+        email: string,
+    }
 }
 export interface IBookingByReviewKeyBookableInfo {
     id: string,

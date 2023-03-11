@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Mail\BookingMade;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class Booking extends Model
@@ -44,7 +46,7 @@ class Booking extends Model
 
     public static function findByReviewKey(string $reviewKey): ?Booking
     {
-        return static::where('review_key', $reviewKey)->with('bookable')->get()->first();
+        return static::where('review_key', $reviewKey)->with(['bookable', 'user'])->get()->first();
     }
 
     protected static function boot()
@@ -52,5 +54,15 @@ class Booking extends Model
         parent::boot();
 
         static::creating(fn(Booking $booking) => $booking->review_key = Str::uuid());
+
+        static::created(function (Booking $booking) {
+            $email = $booking->personAddress->email;
+
+            if ($booking->user->id) {
+                $email = $booking->user->email;
+            }
+
+            Mail::to($email)->send(new BookingMade($booking));
+        });
     }
 }

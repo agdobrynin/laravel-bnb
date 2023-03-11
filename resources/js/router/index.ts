@@ -5,8 +5,8 @@ import BookableList from '@/Components/BookableList/BookableList.vue'
 const BookableView = () => import('@/Components/BookableView/BookableView.vue')
 const ReviewPage = () => import('@/Components/Review/ReviewPage.vue')
 const BasketAndCheckout = () => import('@/Components/Basket/BasketAndCheckout.vue')
-const Login = () => import('@/Components/Auth/Login.vue')
-const Registration = () => import('@/Components/Auth/Registeration.vue')
+const LoginUser = () => import('@/Components/Auth/LoginUser.vue')
+const RegistrationUser = () => import('@/Components/Auth/RegistrationUser.vue')
 
 const ResendConfirmLink = () => import('@/Components/Auth/ResendConfirmLink.vue')
 
@@ -34,12 +34,12 @@ const routes: RouteRecordRaw[] = [
     {
         name: 'login',
         path: '/login',
-        component: Login,
+        component: LoginUser,
     },
     {
         name: 'registration',
         path: '/registration',
-        component: Registration,
+        component: RegistrationUser,
     },
     {
         name: 'resend_confirm_link',

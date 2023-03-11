@@ -12,6 +12,7 @@ class CheckoutSuccessResource extends JsonResource
             'start' => $this->start,
             'end' => $this->end,
             'price' => $this->price,
+            'reviewKey' => $this->review_key,
             'bookable' => new CheckoutSuccessBookableResource($this->bookable)
         ];
     }
