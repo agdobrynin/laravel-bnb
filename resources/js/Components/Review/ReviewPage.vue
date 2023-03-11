@@ -34,6 +34,8 @@ div
                         InputUI(
                             :disabled="true"
                             label="Review as user"
+                            :class="{'is-invalid': errorVerifyEmail.length}"
+                            :errors="errorVerifyEmail"
                             :model-value="bookingReviewer"
                         )
                     .mb-3
@@ -92,6 +94,7 @@ const validationErrors = (field: string) => validationError.value?.getErrorsByFi
 
 const errorDescription = computed<string[]>(() => validationErrors('description'))
 const errorRating = computed<string[]>(() => validationErrors('rating'))
+const errorVerifyEmail = computed<string[]>(() => validationErrors('verify-email'))
 const errorId = computed<string[]>(() => validationErrors('id'))
 
 const booking = computed<IBookingByReviewKeyBase | null>(() => {
