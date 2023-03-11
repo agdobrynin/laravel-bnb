@@ -11,7 +11,12 @@ class BookableController extends Controller
 {
     public function index()
     {
-        return BookableIndexResource::collection(Bookable::all());
+        return BookableIndexResource::collection(
+            Bookable::query()
+                ->paginate(10)
+                ->onEachSide(1)
+                ->withQueryString()
+        );
     }
 
     public function show(Bookable $bookable)
