@@ -5,7 +5,10 @@ export interface IReviewItem {
 }
 
 export interface IReviewExistItem extends IReviewItem {
-    name?: string,
+    user: null | {
+        id: number,
+        name: string,
+    },
     /**
      * Full date and time with format YYYY-MM-DDThh:mm:ss
      */

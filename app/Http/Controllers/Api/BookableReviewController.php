@@ -11,7 +11,7 @@ class BookableReviewController extends Controller
     public function __invoke(Bookable $bookable)
     {
         return BookableReviewResource::collection(
-            $bookable->reviews()->latest()->get()
+            $bookable->reviews()->latest()->with('booking.user')->get()
         );
     }
 }

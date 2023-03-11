@@ -16,7 +16,18 @@ class ReviewForBookablesSeeder extends Seeder
     public function run()
     {
         Bookable::all()->each(function (Bookable $bookable) {
-            $reviews = Review::factory(rand(5, 12))->make();
+            $reviews = [];
+
+            foreach ($bookable->bookings as $booking) {
+                $reviews[] = Review::factory()->make([
+                    'booking_id' => $booking->id,
+                    'id' => $booking->review_key,
+                ]);
+
+                $booking->review_key = '';
+            }
+
+            $bookable->bookings()->saveMany($bookable->bookings);
             $bookable->reviews()->saveMany($reviews);
         });
     }
