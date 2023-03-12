@@ -15,7 +15,7 @@ class BookableReviewController extends Controller
                 ->latest()
                 ->with('booking.user')
                 ->paginate(5)
-                ->onEachSide(1)
+                ->withPath(sprintf('/bookable/%s', $bookable->id))
                 ->withQueryString()
         );
     }

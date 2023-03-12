@@ -62,9 +62,11 @@ export default class HttpApiService extends HttpServiceAbstract implements HttpA
         }
     }
 
-    async getBookableReviews(id: string): Promise<IReviewCollection | never> {
+    async getBookableReviews(id: string, page: number = 1): Promise<IReviewCollection | never> {
         try {
-            return <IReviewCollection>((await this.client.get(`/bookables/${id}/reviews`)).data)
+            return <IReviewCollection>(
+                (await this.client.get(`/bookables/${id}/reviews`, { params: { page } })).data
+            )
         } catch (reason) {
             throw this.errorClassForThrow(reason)
         }

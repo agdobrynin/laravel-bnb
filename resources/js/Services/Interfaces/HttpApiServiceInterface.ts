@@ -33,7 +33,7 @@ export interface HttpApiServiceInterface {
      * Get collection of review for bookable item
      * @throws ApiErrorInterface
      */
-    getBookableReviews(id: string): Promise<IReviewCollection | never>
+    getBookableReviews(id: string, page: number): Promise<IReviewCollection | never>
 
     /**
      * @throws ApiErrorInterface
