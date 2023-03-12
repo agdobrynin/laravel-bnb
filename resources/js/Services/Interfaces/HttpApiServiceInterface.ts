@@ -15,7 +15,7 @@ export interface HttpApiServiceInterface {
      * Get list of bookable items
      * @throws ApiErrorInterface
      */
-    getBookables(): Promise<IBookableList | never>
+    getBookables(page: number): Promise<IBookableList | never>
 
     /**
      * Get bookable item by id
@@ -33,7 +33,7 @@ export interface HttpApiServiceInterface {
      * Get collection of review for bookable item
      * @throws ApiErrorInterface
      */
-    getBookableReviews(id: string): Promise<IReviewCollection | never>
+    getBookableReviews(id: string, page: number): Promise<IReviewCollection | never>
 
     /**
      * @throws ApiErrorInterface

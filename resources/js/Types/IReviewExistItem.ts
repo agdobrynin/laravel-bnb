@@ -1,3 +1,5 @@
+import { IPagination } from '@/Types/IPagination'
+
 export interface IReviewItem {
     id: string,
     description: string,
@@ -15,6 +17,6 @@ export interface IReviewExistItem extends IReviewItem {
     createdAt: string,
 }
 
-export interface IReviewCollection {
+export interface IReviewCollection extends IPagination {
     data: IReviewExistItem[],
 }

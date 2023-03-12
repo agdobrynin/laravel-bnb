@@ -19,9 +19,9 @@ export default class HttpApiService extends HttpServiceAbstract implements HttpA
         this.client.defaults.baseURL = `${this.endpoint}/api`
     }
 
-    async getBookables(): Promise<IBookableList | never> {
+    async getBookables(page: number = 1): Promise<IBookableList | never> {
         try {
-            return <IBookableList>((await this.client.get('/bookables')).data)
+            return <IBookableList>((await this.client.get('/bookables', { params: { page } })).data)
         } catch (reason) {
             throw new ApiError(<AxiosError>reason)
         }
@@ -62,9 +62,11 @@ export default class HttpApiService extends HttpServiceAbstract implements HttpA
         }
     }
 
-    async getBookableReviews(id: string): Promise<IReviewCollection | never> {
+    async getBookableReviews(id: string, page: number = 1): Promise<IReviewCollection | never> {
         try {
-            return <IReviewCollection>((await this.client.get(`/bookables/${id}/reviews`)).data)
+            return <IReviewCollection>(
+                (await this.client.get(`/bookables/${id}/reviews`, { params: { page } })).data
+            )
         } catch (reason) {
             throw this.errorClassForThrow(reason)
         }
