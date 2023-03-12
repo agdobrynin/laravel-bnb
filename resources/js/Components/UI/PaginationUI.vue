@@ -1,5 +1,5 @@
 <template lang="pug">
-nav
+nav.w-100
     ul.pagination.justify-content-center
         li.page-item
             a.page-link(

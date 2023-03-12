@@ -13,7 +13,7 @@ class BookableController extends Controller
     {
         return BookableIndexResource::collection(
             Bookable::query()
-                ->paginate(10)
+                ->paginate(12)
                 ->onEachSide(1)
                 ->withQueryString()
         );

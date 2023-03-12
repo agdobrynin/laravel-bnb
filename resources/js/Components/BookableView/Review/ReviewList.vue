@@ -25,12 +25,13 @@ div
 
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 
 import ReviewItem from '@/Components/BookableView/Review/ReviewItem.vue'
 import AlertDisplay from '@/Components/UI/AlertDisplay.vue'
 import PaginationUI from '@/Components/UI/PaginationUI.vue'
 import PlaceholderCard from '@/Components/UI/PlaceholderCard.vue'
+import { usePaginatorBuildQueryStringParamsInRouter, usePaginatorData } from '@/Composable/usePaginatorData'
 import HttpApiService from '@/Services/HttpApiService'
 import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
 import type { IPaginationData } from '@/Types/IPagination'
@@ -42,20 +43,10 @@ const loading = ref<boolean>(true)
 const apiError = ref<string|null>(null)
 const reviewCollection = ref<IReviewCollection | null>(null)
 const route = useRoute()
-const router = useRouter()
 
 const reviews = computed<IReviewExistItem[]>(() => reviewCollection.value?.data || [])
 
-const paginatorData = computed<IPaginationData>(() => {
-    const {
-        total = 1,
-        last_page: lastPage = 1,
-        current_page: currentPage = 1,
-        per_page: perPage = 1,
-    } = reviewCollection.value?.meta || {}
-
-    return { total, lastPage, currentPage, perPage }
-})
+const paginatorData = computed<IPaginationData>(() => usePaginatorData(reviewCollection.value?.meta || null))
 
 const loadReviews = async (page: number) => {
     loading.value = true
@@ -67,8 +58,7 @@ const loadReviews = async (page: number) => {
         apiError.value = error.apiError?.message || error.requestError
     }
 
-    const newQueryString = { ...route.query, ...{ page: String(page) } }
-    await router.replace({ query: newQueryString })
+    await usePaginatorBuildQueryStringParamsInRouter(page)
 
     loading.value = false
 }

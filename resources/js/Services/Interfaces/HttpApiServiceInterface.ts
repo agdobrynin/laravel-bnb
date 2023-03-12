@@ -15,7 +15,7 @@ export interface HttpApiServiceInterface {
      * Get list of bookable items
      * @throws ApiErrorInterface
      */
-    getBookables(): Promise<IBookableList | never>
+    getBookables(page: number): Promise<IBookableList | never>
 
     /**
      * Get bookable item by id
