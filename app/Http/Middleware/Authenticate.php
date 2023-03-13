@@ -15,7 +15,7 @@ class Authenticate extends Middleware
     protected function redirectTo($request)
     {
         if ($request->routeIs('verification.verify')) {
-            return '/login';
+            return '/login?verification.verify';
         }
 
         if (! $request->expectsJson()) {

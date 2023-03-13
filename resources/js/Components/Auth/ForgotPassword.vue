@@ -15,10 +15,12 @@ form(@submit.prevent="doRestore")
                     ButtonWithLoading.btn.btn-primary.w-100.mb-4(
                         :is-loading="isLoading"
                         btn-type="submit") Restore
-        AlertDisplay.alert.alert-success(v-else) {{ successMessage }}
+        div(v-else)
+            AlertDisplay.alert.alert-success(:svg-icon="mdiHandOkay") {{ successMessage }}
 </template>
 
 <script lang="ts" setup>
+import { mdiHandOkay } from '@mdi/js'
 import { ref } from 'vue'
 
 import AlertDisplay from '@/Components/UI/AlertDisplay.vue'

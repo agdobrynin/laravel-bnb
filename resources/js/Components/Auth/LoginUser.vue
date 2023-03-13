@@ -1,7 +1,9 @@
 <template lang="pug">
 form(@submit.prevent="doLogin")
     transition
-        AlertDisplay(v-if="apiError") {{ apiError }}
+        .row.justify-content-center(v-if="apiError")
+            .mb-3.col-12.col-md-6
+                AlertDisplay.alert.alert-danger {{ apiError }}
     .row.justify-content-center
         .mb-3.col-12.col-md-6
             InputUI(
@@ -42,7 +44,6 @@ const router = useRouter()
 
 const { apiError, errors, validation } = useApiErrors()
 
-
 const form = reactive({
     email: '',
     password: '',
@@ -67,9 +68,13 @@ const doLogin = async () => {
     isLoading.value = false
 }
 
-onBeforeMount(() => {
+onBeforeMount(async () => {
     if (authStore.user) {
-        router.push({ name: 'home' })
+        await router.push({ name: 'home' })
+    } else {
+        if (Object.keys(router.currentRoute.value.query).includes('verification.verify')) {
+            errors(new Error('For verification email you must be authorized'))
+        }
     }
 })
 </script>
