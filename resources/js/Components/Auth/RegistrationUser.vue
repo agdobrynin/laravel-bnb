@@ -9,10 +9,15 @@ div
         .row.justify-content-center
             .mb-3.col-12.col-md-6
                 InputUI(
-                    v-model="form.name"
+                    v-model="form.firstName"
                     label="Your name"
-                    :errors="validation('name')")
+                    :errors="validation('first_name')")
             .mb-3.col-12.col-md-6
+                InputUI(
+                    v-model="form.lastName"
+                    label="Your last name"
+                    :errors="validation('last_name')")
+            .mb-3.col-12
                 InputUI(
                     v-model="form.email"
                     label="Email"
@@ -59,7 +64,8 @@ const router = useRouter()
 const authStore = useAuthStore()
 
 const form: IUserRegister = reactive({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
     passwordConfirmation: '',
