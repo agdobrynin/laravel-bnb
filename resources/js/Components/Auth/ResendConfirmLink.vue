@@ -15,21 +15,23 @@ import { ref } from 'vue'
 
 import AlertDisplay from '@/Components/UI/AlertDisplay.vue'
 import PlaceholderCard from '@/Components/UI/PlaceholderCard.vue'
+import { useApiErrors } from '@/Composable/useApiErrors'
 import { HttpAuthService } from '@/Services/HttpAuthService'
 import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
 import { useAuthStore } from '@/stores/auth'
 
 const authStore = storeToRefs(useAuthStore())
-const apiError = ref<ApiErrorInterface | null>(null)
 const inProgress = ref<boolean>(true)
 const success = ref<string | null>(null)
+
+const { apiError, errors } = useApiErrors()
 
 const sendConfirm = async () => {
     try {
         await (new HttpAuthService()).resendConfirmLink()
         success.value = 'Verification link was send to your email'
     } catch (e) {
-        apiError.value = e as ApiErrorInterface
+        errors(e as ApiErrorInterface)
     } finally {
         inProgress.value = false
     }

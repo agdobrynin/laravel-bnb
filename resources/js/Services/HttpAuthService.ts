@@ -4,6 +4,7 @@ import snakecaseKeys from 'snakecase-keys'
 import { ApiError } from '@/Services/ApiError'
 import { HttpServiceAbstract } from '@/Services/HttpServiceAbstract'
 import { HttpAuthServiceInterface } from '@/Services/Interfaces/HttpAuthServiceInterface'
+import { IResetPassword } from '@/Types/IResetPassword'
 import { IUser, IUserRegister } from '@/Types/IUser'
 
 export class HttpAuthService extends HttpServiceAbstract implements HttpAuthServiceInterface {
@@ -48,6 +49,26 @@ export class HttpAuthService extends HttpServiceAbstract implements HttpAuthServ
             await this.client.post('/email/verification-notification')
         } catch (e) {
             throw new ApiError(e as AxiosError)
+        }
+    }
+
+    async forgotPassword(email: string): Promise<string | never> {
+        try {
+            return <string>(
+                await this.client.post('/forgot-password', { email })
+            ).data.message || 'We send email with reset link.'
+        } catch (e) {
+            throw this.errorClassForThrow(e)
+        }
+    }
+
+    async resetPassword(resetPassword: IResetPassword): Promise<string | never> {
+        try {
+            return <string>(
+                await this.client.post('/reset-password', snakecaseKeys(resetPassword))
+            ).data.message || 'Your password has been reset.'
+        } catch (e) {
+            throw this.errorClassForThrow(e)
         }
     }
 }

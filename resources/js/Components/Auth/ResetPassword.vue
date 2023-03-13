@@ -1,37 +1,30 @@
 <template lang="pug">
-div
-    transition
-        AlertDisplay.alert.alert-danger(v-if="apiError") {{ apiError }}
+Transition
     form(
-        v-if="!success"
-        @submit.prevent="doRegistration"
+        v-if="successMessage === null"
+        @submit.prevent="doResetPassword"
     )
+        Transition
+            AlertDisplay(v-if="apiError") {{ apiError }}
         .row.justify-content-center
-            .mb-3.col-12.col-md-6
-                InputUI(
-                    v-model="form.firstName"
-                    label="Your name"
-                    :errors="validation('first_name')")
-            .mb-3.col-12.col-md-6
-                InputUI(
-                    v-model="form.lastName"
-                    label="Your last name"
-                    :errors="validation('last_name')")
             .mb-3.col-12
                 InputUI(
-                    v-model="form.email"
-                    label="Email"
+                    :model-value="form.email"
+                    :readonly="true"
+                    label="email"
+                    type="text"
                     :errors="validation('email')")
-        .row.justify-content-center
             .mb-3.col-12.col-md-6
                 InputUI(
                     v-model="form.password"
+                    :readonly="isLoading"
                     label="Password"
                     type="password"
                     :errors="validation('password')")
             .mb-3.col-12.col-md-6
                 InputUI(
                     v-model="form.passwordConfirmation"
+                    :readonly="isLoading"
                     label="Retype password"
                     type="password"
                     :errors="validation('password_confirmed')")
@@ -40,12 +33,19 @@ div
                 ButtonWithLoading.btn.btn-primary.w-100(
                     :is-loading="isLoading"
                     btn-type="submit"
-                ) Register
+                ) Change password
+    div(v-else)
+        AlertDisplay.alert.alert-success(
+            :svg-icon="mdiHandOkay"
+        )
+            | {{ successMessage }}
+            p #[router-link(:to="{name: 'login'}") Login with new password]
 </template>
 
 <script lang="ts" setup>
-import { onBeforeMount, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { mdiHandOkay } from '@mdi/js'
+import { onMounted, reactive, ref } from 'vue'
+import { useRoute } from 'vue-router'
 
 import AlertDisplay from '@/Components/UI/AlertDisplay.vue'
 import ButtonWithLoading from '@/Components/UI/ButtonWithLoading.vue'
@@ -54,36 +54,29 @@ import { useApiErrors } from '@/Composable/useApiErrors'
 import { HttpAuthService } from '@/Services/HttpAuthService'
 import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
 import type { ApiValidationErrorInterface } from '@/Services/Interfaces/ApiValidationErrorInterface'
-import { useAuthStore } from '@/stores/auth'
-import type { IUserRegister } from '@/Types/IUser'
+import type { IResetPassword } from '@/Types/IResetPassword'
 
-const isLoading = ref<boolean>(false)
-const success = ref<boolean>(false)
-const router = useRouter()
-const authStore = useAuthStore()
+const route = useRoute()
 
-const form: IUserRegister = reactive({
-    firstName: '',
-    lastName: '',
+const form = reactive<IResetPassword>({
+    token: '',
     email: '',
     password: '',
-    passwordConfirmation: '',
+    passwordConfirmation: ''
 })
 
-const { apiError, errors, validation } = useApiErrors()
+const isLoading = ref<boolean>(false)
 
-const doRegistration = async () => {
-    errors(null)
+const { apiError, errors, validation } = useApiErrors()
+const successMessage = ref<string|null>(null)
+
+
+const doResetPassword = async () => {
     isLoading.value = true
-    success.value = false
+    errors(null)
 
     try {
-        const srv = new HttpAuthService()
-        // success return void with http status 201 (created)
-        await srv.register(form)
-        await authStore.fetchUser()
-
-        success.value = true
+        successMessage.value = await new HttpAuthService().resetPassword(form)
     } catch (reason) {
         errors(reason as Error | ApiErrorInterface | ApiValidationErrorInterface)
     }
@@ -91,9 +84,10 @@ const doRegistration = async () => {
     isLoading.value = false
 }
 
-onBeforeMount(() => {
-    if (authStore.user) {
-        router.push({ name: 'home' })
-    }
+onMounted(() => {
+    const { token = '', email = '' } = route.query
+
+    form.token = String(token)
+    form.email = String(email)
 })
 </script>

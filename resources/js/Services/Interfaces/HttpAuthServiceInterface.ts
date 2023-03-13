@@ -1,3 +1,4 @@
+import { IResetPassword } from '@/Types/IResetPassword'
 import { IUser, IUserRegister } from '@/Types/IUser'
 
 export interface HttpAuthServiceInterface {
@@ -31,4 +32,16 @@ export interface HttpAuthServiceInterface {
      * @throws ApiErrorInterface
      */
     resendConfirmLink(): Promise<void | never>
+
+    /**
+     * Send link for restore forgot password
+     * @throws ApiErrorInterface|ApiValidationErrorInterface
+     */
+    forgotPassword(email: string): Promise<string | never>
+
+    /**
+     * Reset forgot password
+     * @throws ApiErrorInterface|ApiValidationErrorInterface
+     */
+    resetPassword(resetPassword: IResetPassword): Promise<string | never>
 }
