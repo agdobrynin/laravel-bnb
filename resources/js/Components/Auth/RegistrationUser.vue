@@ -6,6 +6,7 @@ div
         v-if="!success"
         @submit.prevent="doRegistration"
     )
+        h4.mb-4.text-center Register new user
         .row.justify-content-center
             .mb-3.col-12.col-md-6
                 InputUI(

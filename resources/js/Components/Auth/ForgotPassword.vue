@@ -4,6 +4,7 @@ form(@submit.prevent="doRestore")
         AlertDisplay(v-if="apiError") {{ apiError }}
     transition
         div(v-if="successMessage === null")
+            h4.text-center.mb-4  Reset password for:
             .row.justify-content-center
                 .mb-3.col-12.col-md-6
                     InputUI(
@@ -14,7 +15,7 @@ form(@submit.prevent="doRestore")
                 .mb-3.col-12.col-md-6.text-center
                     ButtonWithLoading.btn.btn-primary.w-100.mb-4(
                         :is-loading="isLoading"
-                        btn-type="submit") Restore
+                        btn-type="submit") Send
         div(v-else)
             AlertDisplay.alert.alert-success(:svg-icon="mdiHandOkay") {{ successMessage }}
 </template>

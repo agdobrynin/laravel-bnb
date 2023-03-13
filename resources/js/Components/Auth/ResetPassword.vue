@@ -4,6 +4,7 @@ Transition
         v-if="successMessage === null"
         @submit.prevent="doResetPassword"
     )
+        h4.text-center.mb-4 Reset my password
         Transition
             AlertDisplay(v-if="apiError") {{ apiError }}
         .row.justify-content-center
@@ -33,7 +34,7 @@ Transition
                 ButtonWithLoading.btn.btn-primary.w-100(
                     :is-loading="isLoading"
                     btn-type="submit"
-                ) Change password
+                ) Reset my password
     div(v-else)
         AlertDisplay.alert.alert-success(
             :svg-icon="mdiHandOkay"
