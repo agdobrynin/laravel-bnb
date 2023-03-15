@@ -4,4 +4,5 @@ export interface IBookable {
     description: string,
     price: number,
     price_weekend: number,
+    category: string,
 }

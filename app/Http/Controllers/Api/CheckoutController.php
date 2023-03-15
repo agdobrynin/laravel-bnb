@@ -31,7 +31,7 @@ class CheckoutController extends Controller
                 $message = sprintf('Bookable with id "%s" not found', $bookableId);
 
                 throw new ModelNotFoundException($message);
-            });
+            })->load('bookableCategory');
 
 
             /** @var Booking $booking */

@@ -46,7 +46,8 @@ class BookingMade extends Mailable
             ->greeting(sprintf('Hello %s!', $this->booking->personAddress->first_name))
             ->line(
                 sprintf(
-                    'Your booking "%s" from %s to %s.',
+                    'Your booking "%s: %s" from %s to %s.',
+                    $this->booking->bookable->bookableCategory->name,
                     $this->booking->bookable->title,
                     $this->booking->start,
                     $this->booking->end,
