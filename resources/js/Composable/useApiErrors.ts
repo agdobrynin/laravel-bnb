@@ -10,7 +10,7 @@ import type { ApiValidationErrorInterface } from '@/Services/Interfaces/ApiValid
  *
  * @throws Error
  */
-export type inputErrorsFunction = (error: Error | ApiErrorInterface | ApiValidationErrorInterface | null) => void | never;
+export type inputErrorsFunction = (error: Error | ApiErrorInterface | ApiValidationErrorInterface | null | unknown) => void | never;
 
 export type validationFunction = (validationKey: string) => string[];
 export interface IApiErrorsResult {
@@ -29,7 +29,7 @@ export const useApiErrors = (): IApiErrorsResult => {
      *
      * @throws Error
      */
-    const errors = (error: Error | ApiErrorInterface | ApiValidationErrorInterface | null): void | never => {
+    const errors = (error: Error | ApiErrorInterface | ApiValidationErrorInterface | null | unknown): void | never => {
         if (error === null) {
             validationErrors.value = null
             apiError.value = null

@@ -6,6 +6,7 @@ import { HttpServiceAbstract } from '@/Services/HttpServiceAbstract'
 import { HttpAuthServiceInterface } from '@/Services/Interfaces/HttpAuthServiceInterface'
 import { IResetPassword } from '@/Types/IResetPassword'
 import { IUser, IUserRegister } from '@/Types/IUser'
+import { IVerifyEmail } from '@/Types/IVerifyEmail'
 
 export class HttpAuthService extends HttpServiceAbstract implements HttpAuthServiceInterface {
     constructor(endpoint?: string) {
@@ -67,6 +68,17 @@ export class HttpAuthService extends HttpServiceAbstract implements HttpAuthServ
             return <string>(
                 await this.client.post('/reset-password', snakecaseKeys(resetPassword))
             ).data.message || 'Your password has been reset.'
+        } catch (e) {
+            throw this.errorClassForThrow(e)
+        }
+    }
+
+    async verifyEmail(data: IVerifyEmail): Promise<void | never> {
+        try {
+            const { id, hash, expires, signature } = data
+            const params = { expires, signature }
+
+            await this.client.get(`/email/verify/${id}/${hash}`, { params })
         } catch (e) {
             throw this.errorClassForThrow(e)
         }
