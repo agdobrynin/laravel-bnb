@@ -12,14 +12,18 @@ class Authenticate extends Middleware
      * @param  \Illuminate\Http\Request  $request
      * @return string|null
      */
-    protected function redirectTo($request)
+    protected function redirectTo($request): ?string
     {
         if ($request->routeIs('verification.verify')) {
-            return '/login?verification.verify';
+            $params = [...$request->query(), ...$request->route()->parameters()];
+
+            return '/login?verification.verify&'.http_build_query($params);
         }
 
         if (! $request->expectsJson()) {
             return route('login');
         }
+
+        return null;
     }
 }

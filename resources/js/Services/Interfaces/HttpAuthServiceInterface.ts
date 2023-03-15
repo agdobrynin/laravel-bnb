@@ -1,5 +1,6 @@
 import { IResetPassword } from '@/Types/IResetPassword'
 import { IUser, IUserRegister } from '@/Types/IUser'
+import { IVerifyEmail } from '@/Types/IVerifyEmail'
 
 export interface HttpAuthServiceInterface {
     /**
@@ -44,4 +45,10 @@ export interface HttpAuthServiceInterface {
      * @throws ApiErrorInterface|ApiValidationErrorInterface
      */
     resetPassword(resetPassword: IResetPassword): Promise<string | never>
+
+    /**
+     * Verify email address
+     * @throws ApiErrorInterface
+     */
+    verifyEmail(data: IVerifyEmail): Promise<void | never>
 }

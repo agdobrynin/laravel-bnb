@@ -11,6 +11,7 @@ const RegistrationUser = () => import('@/Components/Auth/RegistrationUser.vue')
 const ResendConfirmLink = () => import('@/Components/Auth/ResendConfirmLink.vue')
 const ForgotPassword = () => import('@/Components/Auth/ForgotPassword.vue')
 const ResetPassword = () => import('@/Components/Auth/ResetPassword.vue')
+const VerifyEmail = () => import('@/Components/Auth/VerifyEmail.vue')
 
 const routes: RouteRecordRaw[] = [
     {
@@ -57,6 +58,11 @@ const routes: RouteRecordRaw[] = [
         name: 'reset-password',
         path: '/reset-password',
         component: ResetPassword,
+    },
+    {
+        name: 'verify-email',
+        path: '/verify-email/:id/:hash/:expires/:signature',
+        component: VerifyEmail,
     }
 ]
 

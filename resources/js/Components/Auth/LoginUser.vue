@@ -1,6 +1,10 @@
 <template lang="pug">
 form(@submit.prevent="doLogin")
     transition
+        .row.justify-content-center(v-if="verifiedEmailData")
+            .col-12.col-md-6
+                AlertDisplay.alert.alert-warning For verify email please authorize.
+    transition
         .row.justify-content-center(v-if="apiError")
             .mb-3.col-12.col-md-6
                 AlertDisplay.alert.alert-danger {{ apiError }}
@@ -37,6 +41,7 @@ import { HttpAuthService } from '@/Services/HttpAuthService'
 import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
 import type { ApiValidationErrorInterface } from '@/Services/Interfaces/ApiValidationErrorInterface'
 import { useAuthStore } from '@/stores/auth'
+import type { IVerifyEmail } from '@/Types/IVerifyEmail'
 
 const isLoading = ref<boolean>(false)
 const authStore = useAuthStore()
@@ -49,6 +54,8 @@ const form = reactive({
     password: '',
 })
 
+const verifiedEmailData = ref<null | IVerifyEmail>(null)
+
 const doLogin = async () => {
     errors(null)
     isLoading.value = true
@@ -58,6 +65,11 @@ const doLogin = async () => {
 
         await srv.login(form.email, form.password)
         await authStore.fetchUser()
+
+        if (verifiedEmailData.value !== null && authStore.user?.isVerified === false) {
+            await srv.verifyEmail(verifiedEmailData.value)
+            authStore.user.isVerified = true
+        }
 
         await router.push({ name: 'home' })
     } catch (reason) {
@@ -73,7 +85,14 @@ onBeforeMount(async () => {
         await router.push({ name: 'home' })
     } else {
         if (Object.keys(router.currentRoute.value.query).includes('verification.verify')) {
-            errors(new Error('For verification email you must be authorized'))
+            const { id, hash, expires, signature } = router.currentRoute.value.query as {[key: string]: string}
+
+            verifiedEmailData.value = {
+                id,
+                hash,
+                expires,
+                signature,
+            }
         }
     }
 })

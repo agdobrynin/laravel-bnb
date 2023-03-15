@@ -69,7 +69,9 @@ const { user } = storeToRefs(authStore)
 const isLoading = ref<boolean>(false)
 const displayMenu = ref<boolean>(false)
 
-const isSendVerifyLink = computed(() => router.currentRoute.value.name === 'resend_confirm_link')
+const isSendVerifyLink = computed(() => {
+    return ['resend_confirm_link', 'verify-email'].includes(String(router.currentRoute.value.name))
+})
 
 const srv = new HttpAuthService()
 const doLogout = async () => {
