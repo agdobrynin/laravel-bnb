@@ -20,6 +20,7 @@ class BookableShowResource extends JsonResource
             'description' => $this->description,
             'price' => $this->price,
             'price_weekend' => $this->price_weekend,
+            'category' => $this->bookableCategory->name,
         ];
     }
 }

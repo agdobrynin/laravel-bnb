@@ -18,7 +18,7 @@ class BookableFactory extends Factory
         $weekendPrice = (int)($regularPrice + ($regularPrice * 0.15));
 
         return [
-            'title' => fake()->city.' '. \Arr::random(['room', 'villa', 'house', 'cottage', 'fancy room', 'luxury apartment']),
+            'title' => fake()->city,
             'description' => fake()->realTextBetween(100, 300),
             'price' => $regularPrice,
             'price_weekend' => $weekendPrice,

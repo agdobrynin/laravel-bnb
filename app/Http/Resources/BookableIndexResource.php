@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Str;
 
 class BookableIndexResource extends JsonResource
 {
@@ -17,9 +18,10 @@ class BookableIndexResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'description' => \Str::limit($this->description, 80),
+            'description' => Str::limit($this->description, 80),
             'price' => $this->price,
             'price_weekend' => $this->price_weekend,
+            'category' => $this->bookableCategory->name,
         ];
     }
 }

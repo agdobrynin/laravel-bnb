@@ -21,4 +21,5 @@ export interface IBookingByReviewKeyBase {
 export interface IBookingByReviewKeyBookableInfo {
     id: string,
     title: string,
+    category: string,
 }

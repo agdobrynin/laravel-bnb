@@ -1,7 +1,7 @@
 <template lang="pug">
 .card.w-100
     .card-header
-        h5.card-title {{ item.title }}
+        h5.card-title {{ item.category }}: {{ item.title }}
     .card-body
         p.card-text {{ item.description }}
     .card-body.fw-light

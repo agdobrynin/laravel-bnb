@@ -6,7 +6,7 @@ div
         .row
             .col-md-8.mb-4
                 .card.mb-4
-                    .card-header #[h2 {{ bookable?.title }}]
+                    .card-header #[h2 {{ bookable?.category }}: {{ bookable?.title }}]
                     .card-body
                         article {{ bookable?.description }}
                     .card-footer
@@ -134,10 +134,10 @@ const checkPrice = async (isAvailable: IBookingDates | undefined): Promise<void>
 
 const addToBasket = (): void => {
     if (null !== calculate.value && bookable.value?.id) {
+        const bookableTitle: string = `${bookable.value.category}: ${bookable.value.title}`
 
         const payload:  ICalculateBookingInfoWithBookableTitle = {
-            ...calculate.value,
-            ... { bookableTitle: bookable.value?.title || bookable.value.id }
+            ...calculate.value, ... { bookableTitle }
         }
 
         store.addToBasket(payload)

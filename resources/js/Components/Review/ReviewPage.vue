@@ -9,7 +9,7 @@ div
             div.row(v-else-if="bookable !== null && booking")
                 .col-md-4
                     .card
-                        .card-header.fs-5 State at
+                        .card-header.fs-5 State at {{ bookable?.category }}:
                             router-link(
                                 :to="{name: 'bookable', params: {id: bookable?.id}}"
                                 class="ms-3") {{ bookable?.title }}
@@ -122,7 +122,8 @@ const bookable = computed<IBookingByReviewKeyBookableInfo | null>(() => {
     if (bookingByReviewKey.value?.data?.bookable) {
         return {
             id: bookingByReviewKey.value?.data.bookable.id,
-            title: bookingByReviewKey.value?.data.bookable.title
+            title: bookingByReviewKey.value?.data.bookable.title,
+            category: bookingByReviewKey.value?.data.bookable.category,
         }
     }
 
