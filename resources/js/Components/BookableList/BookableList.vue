@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-    div.row.justify-content-center.row-cols-1.row-cols-md-2.g-4(v-if="loading" )
+    div.row.justify-content-center.row-cols-1.row-cols-md-2.g-4(v-if="isLoading" )
         div.col(
             v-for="index in 4"
             :key="index"
@@ -10,6 +10,17 @@ div
         AlertDisplay(v-if="apiError") {{ apiError }}
         div(v-else-if="bookables.length === 0") Not found bookable objects.
         template(v-else)
+            Transition
+                .d-flex.align-items-center.text-primary(v-if="isLoadingFilters")
+                    span Loading filters...
+                    .spinner-border.spinner-border-sm.ms-auto
+                span.border.rounded-2.p-2.w-100(v-else)
+                    BookableFilters(
+                        :categories="bookableCategories"
+                        :filters="bookableFilters"
+                        @change-filters="onChangeFilters")
+                    Transition(name="slide-fade")
+                        .alert.alert-danger.mt-2.mb-0(v-if="apiErrorCategories") Load bookable categories: {{ apiErrorCategories }}
             PaginationUI(
                 :data="paginatorData"
                 @change-page="onChangePage")
@@ -24,35 +35,54 @@ div
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
+import BookableFilters from '@/Components/BookableList/BookableFilters.vue'
 import BookableItem from '@/Components/BookableList/BookableListItem.vue'
 import AlertDisplay from '@/Components/UI/AlertDisplay.vue'
 import PaginationUI from '@/Components/UI/PaginationUI.vue'
 import PlaceholderCard from '@/Components/UI/PlaceholderCard.vue'
-import { usePaginatorBuildQueryStringParamsInRouter, usePaginatorData } from '@/Composable/usePaginatorData'
+import {
+    useFiltersBuildQueryStringParamsInRouter,
+    usePaginatorBuildQueryStringParamsInRouter,
+    usePaginatorData
+} from '@/Composable/usePaginatorData'
+import { ApiError } from '@/Services/ApiError'
 import HttpApiService from '@/Services/HttpApiService'
 import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
 import type { IBookable } from '@/Types/IBookable'
+import type { IBookableCategoriesResponse, IBookableCategoryItem } from '@/Types/IBookableCategoryItem'
 import type { IBookableList } from '@/Types/IBookableList'
+import type { IBookableListFilters } from '@/Types/IBookableListFilters'
 import type { IPaginationData } from '@/Types/IPagination'
 
 const route = useRoute()
 
-const bookableList = ref<IBookableList|null>(null)
-const loading = ref<boolean>(true)
-const apiError = ref<string|null>(null)
+const bookableList = ref<IBookableList | null>(null)
+const isLoading = ref<boolean>(true)
+const isLoadingFilters = ref<boolean>(false)
+const apiError = ref<string | null>(null)
+const apiErrorCategories = ref<string | null>(null)
+const bookableFilters = ref<IBookableListFilters>({})
+const bookableCategories = ref<IBookableCategoryItem[]>([])
 
 const bookables = computed<IBookable[]>(() => bookableList.value?.data || [])
 const paginatorData = computed<IPaginationData>(() => usePaginatorData(bookableList.value?.meta || null))
 
 const onChangePage = (page: number) => doLoadBookables(page)
+
+const onChangeFilters = async (filters: IBookableListFilters) => {
+    bookableFilters.value = filters
+    await useFiltersBuildQueryStringParamsInRouter(filters)
+    await doLoadBookables(1)
+}
+
 const doLoadBookables = async (page: number): Promise<void> => {
-    loading.value = true
+    isLoading.value = true
 
     try {
-        bookableList.value = await new HttpApiService().getBookables(page)
+        bookableList.value = await new HttpApiService().getBookables(page, bookableFilters.value)
     } catch (reason) {
         const error = reason as ApiErrorInterface
         apiError.value = error.apiError?.message || error.requestError
@@ -60,12 +90,28 @@ const doLoadBookables = async (page: number): Promise<void> => {
 
     await usePaginatorBuildQueryStringParamsInRouter(page)
 
-    loading.value = false
+    isLoading.value = false
 }
 
 onMounted(async () => {
     const { page = 1 } = route.query
 
     await doLoadBookables(Number(page))
+
+    isLoadingFilters.value = true
+    new HttpApiService().bookableCategories()
+        .then((res: IBookableCategoriesResponse) => bookableCategories.value = res.data)
+        .catch((err: ApiError) => {
+            apiErrorCategories.value = err.apiError?.message || err.requestError
+        })
+        .finally(() => isLoadingFilters.value = false)
+})
+
+onBeforeMount(() => {
+    const {
+        bookableCategoryId, priceMin, priceMax, priceWeekendMin, priceWeekendMax
+    } = route.query as IBookableListFilters
+
+    bookableFilters.value = { bookableCategoryId, priceMin, priceMax, priceWeekendMin, priceWeekendMax }
 })
 </script>

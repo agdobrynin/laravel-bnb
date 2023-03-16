@@ -1,4 +1,5 @@
-import router from '@/router'
+import { useBuildQueryString } from '@/Composable/useBuildQueryString'
+import { IBookableListFilters } from '@/Types/IBookableListFilters'
 import type { IPaginationData, IPaginationMeta } from '@/Types/IPagination'
 
 export const usePaginatorData = (meta: IPaginationMeta | null): IPaginationData => {
@@ -13,6 +14,9 @@ export const usePaginatorData = (meta: IPaginationMeta | null): IPaginationData 
 }
 
 export const usePaginatorBuildQueryStringParamsInRouter = async (page: number): Promise<void> => {
-    const newQueryString = { ...router.currentRoute.value.query, ...{ page: String(page) } }
-    await router.replace({ query: newQueryString })
+    await useBuildQueryString({ page: page })
+}
+
+export const useFiltersBuildQueryStringParamsInRouter = async (filters: IBookableListFilters): Promise<void> => {
+    await useBuildQueryString(filters)
 }

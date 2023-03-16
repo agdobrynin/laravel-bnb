@@ -4,8 +4,10 @@ import snakecaseKeys from 'snakecase-keys'
 import { ApiError } from '@/Services/ApiError'
 import { HttpServiceAbstract } from '@/Services/HttpServiceAbstract'
 import type { HttpApiServiceInterface } from '@/Services/Interfaces/HttpApiServiceInterface'
+import { IBookableCategoriesResponse } from '@/Types/IBookableCategoryItem'
 import type { IBookableItem } from '@/Types/IBookableItem'
 import type { IBookableList } from '@/Types/IBookableList'
+import { IBookableListFilters } from '@/Types/IBookableListFilters'
 import type { IBookingAvailability } from '@/Types/IBookingAvailability'
 import type { IBookingByReviewKey } from '@/Types/IBookingByReviewKey'
 import { ICalculateBooking } from '@/Types/ICalculateBooking'
@@ -19,9 +21,11 @@ export default class HttpApiService extends HttpServiceAbstract implements HttpA
         this.client.defaults.baseURL = `${this.endpoint}/api`
     }
 
-    async getBookables(page: number = 1): Promise<IBookableList | never> {
+    async getBookables(page: number = 1, filters?: IBookableListFilters): Promise<IBookableList | never> {
         try {
-            return <IBookableList>((await this.client.get('/bookables', { params: { page } })).data)
+            const params = { page, ...snakecaseKeys(filters|| {}) }
+
+            return <IBookableList>((await this.client.get('/bookables', { params })).data)
         } catch (reason) {
             throw new ApiError(<AxiosError>reason)
         }
@@ -113,6 +117,14 @@ export default class HttpApiService extends HttpServiceAbstract implements HttpA
             return <ICheckoutSuccess>(
                 (await this.client.post('/checkout', snakecaseKeys(checkout))).data
             )
+        } catch (reason) {
+            throw this.errorClassForThrow(reason)
+        }
+    }
+
+    async bookableCategories(): Promise<IBookableCategoriesResponse | never> {
+        try {
+            return <IBookableCategoriesResponse>((await this.client.get('/bookables/categories')).data)
         } catch (reason) {
             throw this.errorClassForThrow(reason)
         }

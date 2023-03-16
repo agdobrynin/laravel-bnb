@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\BookableAvailabilityController;
+use App\Http\Controllers\Api\BookableCategoryController;
 use App\Http\Controllers\Api\BookableController;
 use App\Http\Controllers\Api\CalculateBookingController;
 use App\Http\Controllers\Api\BookableReviewController;
@@ -25,6 +26,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return new FetchUserResource($request->user());
 });
+
+Route::get('bookables/categories', BookableCategoryController::class)
+    ->name('bookables.categories');
 
 Route::apiResource('bookables', BookableController::class)
     ->only(['index', 'show']);
