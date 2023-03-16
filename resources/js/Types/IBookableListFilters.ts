@@ -1,4 +1,6 @@
-export interface IBookableListFilters {
+import { IDictionary } from '@/Types/IDictionary'
+
+export interface IBookableListFilters extends IDictionary {
     /**
      * BookableCategoryUuid
      */

@@ -14,7 +14,7 @@ export const usePaginatorData = (meta: IPaginationMeta | null): IPaginationData 
 }
 
 export const usePaginatorBuildQueryStringParamsInRouter = async (page: number): Promise<void> => {
-    await useBuildQueryString({ page: page })
+    await useBuildQueryString({ page: String(page) })
 }
 
 export const useFiltersBuildQueryStringParamsInRouter = async (filters: IBookableListFilters): Promise<void> => {
