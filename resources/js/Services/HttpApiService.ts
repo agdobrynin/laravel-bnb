@@ -23,7 +23,7 @@ export default class HttpApiService extends HttpServiceAbstract implements HttpA
 
     async getBookables(page: number = 1, filters?: IBookableListFilters): Promise<IBookableList | never> {
         try {
-            const params = { page, ...snakecaseKeys(filters|| {}) }
+            const params = { page, ...filters|| {} }
 
             return <IBookableList>((await this.client.get('/bookables', { params })).data)
         } catch (reason) {
