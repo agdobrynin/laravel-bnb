@@ -9,8 +9,8 @@ div
         button.btn.btn-outline-secondary.w-100.d-md-none.d-block.text-uppercase.mb-4(
             @click.prevent="forceShowReviewList = !forceShowReviewList"
         )
-            span(v-if="!forceShowReviewList" ) Show reviews
-            span(v-else) Hide reviews
+            span(v-if="forceShowReviewList") Hide reviews
+            span(v-else) Show reviews
         AlertDisplay(v-if="apiError") {{ apiError }}
         div.d-md-block(
             v-else
