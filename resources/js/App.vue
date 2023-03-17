@@ -8,6 +8,15 @@ div
                 @click.prevent="displayMenu = !displayMenu"
             )
                 span.navbar-toggler-icon
+            router-link.navbar-toggler.ms-1.text-decoration-none(
+                v-if="basket.length"
+                :to="{name: 'basket_and_checkout'}"
+            )
+               SvgIcon.me-2(
+                    type="mdi"
+                    :size="30"
+                    :path="mdiBasket")
+               | {{ basket.length }}
             .collapse.navbar-collapse(:class="{'show': displayMenu}")
                 ul.navbar-nav.ms-auto
                     li.nav-item(v-if="!user")
@@ -47,7 +56,7 @@ div
 <script setup lang="ts">
 //@ts-ignore
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdiAccount, mdiInformationOutline } from '@mdi/js'
+import { mdiAccount, mdiBasket,mdiInformationOutline } from '@mdi/js'
 import { storeToRefs } from 'pinia'
 import { computed, onBeforeMount, ref } from 'vue'
 import { useRouter } from 'vue-router'

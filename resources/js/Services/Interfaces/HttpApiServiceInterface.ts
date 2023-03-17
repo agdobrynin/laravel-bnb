@@ -1,5 +1,6 @@
 import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
 import type { ApiValidationErrorInterface } from '@/Services/Interfaces/ApiValidationErrorInterface'
+import { IBookableCategoriesResponse } from '@/Types/IBookableCategoryItem'
 import type { IBookableItem } from '@/Types/IBookableItem'
 import type { IBookableList } from '@/Types/IBookableList'
 import type { IBookingAvailability } from '@/Types/IBookingAvailability'
@@ -61,4 +62,10 @@ export interface HttpApiServiceInterface {
      * @throws ApiErrorInterface|ApiValidationErrorInterface
      */
     booking(checkout: ICheckout): Promise<ICheckoutSuccess | never>
+
+    /**
+     * Fetch all bookable categories
+     * @throws ApiErrorInterface
+     */
+    bookableCategories(): Promise<IBookableCategoriesResponse | never>
 }

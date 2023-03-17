@@ -43,17 +43,20 @@ div
                 Transition.mt-4
                     .alert.alert-warning.text-center(v-if="inBasket")
                         p &laquo;#[b {{ bookable.title }}]&raquo; already in basket.
-                        p If you want change dates, remove from the basket first.
+                        p If you want change dates,&nbsp;
+                            a.link(
+                                role="button"
+                                @click.prevent="removeFromBasket") remove from the basket first.
                 Transition.mt-4
                     PriceBreakdown.mt-4.text-center(
                         v-if="inBasket"
                         :calculate-booking="inBasket")
                         template(#header) #[div.alert.alert-warning Booking {{ bookingDates }}]
                 Transition
-                    button.btn.btn-outline-secondary.w-100(
+                    router-link.btn.btn-outline-secondary.w-100(
                         v-if="inBasket"
-                        @click.prevent="removeFromBasket"
-                        ) Remove from basket
+                        :to="{name: 'basket_and_checkout'}"
+                        ) Go to basket
 </template>
 
 <script setup lang="ts">

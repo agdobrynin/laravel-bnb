@@ -1,15 +1,18 @@
 <template lang="pug">
 .form-floating
-    input.form-control(
+    select.form-select(
         :id="elId"
         :value="modelValue"
-        :type="type"
         :placeholder="placeholder"
-        :min="min"
         :class="[{'is-invalid': validationErrors.length}, inputClass]"
         :disabled="disabled"
         :readonly="readonly"
-        @input="$emit('update:modelValue', $event.target.value)")
+        @change="$emit('update:modelValue', $event.target.value)")
+        option(
+            v-for="(item, index) in items"
+            :key="`option_${elId}_${index}`"
+            :value="item.value"
+        ) {{ item.text }}
     label.form-label(
         v-if="label"
         :class="labelClass"
@@ -24,10 +27,13 @@ import { computed } from 'vue'
 
 import { randomString } from '@/Composable/utils'
 
+export interface ISelectUIOption {
+    value: string, text: string
+}
+
 const props = withDefaults(
     defineProps<{
-        modelValue?: string|number,
-        type?: string,
+        modelValue?: string,
         errors?: string[],
         label?: string,
         id?: string,
@@ -36,11 +42,10 @@ const props = withDefaults(
         placeholder?: string,
         inputClass?: string,
         labelClass?: string,
-        min?: string,
+        items: ISelectUIOption[],
     }>(),
     {
         modelValue: '',
-        type: 'text',
         errors: undefined,
         label: undefined,
         id: undefined,
@@ -49,7 +54,6 @@ const props = withDefaults(
         placeholder: undefined,
         inputClass: undefined,
         labelClass: undefined,
-        min: undefined,
     }
 )
 
