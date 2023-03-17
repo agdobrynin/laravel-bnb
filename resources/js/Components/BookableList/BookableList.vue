@@ -8,7 +8,7 @@ div
             PlaceholderCard
     div.row.justify-content-center.row-cols-1.row-cols-md-2.row-cols-lg-3.row-cols-xl-4.g-4(v-else)
         AlertDisplay(v-if="apiError") {{ apiError }}
-        div(v-else-if="bookables.length === 0") Not found bookable objects.
+        div(v-else-if="!hasBookables && !hasFilters") Not found bookable objects.
         template(v-else)
             Transition
                 .d-flex.align-items-center.text-primary(v-if="isLoadingFilters")
@@ -21,7 +21,10 @@ div
                         @change-filters="onChangeFilters")
                     Transition(name="slide-fade")
                         .alert.alert-danger.mt-2.mb-0(v-if="apiErrorCategories") Load bookable categories: {{ apiErrorCategories }}
+            div.w-100.alert.alert-warning(v-if="!hasBookables" )
+                | Not found bookable objects by filter.
             PaginationUI(
+                v-if="paginatorData.lastPage > 1"
                 :data="paginatorData"
                 @change-page="onChangePage")
             div.col.d-flex.align-items-stretch(
@@ -30,6 +33,7 @@ div
             )
                 BookableItem(:item="bookable")
             PaginationUI(
+                v-if="paginatorData.lastPage > 1"
                 :data="paginatorData"
                 @change-page="onChangePage")
 </template>
@@ -69,6 +73,8 @@ const bookableCategories = ref<IBookableCategoryItem[]>([])
 
 const bookables = computed<IBookable[]>(() => bookableList.value?.data || [])
 const paginatorData = computed<IPaginationData>(() => usePaginatorData(bookableList.value?.meta || null))
+const hasFilters = computed<boolean>(() => Boolean(Object.values(bookableFilters.value).filter(v => !!v).length))
+const hasBookables = computed<boolean>(() => Boolean(bookables.value.length))
 
 const onChangePage = (page: number) => doLoadBookables(page)
 
