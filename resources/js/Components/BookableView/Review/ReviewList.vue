@@ -6,11 +6,19 @@ div
             :key="`place-holder${index}`"
             class="mb-4")
     div(v-else)
+        button.btn.btn-outline-secondary.w-100.d-md-none.d-block.text-uppercase.mb-4(
+            @click.prevent="forceShowReviewList = !forceShowReviewList"
+        )
+            span(v-if="!forceShowReviewList" ) Show reviews
+            span(v-else) Hide reviews
         AlertDisplay(v-if="apiError") {{ apiError }}
-        div.d-none.d-md-block(v-else)
+        div.d-md-block(
+            v-else
+            :class="[forceShowReviewList ? 'd-block': 'd-none']"
+        )
             h6.text-uppercase(v-if="reviews.length === 0") Review List is Empty
             div(v-else)
-                h5.text-uppercase Review List
+                h5.text-uppercase.d-none.d-md-block Review List
                 PaginationUI(
                     :data="paginatorData"
                     @change-page="onChangePage")
@@ -42,6 +50,8 @@ const props = defineProps<{bookabledId: string}>()
 const loading = ref<boolean>(true)
 const apiError = ref<string|null>(null)
 const reviewCollection = ref<IReviewCollection | null>(null)
+const forceShowReviewList = ref<boolean>(false)
+
 const route = useRoute()
 
 const reviews = computed<IReviewExistItem[]>(() => reviewCollection.value?.data || [])

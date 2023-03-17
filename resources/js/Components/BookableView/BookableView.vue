@@ -18,8 +18,7 @@ div
                             .text-muted Weekend price per day
                             .flex-fill.border-bottom.mx-2
                             .text-muted {{ prices.price_weekend }} per day
-                .mb-4.mx-1
-                    ReviewList(:bookabled-id="bookable.id")
+                ReviewList(:bookabled-id="bookable.id")
             .col-md-4.mb-4
                 AvailabilityBooking(
                     :id="bookable.id"
