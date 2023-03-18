@@ -42,8 +42,6 @@ div
 import { computed, onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
-import BookableFilters from '@/Components/BookableList/BookableFilters.vue'
-import BookableItem from '@/Components/BookableList/BookableListItem.vue'
 import AlertDisplay from '@/Components/UI/AlertDisplay.vue'
 import PaginationUI from '@/Components/UI/PaginationUI.vue'
 import PlaceholderCard from '@/Components/UI/PlaceholderCard.vue'
@@ -52,6 +50,8 @@ import {
     usePaginatorBuildQueryStringParamsInRouter,
     usePaginatorData
 } from '@/Composable/usePaginatorData'
+import BookableFilters from '@/Layouts/BookableList/Compoents/BookableFilters.vue'
+import BookableItem from '@/Layouts/BookableList/Compoents/BookableListItem.vue'
 import { ApiError } from '@/Services/ApiError'
 import HttpApiService from '@/Services/HttpApiService'
 import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'

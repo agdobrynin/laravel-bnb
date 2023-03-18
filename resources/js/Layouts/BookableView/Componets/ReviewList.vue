@@ -35,11 +35,11 @@ div
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
-import ReviewItem from '@/Components/BookableView/Review/ReviewItem.vue'
 import AlertDisplay from '@/Components/UI/AlertDisplay.vue'
 import PaginationUI from '@/Components/UI/PaginationUI.vue'
 import PlaceholderCard from '@/Components/UI/PlaceholderCard.vue'
 import { usePaginatorBuildQueryStringParamsInRouter, usePaginatorData } from '@/Composable/usePaginatorData'
+import ReviewItem from '@/Layouts/BookableView/Componets/Review/ReviewItem.vue'
 import HttpApiService from '@/Services/HttpApiService'
 import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
 import type { IPaginationData } from '@/Types/IPagination'
