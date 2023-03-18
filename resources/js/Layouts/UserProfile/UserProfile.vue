@@ -3,7 +3,7 @@ div(v-if="!isVerified")
     p Please check your email box and confirm your account by verification link.
     p Resend confirmation link to your email #[router-link(:to="{name: 'resend-confirm-link'}") again].
 div(v-else)
-    ul.nav.nav-tabs
+    ul.nav.nav-tabs.flex-column.flex-md-row
         li.nav-item(
             v-for="(title, tabId) in mapTabs"
             :key="`tab_${tabId}`"

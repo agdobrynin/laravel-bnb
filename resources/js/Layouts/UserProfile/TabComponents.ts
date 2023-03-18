@@ -7,8 +7,8 @@ export enum tabKey {
 }
 
 export const mapTabs: {[key in tabKey]: string} = {
-    [tabKey.profileUpdate]: 'Update user profile',
-    [tabKey.passwordUpdate]: 'Change current user password',
+    [tabKey.profileUpdate]: 'User profile',
+    [tabKey.passwordUpdate]: 'Change password',
     [tabKey.newReviews]: 'Leave review',
 }
 

@@ -29,13 +29,11 @@ form.p-3(@submit.prevent="doUpdate")
         .mb-3.col-12.col-md-6
             ButtonWithLoading.btn.btn-outline-secondary.w-100(
                 btn-type="button"
-                @click.prevent="doRestore"
-            ) Reset
+                @click.prevent="doRestore") Reset
         .mb-3.col-12.col-md-6
             ButtonWithLoading.btn.btn-primary.w-100(
                 :is-loading="isLoading"
-                btn-type="submit"
-            ) Update
+                btn-type="submit") Update
 </template>
 
 <script lang="ts" setup>
