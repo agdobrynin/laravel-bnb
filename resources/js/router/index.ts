@@ -1,17 +1,17 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
-import BookableList from '@/Components/BookableList/BookableList.vue'
+import BookableList from '@/Layouts/BookableList/BookableList.vue'
 
-const BookableView = () => import('@/Components/BookableView/BookableView.vue')
-const ReviewPage = () => import('@/Components/Review/ReviewPage.vue')
-const BasketAndCheckout = () => import('@/Components/Basket/BasketAndCheckout.vue')
-const LoginUser = () => import('@/Components/Auth/LoginUser.vue')
-const RegistrationUser = () => import('@/Components/Auth/RegistrationUser.vue')
+const BookableView = () => import('@/Layouts/BookableView/BookableView.vue')
+const ReviewPage = () => import('@/Layouts/Review/ReviewPage.vue')
+const BasketAndCheckout = () => import('@/Layouts/Basket/BasketAndCheckout.vue')
 
-const ResendConfirmLink = () => import('@/Components/Auth/ResendConfirmLink.vue')
-const ForgotPassword = () => import('@/Components/Auth/ForgotPassword.vue')
-const ResetPassword = () => import('@/Components/Auth/ResetPassword.vue')
-const VerifyEmail = () => import('@/Components/Auth/VerifyEmail.vue')
+const LoginUser = () => import('@/Layouts/Auth/LoginUser.vue')
+const RegistrationUser = () => import('@/Layouts/Auth/RegistrationUser.vue')
+const ResendConfirmLink = () => import('@/Layouts/Auth/ResendConfirmLink.vue')
+const ForgotPassword = () => import('@/Layouts/Auth/ForgotPassword.vue')
+const ResetPassword = () => import('@/Layouts/Auth/ResetPassword.vue')
+const VerifyEmail = () => import('@/Layouts/Auth/VerifyEmail.vue')
 
 const routes: RouteRecordRaw[] = [
     {
