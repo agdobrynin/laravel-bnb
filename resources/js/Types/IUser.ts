@@ -4,10 +4,19 @@ export interface IUser {
     isVerified: boolean
 }
 
-export interface IUserRegister {
+export interface IUserProfile {
     email: string,
     firstName: string,
     lastName: string,
+}
+
+export interface IUserRegister extends IUserProfile {
+    password: string,
+    passwordConfirmation: string,
+}
+
+export interface IUserPasswordChange {
+    currentPassword: string,
     password: string,
     passwordConfirmation: string,
 }

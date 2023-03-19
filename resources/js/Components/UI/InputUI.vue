@@ -14,6 +14,7 @@
         v-if="label"
         :class="labelClass"
         :for="elId") {{ label }}
+    div.text-muted.fw-light.small.mt-2(v-if="help") {{ help }}
     div.invalid-feedback(
         v-for="(error, index) in validationErrors"
         :key="`error_${id}_${index}`") {{ error }}
@@ -34,6 +35,7 @@ const props = withDefaults(
         disabled?: boolean,
         readonly?: boolean,
         placeholder?: string,
+        help?: string
         inputClass?: string,
         labelClass?: string,
         min?: string,
@@ -47,6 +49,7 @@ const props = withDefaults(
         disabled: false,
         readonly: false,
         placeholder: undefined,
+        help: undefined,
         inputClass: undefined,
         labelClass: undefined,
         min: undefined,

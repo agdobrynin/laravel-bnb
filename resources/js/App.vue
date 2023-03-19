@@ -22,7 +22,7 @@ div
                     li.nav-item(v-if="!user")
                         router-link.nav-link(:to="{name: 'login'}") Sign in
                     li.nav-item(v-if="user !== null")
-                        router-link.nav-link(:to="{ name: 'home' }")
+                        router-link.nav-link(:to="{ name: 'user-profile' }")
                             span.position-relative
                                 SvgIcon(
                                     type="mdi"
@@ -49,7 +49,7 @@ div
                 .fs-5
                     p Your email not confirmed
                     p Please check your email box and confirm your account by verification link.
-                    p.text-primary Resend confirmation link to your email #[router-link(:to="{name: 'resend_confirm_link'}") again].
+                    p.text-primary Resend confirmation link to your email #[router-link(:to="{name: 'resend-confirm-link'}") again].
         router-view
 </template>
 
@@ -79,7 +79,7 @@ const isLoading = ref<boolean>(false)
 const displayMenu = ref<boolean>(false)
 
 const isSendVerifyLink = computed(() => {
-    return ['resend_confirm_link', 'verify-email'].includes(String(router.currentRoute.value.name))
+    return ['resend-confirm-link', 'verify-email', 'user-profile'].includes(String(router.currentRoute.value.name))
 })
 
 const srv = new HttpAuthService()

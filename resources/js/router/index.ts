@@ -13,6 +13,8 @@ const ForgotPassword = () => import('@/Layouts/Auth/ForgotPassword.vue')
 const ResetPassword = () => import('@/Layouts/Auth/ResetPassword.vue')
 const VerifyEmail = () => import('@/Layouts/Auth/VerifyEmail.vue')
 
+const UserProfile = () => import('@/Layouts/UserProfile/UserProfile.vue')
+
 const routes: RouteRecordRaw[] = [
     {
         name: 'home',
@@ -45,7 +47,7 @@ const routes: RouteRecordRaw[] = [
         component: RegistrationUser,
     },
     {
-        name: 'resend_confirm_link',
+        name: 'resend-confirm-link',
         path: '/resend-confirm-link',
         component: ResendConfirmLink,
     },
@@ -63,6 +65,11 @@ const routes: RouteRecordRaw[] = [
         name: 'verify-email',
         path: '/verify-email/:id/:hash/:expires/:signature',
         component: VerifyEmail,
+    },
+    {
+        name: 'user-profile',
+        path: '/user-profile',
+        component: UserProfile,
     }
 ]
 
@@ -78,7 +85,7 @@ const router = createRouter({
         }
 
         return { top: 0, behavior: 'smooth' }
-    }
+    },
 })
 
 export default router
