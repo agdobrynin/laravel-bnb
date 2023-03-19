@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
 import BookableList from '@/Layouts/BookableList/BookableList.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const BookableView = () => import('@/Layouts/BookableView/BookableView.vue')
 const ReviewPage = () => import('@/Layouts/Review/ReviewPage.vue')
@@ -14,8 +15,17 @@ const ResetPassword = () => import('@/Layouts/Auth/ResetPassword.vue')
 const VerifyEmail = () => import('@/Layouts/Auth/VerifyEmail.vue')
 
 const UserProfile = () => import('@/Layouts/UserProfile/UserProfile.vue')
+const UserReviews = () => import('@/Layouts/UserProfile/UserReviews.vue')
 
-const routes: RouteRecordRaw[] = [
+type IProtectedRoute = {
+    meta?: {
+        isProtected?: boolean,
+    }
+}
+
+type RouteRecordWithProtected = RouteRecordRaw & IProtectedRoute
+
+const routes: RouteRecordWithProtected[] = [
     {
         name: 'home',
         path: '/',
@@ -70,6 +80,13 @@ const routes: RouteRecordRaw[] = [
         name: 'user-profile',
         path: '/user-profile',
         component: UserProfile,
+        meta: { isProtected: true }
+    },
+    {
+        name: 'user-reviews',
+        path: '/user-profile/reviews',
+        component: UserReviews,
+        meta: { isProtected: true },
     }
 ]
 
@@ -86,6 +103,16 @@ const router = createRouter({
 
         return { top: 0, behavior: 'smooth' }
     },
+})
+
+router.beforeEach((to, from, next) => {
+    const authStore = useAuthStore()
+
+    if (to.meta.isProtected && authStore.user === null) {
+        next({ name: 'login' })
+    } else {
+        next()
+    }
 })
 
 export default router
