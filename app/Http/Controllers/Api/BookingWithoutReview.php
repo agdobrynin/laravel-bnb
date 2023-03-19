@@ -12,13 +12,15 @@ class BookingWithoutReview extends Controller
 {
     public function __invoke(Request $request): AnonymousResourceCollection
     {
+        $perPage = env('PAGINATION_BOOKING_WITHOUT_REVIEW_PER_PAGE', 10);
+
         return BookingWithoutReviewResource::collection(
             Booking::query()
                 ->where('review_key', '!=', '')
                 ->where('user_id', $request->user()->id)
                 ->with('bookable.bookableCategory')
                 ->orderBy('start')
-                ->paginate(env('PAGINATION_BOOKING_WITHOUT_REVIEW_PER_PAGE', 10))
+                ->paginate($perPage)
                 ->withQueryString()
         );
     }

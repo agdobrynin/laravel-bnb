@@ -38,6 +38,7 @@ const bookingWithoutReview = ref<IBookingWithoutReviewByUserCollection | null>(n
 
 const paginatorData = computed<IPaginationData>(() => usePaginatorData(bookingWithoutReview.value?.meta || null))
 const bookingList = computed<IBookingWithoutReviewByUser[]>(() => bookingWithoutReview.value?.data || [])
+
 const doLoadList = async (page: number = 1): Promise<void> => {
     errors(null)
     isLoading.value = true
