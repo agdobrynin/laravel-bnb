@@ -11,31 +11,31 @@
                     .mb-3.col-md-6
                         InputUI(
                             v-model="checkoutForm.person.firstName"
-                            :errors="validationFieldPerson.firstName"
+                            :errors="validation('person.first_name')"
                             label="First name")
                     .mb-3.col-md-6
                         InputUI(
                             v-model="checkoutForm.person.lastName"
-                            :errors="validationFieldPerson.lastName"
+                            :errors="validation('person.last_name')"
                             label="Last name")
                 .row
                     .mb-3.col-12
                         InputUI(
                             v-model="checkoutForm.person.address"
-                            :errors="validationFieldPerson.address"
+                            :errors="validation('person.address')"
                             label="Address")
                 .row
                     .mb-3.col-md-6
                         InputUI(
                             v-model="checkoutForm.person.email"
-                            :errors="validationFieldPerson.email"
+                            :errors="validation('person.email')"
                             :readonly="Boolean(authStore.user.value)"
                             label="Email"
                             type="email")
                     .mb-3.col-md-6
                         InputUI(
                             v-model="checkoutForm.person.phone"
-                            :errors="validationFieldPerson.phone"
+                            :errors="validation('person.phone')"
                             label="Contact phone"
                             type="tel")
                 .row
@@ -64,9 +64,9 @@
                 :data-index="index"
             )
                 div.text-danger.mb-2.mx-3(
-                    v-for="(error, errIndex) in getValidationByKey(`bookings.${index}`)"
+                    v-for="(error, errIndex) in validation(`bookings.${index}`)"
                     :key="`error_booking_${index}_${errIndex}`") {{ error }}
-                div(:class="{'alert alert-danger': getValidationByKey(`bookings.${index}`).length}")
+                div(:class="{'alert alert-danger':validation(`bookings.${index}`).length}")
                     .d-flex.flex-row.gap-4.justify-content-between.mb-4
                         .cols.flex-fill
                             router-link.text-success(:to="{name: 'bookable', params: {id: item.bookableId}}") {{ item.title }}
@@ -105,14 +105,11 @@ import { computed, reactive, ref } from 'vue'
 import AlertDisplay from '@/Components/UI/AlertDisplay.vue'
 import ButtonWithLoading from '@/Components/UI/ButtonWithLoading.vue'
 import InputUI from '@/Components/UI/InputUI.vue'
+import { useApiErrors } from '@/Composable/useApiErrors'
 import { dateAsLocaleString } from '@/Composable/useDateTime'
 import { priceUsdFormat } from '@/Composable/useMoney'
 import CheckoutSuccess from '@/Layouts/Basket/Components/CheckoutSuccess.vue'
-import { ApiError } from '@/Services/ApiError'
-import { ApiValidationError } from '@/Services/ApiValidationError'
 import HttpApiService from '@/Services/HttpApiService'
-import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
-import type { ApiValidationErrorInterface } from '@/Services/Interfaces/ApiValidationErrorInterface'
 import { useAuthStore } from '@/stores/auth'
 import { useBasketStore } from '@/stores/basket'
 import { useCheckoutPersonStore } from '@/stores/checkout-person'
@@ -123,6 +120,7 @@ import type { ICheckoutSuccess } from '@/Types/ICheckout'
 const basketStore = useBasketStore()
 const checkoutPersonStore = useCheckoutPersonStore()
 const authStore = storeToRefs(useAuthStore())
+const { validation, apiError, errors, validationErrors } = useApiErrors()
 
 const basket = computed<IBasketTable>(() => {
     const basketTable: IBasketTable = { total: '0', items: [] }
@@ -169,32 +167,17 @@ if (authStore.user.value?.email) {
 }
 
 const isLoading = ref<boolean>(false)
-const apiError = ref<string | null>(null)
-const validationError = ref<ApiValidationErrorInterface|null>( null)
 const bookingAttempt = ref<ICheckoutSuccess|null>(null)
 
-const getValidationByKey = (errorKey: string) => validationError.value?.getErrorsByField(errorKey) || []
-
-const validationFieldPerson = computed(() => {
-    return {
-        firstName: getValidationByKey('person.first_name'),
-        lastName: getValidationByKey('person.last_name'),
-        address: getValidationByKey('person.address'),
-        email: getValidationByKey('person.email'),
-        phone: getValidationByKey('person.phone'),
-    }
-})
-
 const removeFromBasket = (bookableId: string): void => {
-    validationError.value = null
+    validationErrors.value = null
     basketStore.removeFromBasket(bookableId)
 }
 
 const checkout = async () => {
     isLoading.value = true
     bookingAttempt.value = null
-    apiError.value = null
-    validationError.value = null
+    errors(null)
     checkoutPersonStore.saveToStorage()
 
     try {
@@ -206,15 +189,7 @@ const checkout = async () => {
 
         basketStore.emptyBasket()
     } catch (reason) {
-        const error = reason as Error | ApiErrorInterface | ApiValidationErrorInterface
-
-        if (error instanceof ApiValidationError) {
-            validationError.value = error
-        } else if (error instanceof ApiError) {
-            apiError.value = error.apiError?.message || error.requestError
-        } else {
-            apiError.value = (error as Error).message
-        }
+        errors(reason)
     }
 
     isLoading.value = false
