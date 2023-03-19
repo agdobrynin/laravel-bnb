@@ -14,3 +14,9 @@ export interface IUserRegister extends IUserProfile {
     password: string,
     passwordConfirmation: string,
 }
+
+export interface IUserPasswordChange {
+    currentPassword: string,
+    password: string,
+    passwordConfirmation: string,
+}

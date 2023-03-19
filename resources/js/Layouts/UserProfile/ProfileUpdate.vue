@@ -1,39 +1,40 @@
 <template lang="pug">
 form.p-3(@submit.prevent="doUpdate")
-    transition
-        AlertDisplay.alert.alert-danger(v-if="apiError") {{ apiError }}
-    .row.justify-content-center
-        .mb-3.col-12.col-md-6
-            InputUI(
-                v-model.trim="form.firstName"
-                :input-class="inputSuccessClass"
-                label="Your name"
-                :errors="validation('first_name')"
-                @input="clearSuccess")
-        .mb-3.col-12.col-md-6
-            InputUI(
-                v-model.trim="form.lastName"
-                :input-class="inputSuccessClass"
-                label="Your last name"
-                :errors="validation('last_name')"
-                @input="clearSuccess")
-        .mb-3.col-12
-            InputUI(
-                v-model.trim="form.email"
-                :input-class="inputSuccessClass"
-                type="email"
-                label="Email"
-                :errors="validation('email')"
-                help="If email was changed your account will be is unverified"
-                @input="clearSuccess")
-        .mb-3.col-12.col-md-6
-            ButtonWithLoading.btn.btn-outline-secondary.w-100(
-                btn-type="button"
-                @click.prevent="doRestore") Reset
-        .mb-3.col-12.col-md-6
-            ButtonWithLoading.btn.btn-primary.w-100(
-                :is-loading="isLoading"
-                btn-type="submit") Update
+    fieldset(:disabled="isLoading")
+        transition
+            AlertDisplay.alert.alert-danger(v-if="apiError") {{ apiError }}
+        .row.justify-content-center
+            .mb-3.col-12.col-md-6
+                InputUI(
+                    v-model.trim="form.firstName"
+                    :input-class="inputSuccessClass"
+                    label="Your name"
+                    :errors="validation('first_name')"
+                    @input="clearSuccess")
+            .mb-3.col-12.col-md-6
+                InputUI(
+                    v-model.trim="form.lastName"
+                    :input-class="inputSuccessClass"
+                    label="Your last name"
+                    :errors="validation('last_name')"
+                    @input="clearSuccess")
+            .mb-3.col-12
+                InputUI(
+                    v-model.trim="form.email"
+                    :input-class="inputSuccessClass"
+                    type="email"
+                    label="Email"
+                    :errors="validation('email')"
+                    help="If email was changed your account will be is unverified"
+                    @input="clearSuccess")
+            .mb-3.col-12.col-md-6
+                ButtonWithLoading.btn.btn-outline-secondary.w-100(
+                    btn-type="button"
+                    @click.prevent="doRestore") Reset
+            .mb-3.col-12.col-md-6
+                ButtonWithLoading.btn.btn-primary.w-100(
+                    :is-loading="isLoading"
+                    btn-type="submit") Update
 </template>
 
 <script lang="ts" setup>
