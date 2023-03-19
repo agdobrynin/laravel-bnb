@@ -1,11 +1,11 @@
 <template lang="pug">
 div
     nav.navbar.bg-light.border-bottom.navbar-light.navbar-expand-md
-        div.container.container-fluid(@click="doClick")
+        div.container.container-fluid
             router-link.navbar-brand.me-auto(:to="{name: 'home'}") {{ appName }}
             button.navbar-toggler(
                 type="button"
-                @click.prevent="displayMenu = !displayMenu"
+                @click.prevent.stop="displayMenu = !displayMenu"
             )
                 span.navbar-toggler-icon
             router-link.navbar-toggler.ms-1.text-decoration-none(
@@ -21,8 +21,11 @@ div
                 ul.navbar-nav.ms-auto
                     li.nav-item(v-if="!user")
                         router-link.nav-link(:to="{name: 'login'}") Sign in
-                    li.nav-item(v-if="user !== null")
-                        router-link.nav-link(:to="{ name: 'user-profile' }")
+                    li.nav-item.dropdown(v-if="user !== null")
+                        a.nav-link.dropdown-toggle(
+                            href="#"
+                            @click.prevent.stop="displayProfileMenu = !displayProfileMenu"
+                        )
                             span.position-relative
                                 SvgIcon(
                                     type="mdi"
@@ -30,6 +33,14 @@ div
                                     :class="[user.isVerified ? 'text-success' : 'text-danger']"
                                 )
                                 | {{ user.name }}
+                        ul.dropdown-menu(:class="{'show' : displayProfileMenu}")
+                            li
+                                router-link.dropdown-item(:to="{ name: 'user-profile' }") User profile
+                            li
+                                router-link.dropdown-item(
+                                    :to="{ name: 'booking-without-reviews' }"
+                                    :class="{'disabled': !newReviewsCount}"
+                                ) Booking without review #[span.badge.bg-primary {{ newReviewsCount }}]
                     li.nav-item(v-if="user")
                         a.nav-link(
                             href="#"
@@ -77,6 +88,9 @@ const { basket } = storeToRefs(basketStore)
 const { user } = storeToRefs(authStore)
 const isLoading = ref<boolean>(false)
 const displayMenu = ref<boolean>(false)
+const displayProfileMenu = ref<boolean>(false)
+
+const newReviewsCount = computed<number>(() => user.value?.newReviewCount || 0)
 
 const isSendVerifyLink = computed(() => {
     return ['resend-confirm-link', 'verify-email', 'user-profile'].includes(String(router.currentRoute.value.name))
@@ -89,13 +103,6 @@ const doLogout = async () => {
     authStore.user = null
     isLoading.value = false
     await router.push({ name: 'home' })
-}
-
-const doClick = (e: Event) => {
-    const el: HTMLElement = e.target as HTMLElement
-    if (el.tagName.toUpperCase() === 'A') {
-        displayMenu.value = false
-    }
 }
 
 onBeforeMount(async () => {
@@ -111,5 +118,10 @@ onBeforeMount(async () => {
     await authStore.fetchUser()
 
     isLoading.value = false
+
+    document.addEventListener('click', () => {
+        displayProfileMenu.value = false
+        displayMenu.value = false
+    })
 })
 </script>

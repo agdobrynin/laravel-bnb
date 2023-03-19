@@ -9,7 +9,7 @@ div(v-else)
             :key="`tab_${tabId}`"
         )
             a.nav-link(
-                href=""
+                href="#"
                 :class="[{'active': currentTabKey === tabId}]"
                 @click.prevent="doLoadTab(tabId)"
             ) {{ title }}
@@ -27,14 +27,12 @@ div(v-else)
 import { storeToRefs } from 'pinia'
 import type { ComponentPublicInstance } from 'vue'
 import { computed, onBeforeMount, ref, shallowRef } from 'vue'
-import { useRouter } from 'vue-router'
 
 import AlertDisplay from '@/Components/UI/AlertDisplay.vue'
 import { errorTabLoader,mapComponents,mapTabs, tabKey } from '@/Layouts/UserProfile/TabComponents'
 import { useAuthStore } from '@/stores/auth'
 
 const authStore = storeToRefs(useAuthStore())
-const router = useRouter()
 
 const currentComponent = shallowRef<ComponentPublicInstance | null>(null)
 const currentTabKey = ref<tabKey | null>(null)
@@ -48,10 +46,6 @@ const doLoadTab = (componentKey: tabKey) => {
 }
 
 onBeforeMount(async () => {
-    if (authStore.user.value === null) {
-        await router.push({ name: 'login' })
-    } else {
-        doLoadTab(tabKey.profileUpdate)
-    }
+    doLoadTab(tabKey.profileUpdate)
 })
 </script>

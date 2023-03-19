@@ -1,7 +1,8 @@
 export interface IUser {
     email: string,
     name: string,
-    isVerified: boolean
+    isVerified: boolean,
+    newReviewCount: number,
 }
 
 export interface IUserProfile {

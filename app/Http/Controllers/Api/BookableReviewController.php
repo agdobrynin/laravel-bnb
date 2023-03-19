@@ -10,11 +10,13 @@ class BookableReviewController extends Controller
 {
     public function __invoke(Bookable $bookable)
     {
+        $perPage = env('PAGINATION_REVIEW_LIST_PER_PAGE', 5);
+
         return BookableReviewResource::collection(
             $bookable->reviews()
                 ->latest()
                 ->with('booking.user')
-                ->paginate(5)
+                ->paginate($perPage)
                 ->withPath(sprintf('/bookable/%s', $bookable->id))
                 ->withQueryString()
         );

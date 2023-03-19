@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\BookableAvailabilityController;
 use App\Http\Controllers\Api\BookableCategoryController;
 use App\Http\Controllers\Api\BookableController;
+use App\Http\Controllers\Api\BookingWithoutReview;
 use App\Http\Controllers\Api\CalculateBookingController;
 use App\Http\Controllers\Api\BookableReviewController;
 use App\Http\Controllers\Api\BookingByReviewController;
@@ -52,3 +53,7 @@ Route::get('booking-by-review/{reviewKey}', BookingByReviewController::class)
 
 Route::post('checkout', CheckoutController::class)
     ->name('checkout');
+
+Route::get('booking-without-review', BookingWithoutReview::class)
+    ->middleware(['auth:sanctum'])
+    ->name('booking.without.review');
