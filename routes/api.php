@@ -24,7 +24,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return new FetchUserResource($request->user());
+    $user = $request->user();
+
+    return new FetchUserResource($user);
 });
 
 Route::get('bookables/categories', BookableCategoryController::class)
