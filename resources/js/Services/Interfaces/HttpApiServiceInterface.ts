@@ -1,10 +1,11 @@
 import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
 import type { ApiValidationErrorInterface } from '@/Services/Interfaces/ApiValidationErrorInterface'
-import { IBookableCategoriesResponse } from '@/Types/IBookableCategoryItem'
+import type { IBookableCategoriesResponse } from '@/Types/IBookableCategoryItem'
 import type { IBookableItem } from '@/Types/IBookableItem'
 import type { IBookableList } from '@/Types/IBookableList'
 import type { IBookingAvailability } from '@/Types/IBookingAvailability'
 import type { IBookingByReviewKey } from '@/Types/IBookingByReviewKey'
+import type { IBookingWithoutReviewByUserCollection } from '@/Types/IBookingWithoutReviewByUserCollection'
 import type { ICalculateBooking } from '@/Types/ICalculateBooking'
 import type { ICheckout } from '@/Types/ICheckout'
 import type { ICheckoutSuccess } from '@/Types/ICheckout'
@@ -68,4 +69,10 @@ export interface HttpApiServiceInterface {
      * @throws ApiErrorInterface
      */
     bookableCategories(): Promise<IBookableCategoriesResponse | never>
+
+    /**
+     * Fetch all booking by auth user without review
+     * @throws ApiErrorInterface
+     */
+    bookingWithoutReviewByUser(page: number): Promise<IBookingWithoutReviewByUserCollection | never>
 }

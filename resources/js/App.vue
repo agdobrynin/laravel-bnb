@@ -38,9 +38,9 @@ div
                                 router-link.dropdown-item(:to="{ name: 'user-profile' }") User profile
                             li
                                 router-link.dropdown-item(
-                                    :to="{ name: 'user-reviews' }"
+                                    :to="{ name: 'booking-without-reviews' }"
                                     :class="{'disabled': !newReviewsCount}"
-                                ) New reviews #[span.badge.bg-primary {{newReviewsCount}}]
+                                ) Booking without review #[span.badge.bg-primary {{ newReviewsCount }}]
                     li.nav-item(v-if="user")
                         a.nav-link(
                             href="#"

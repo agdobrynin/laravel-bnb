@@ -14,7 +14,7 @@ class BookableReviewController extends Controller
             $bookable->reviews()
                 ->latest()
                 ->with('booking.user')
-                ->paginate(5)
+                ->paginate(env('PAGINATION_REVIEW_LIST_PER_PAGE', 5))
                 ->withPath(sprintf('/bookable/%s', $bookable->id))
                 ->withQueryString()
         );

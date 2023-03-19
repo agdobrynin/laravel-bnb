@@ -26,8 +26,7 @@ class BookableController extends Controller
                 ->with(['bookableCategory'])
                 ->priceLowToHi()
                 ->latest()
-                ->paginate(12)
-                ->onEachSide(1)
+                ->paginate(env('PAGINATION_BOOKABLE_LIST_PER_PAGE', 12))
                 ->withQueryString()
         );
     }

@@ -17,7 +17,7 @@ div
                             | booking from {{ booking?.start }} to {{ booking?.end }}
                 .col-md-8
                     .alert.alert-danger(
-                        v-for="(error, index) in errorId"
+                        v-for="(error, index) in validation('id')"
                         :key="`err_id_${index}`") Field "review key" has error: {{ error }}
                     .mb-3
                         label.form-label(for="rating") Set rating (1 is worst &mdash; 5 is best)
@@ -26,23 +26,23 @@ div
                             :max-rating="5"
                             :icon-size="43"
                             :read-only="false"
-                            :class="{'is-invalid': errorRating.length}")
+                            :class="{'is-invalid': validation('rating').length}")
                         div.invalid-feedback(
-                            v-for="(error, index) in errorRating"
+                            v-for="(error, index) in validation('rating')"
                             :key="`rating_${index}`") {{ error }}
                     .mb-3
                         InputUI(
                             :disabled="true"
                             label="Review as user"
-                            :class="{'is-invalid': errorVerifyEmail.length}"
-                            :errors="errorVerifyEmail"
+                            :class="{'is-invalid': validation('verify-email').length}"
+                            :errors="validation('verify-email')"
                             :model-value="bookingReviewer"
                         )
                     .mb-3
                         TextareaUI(
                             v-model.trim="review.description"
                             label="Describe your experience with"
-                            :errors="errorDescription")
+                            :errors="validation('description')")
                     ButtonWithLoading.btn.btn-primary.w-100(
                         :is-loading="isSending"
                         @click.prevent="doStore") Save
@@ -60,11 +60,9 @@ import InputUI from '@/Components/UI/InputUI.vue'
 import PlaceholderCard from '@/Components/UI/PlaceholderCard.vue'
 import RatingItem from '@/Components/UI/RatingItem.vue'
 import TextareaUI from '@/Components/UI/TextareaUI.vue'
-import { ApiError } from '@/Services/ApiError'
-import { ApiValidationError } from '@/Services/ApiValidationError'
+import { useApiErrors } from '@/Composable/useApiErrors'
 import HttpApiService from '@/Services/HttpApiService'
-import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
-import type { ApiValidationErrorInterface } from '@/Services/Interfaces/ApiValidationErrorInterface'
+import { useAuthStore } from '@/stores/auth'
 import type {
     IBookingByReviewKey,
     IBookingByReviewKeyBase,
@@ -72,9 +70,10 @@ import type {
 } from '@/Types/IBookingByReviewKey'
 import type { IReviewItem } from '@/Types/IReviewExistItem'
 
-
 const route = useRoute()
 const router = useRouter()
+const authStore =  useAuthStore()
+
 
 const review: IReviewItem = reactive({
     id: '',
@@ -87,15 +86,7 @@ const isSending: Ref<boolean> = ref(false)
 const isReviewExist: Ref<boolean> = ref(false)
 const bookingByReviewKey: Ref<IBookingByReviewKey | null> = ref(null)
 
-const apiError: Ref<string | null> = ref(null)
-const validationError: Ref<ApiValidationErrorInterface|null> = ref( null)
-
-const validationErrors = (field: string) => validationError.value?.getErrorsByField(field) || []
-
-const errorDescription = computed<string[]>(() => validationErrors('description'))
-const errorRating = computed<string[]>(() => validationErrors('rating'))
-const errorVerifyEmail = computed<string[]>(() => validationErrors('verify-email'))
-const errorId = computed<string[]>(() => validationErrors('id'))
+const { apiError, validation, errors } = useApiErrors()
 
 const booking = computed<IBookingByReviewKeyBase | null>(() => {
     if (bookingByReviewKey.value?.data) {
@@ -132,22 +123,18 @@ const bookable = computed<IBookingByReviewKeyBookableInfo | null>(() => {
 
 const doStore = async (): Promise<void> => {
     isSending.value = true
-    apiError.value = null
-    validationError.value = null
+    errors(null)
 
     try {
         await new HttpApiService().storeReview(review)
+
+        if (authStore.user?.newReviewCount) {
+            authStore.user.newReviewCount --
+        }
+
         await router.push({ name: 'bookable', params: { id: bookable.value?.id } })
     } catch (reason) {
-        const error = reason as Error | ApiErrorInterface | ApiValidationErrorInterface
-
-        if (error instanceof ApiValidationError) {
-            validationError.value = error
-        } else if (error instanceof ApiError) {
-            apiError.value = error.apiError?.message || error.requestError
-        } else {
-            apiError.value = (error as Error).message
-        }
+        errors(reason)
     }
 
     isSending.value = false
@@ -165,8 +152,7 @@ onMounted(async (): Promise<void> => {
             bookingByReviewKey.value = await httpSrv.getBookingByReviewKey(review.id) as IBookingByReviewKey
         }
     } catch (reason) {
-        const error = reason as ApiErrorInterface
-        apiError.value = (error.apiError?.message || error.requestError)
+        errors(reason)
     }
 
     isLoading.value = false

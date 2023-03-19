@@ -10,6 +10,7 @@ import type { IBookableList } from '@/Types/IBookableList'
 import { IBookableListFilters } from '@/Types/IBookableListFilters'
 import type { IBookingAvailability } from '@/Types/IBookingAvailability'
 import type { IBookingByReviewKey } from '@/Types/IBookingByReviewKey'
+import { IBookingWithoutReviewByUserCollection } from '@/Types/IBookingWithoutReviewByUserCollection'
 import { ICalculateBooking } from '@/Types/ICalculateBooking'
 import { ICheckout, ICheckoutSuccess } from '@/Types/ICheckout'
 import type { IReviewCollection, IReviewItem } from '@/Types/IReviewExistItem'
@@ -125,6 +126,16 @@ export default class HttpApiService extends HttpServiceAbstract implements HttpA
     async bookableCategories(): Promise<IBookableCategoriesResponse | never> {
         try {
             return <IBookableCategoriesResponse>((await this.client.get('/bookables/categories')).data)
+        } catch (reason) {
+            throw this.errorClassForThrow(reason)
+        }
+    }
+
+    async bookingWithoutReviewByUser(page: number = 1): Promise<IBookingWithoutReviewByUserCollection | never> {
+        try {
+            return <IBookingWithoutReviewByUserCollection> (
+                (await this.client.get('/booking-without-review', { params: { page } })).data
+            )
         } catch (reason) {
             throw this.errorClassForThrow(reason)
         }

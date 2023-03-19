@@ -15,7 +15,7 @@ const ResetPassword = () => import('@/Layouts/Auth/ResetPassword.vue')
 const VerifyEmail = () => import('@/Layouts/Auth/VerifyEmail.vue')
 
 const UserProfile = () => import('@/Layouts/UserProfile/UserProfile.vue')
-const UserReviews = () => import('@/Layouts/UserProfile/UserReviews.vue')
+const BookingWithoutReviews = () => import('@/Layouts/UserProfile/BookingWithoutReviews.vue')
 
 type IProtectedRoute = {
     meta?: {
@@ -83,9 +83,9 @@ const routes: RouteRecordWithProtected[] = [
         meta: { isProtected: true }
     },
     {
-        name: 'user-reviews',
-        path: '/user-profile/reviews',
-        component: UserReviews,
+        name: 'booking-without-reviews',
+        path: '/booking-without-reviews',
+        component: BookingWithoutReviews,
         meta: { isProtected: true },
     }
 ]
