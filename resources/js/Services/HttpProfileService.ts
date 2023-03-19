@@ -8,6 +8,7 @@ export class HttpProfileService extends HttpServiceAbstract implements HttpProfi
     constructor(endpoint?: string) {
         super(endpoint)
     }
+
     async updateProfileInformation(user: IUserProfile): Promise<void> {
         try {
             await this.client.put('/user/profile-information', snakecaseKeys({ ...user }))

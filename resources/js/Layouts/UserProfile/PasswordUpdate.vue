@@ -51,6 +51,7 @@ const form = reactive<IUserPasswordChange>({
 })
 
 const clearSuccess = () => isSuccess.value = false
+
 const doUpdate = async () => {
     isLoading.value = true
     isSuccess.value = false
