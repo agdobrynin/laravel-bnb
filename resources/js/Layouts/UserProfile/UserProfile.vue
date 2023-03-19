@@ -16,8 +16,7 @@ div(v-else)
     div.border.border-top-0
         AlertDisplay(v-if="errorTabLoader") {{ errorTabLoader }}
         div(v-if="currentComponent !== null")
-            keep-alive
-                component(
+            component(
                 :is="currentComponent"
                 :key="currentTabKey"
                 v-bind="currentComponent")
