@@ -3,5 +3,8 @@ import { IDictionary } from '@/Types/IDictionary'
 
 export const useBuildQueryString = async (params: IDictionary): Promise<void> => {
     const newQueryString = { ... { ... router.currentRoute.value.query } , ...{ ... params } }
-    await router.replace({ query: newQueryString })
+    await router.replace({
+        path: router.currentRoute.value.path,
+        query: newQueryString
+    })
 }

@@ -84,7 +84,7 @@ const onChangeFilters = async (filters: IBookableListFilters) => {
     await doLoadBookables(1)
 }
 
-const doLoadBookables = async (page: number): Promise<void> => {
+const doLoadBookables = async (page?: number): Promise<void> => {
     isLoading.value = true
 
     try {
@@ -94,15 +94,17 @@ const doLoadBookables = async (page: number): Promise<void> => {
         apiError.value = error.apiError?.message || error.requestError
     }
 
-    await usePaginatorBuildQueryStringParamsInRouter(page)
+    if (page) {
+        await usePaginatorBuildQueryStringParamsInRouter(page)
+    }
 
     isLoading.value = false
 }
 
 onMounted(async () => {
-    const { page = 1 } = route.query
+    const { page } = route.query
 
-    await doLoadBookables(Number(page))
+    await doLoadBookables(page ? Number(page) : undefined)
 
     isLoadingFilters.value = true
     new HttpApiService().bookableCategories()

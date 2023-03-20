@@ -58,7 +58,7 @@ const reviews = computed<IReviewExistItem[]>(() => reviewCollection.value?.data 
 
 const paginatorData = computed<IPaginationData>(() => usePaginatorData(reviewCollection.value?.meta || null))
 
-const loadReviews = async (page: number) => {
+const loadReviews = async (page?: number) => {
     loading.value = true
 
     try {
@@ -68,7 +68,9 @@ const loadReviews = async (page: number) => {
         apiError.value = error.apiError?.message || error.requestError
     }
 
-    await usePaginatorBuildQueryStringParamsInRouter(page)
+    if (page) {
+        await usePaginatorBuildQueryStringParamsInRouter(page)
+    }
 
     loading.value = false
 }
@@ -78,7 +80,7 @@ const onChangePage = (page: number): void => {
 }
 
 onMounted(async () => {
-    const { page = 1 } = route.query
-    await loadReviews(page as number)
+    const { page } = route.query
+    await loadReviews(page ? Number(page): undefined)
 })
 </script>
