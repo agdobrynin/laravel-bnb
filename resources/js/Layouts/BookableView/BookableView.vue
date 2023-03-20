@@ -24,7 +24,7 @@ div
                     :id="bookable.id"
                     @is-availability="checkPrice")
                 AlertDisplay(
-                    v-if="calculatePriceError"
+                    v-if="calculatePriceError.length"
                     :icon-size="40")
                         div.alert.alert-danger.fs-6(
                             v-for="(error, index) in calculatePriceError"
@@ -66,16 +66,14 @@ import { useRoute } from 'vue-router'
 import AlertDisplay from '@/Components/UI/AlertDisplay.vue'
 import ButtonWithLoading from '@/Components/UI/ButtonWithLoading.vue'
 import PlaceholderCard from '@/Components/UI/PlaceholderCard.vue'
+import { useApiErrors } from '@/Composable/useApiErrors'
 import { dateAsLocaleString } from '@/Composable/useDateTime'
 import { priceUsdFormat } from '@/Composable/useMoney'
 import AvailabilityBooking from '@/Layouts/BookableView/Componets/AvailabilityBooking.vue'
 import PriceBreakdown from '@/Layouts/BookableView/Componets/PriceBreakdown.vue'
 import ReviewList from '@/Layouts/BookableView/Componets/ReviewList.vue'
-import { ApiError } from '@/Services/ApiError'
-import { ApiValidationError } from '@/Services/ApiValidationError'
 import HttpApiService from '@/Services/HttpApiService'
 import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
-import type { ApiValidationErrorInterface } from '@/Services/Interfaces/ApiValidationErrorInterface'
 import { useBasketStore } from '@/stores/basket'
 import type { IBookable } from '@/Types/IBookable'
 import type { IBookableItem } from '@/Types/IBookableItem'
@@ -85,13 +83,17 @@ import type  { ICalculateBookingInfoWithBookableTitle } from '@/Types/ICalculate
 
 const id: string = useRoute().params.id as string
 const store = useBasketStore()
+const { validationErrors: calcValidationErrors, apiError: calcApiError, errors: calcErrors } = useApiErrors()
 
 const loading: Ref<boolean> = ref(true)
 const bookableItem: Ref<IBookableItem | null> = ref(null)
 const apiError: Ref<string|null> = ref(null)
 const calculate: Ref<ICalculateBookingInfo|null> = ref(null)
-const calculatePriceError: Ref<string[]| null> = ref(null)
 
+const calculatePriceError = computed(() => [
+    ...calcApiError.value || [],
+    ...calcValidationErrors.value?.validationErrors || []
+    ])
 const bookable = computed<IBookable | null>(() => bookableItem.value?.data || null)
 const prices = computed(() => {
     return {
@@ -113,7 +115,7 @@ const bookingDates = computed<string>(() => {
 })
 
 const checkPrice = async (isAvailable: IBookingDates | undefined): Promise<void> => {
-    calculatePriceError.value = null
+    calcErrors(null)
     calculate.value = null
 
     if (isAvailable && bookable.value?.id) {
@@ -122,14 +124,7 @@ const checkPrice = async (isAvailable: IBookingDates | undefined): Promise<void>
                 .calculateBooking(bookable.value.id, isAvailable.start, isAvailable.end)
             calculate.value = calculateResponse.data.calculate
         } catch (reason) {
-            const error = reason as Error | ApiErrorInterface | ApiValidationErrorInterface
-            if (error instanceof ApiValidationError) {
-                calculatePriceError.value = error.validationErrors
-            } else if (error instanceof ApiError) {
-                calculatePriceError.value = [error.apiError?.message || error.requestError]
-            } else {
-                calculatePriceError.value = [(error as Error).message]
-            }
+            calcErrors(reason)
         }
     }
 }
