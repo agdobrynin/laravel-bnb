@@ -41,7 +41,8 @@ div
                                 router-link.dropdown-item(
                                     :to="{ name: 'booking-without-reviews' }"
                                     :class="{'disabled': !newReviewsCount}"
-                                ) Booking without review #[span.badge.bg-primary {{ newReviewsCount }}]
+                                ) Booking without review
+                                    span.badge.bg-primary.ms-2(v-if="newReviewsCount") {{ newReviewsCount }}
                     li.nav-item(v-if="user")
                         a.nav-link(
                             href="#"
