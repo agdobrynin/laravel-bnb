@@ -183,8 +183,8 @@ const checkout = async () => {
     try {
         bookingAttempt.value = await new HttpApiService().booking(checkoutForm)
 
-        if (authStore.user.value?.newReviewCount) {
-            authStore.user.value.newReviewCount += checkoutForm.bookings.length
+        if (authStore.user.value !== null) {
+            authStore.user.value.newReviewCount++
         }
 
         basketStore.emptyBasket()

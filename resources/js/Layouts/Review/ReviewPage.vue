@@ -127,7 +127,7 @@ const doStore = async (): Promise<void> => {
     try {
         await new HttpApiService().storeReview(review)
 
-        if (authStore.user?.newReviewCount) {
+        if (authStore.user !== null) {
             authStore.user.newReviewCount --
         }
 
