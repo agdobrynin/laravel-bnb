@@ -27,14 +27,14 @@ email сообщение.
 
 In Laravel:
 
-- Routing, Routing api resource
+- Routing, Routing api resource, Middlewares
 - Eloquent ORM
 - Models, Models event, Migrations
 - Seeding databases with fake data
 - Database relations - creating, managing
 - _Laravel Fortify_: authentication & authorization - registering users, signing in, user verification, limiting access
 - Sending emails, and testing emails locally using Mailtip!
-- Pagination & Filtering for collection
+- Pagination & Filtering for collection with "query scope"
 - Input data validation from SPA forms
 
 In Vue:
