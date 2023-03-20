@@ -84,7 +84,7 @@ const routes: RouteRecordWithProtected[] = [
     },
     {
         name: 'booking-without-reviews',
-        path: '/booking-without-reviews',
+        path: '/user-profile/booking-without-reviews',
         component: BookingWithoutReviews,
         meta: { isProtected: true },
     }
