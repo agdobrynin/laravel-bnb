@@ -20,7 +20,7 @@ form(@submit.prevent="check")
                 input-class="form-control-sm"
                 label-class="col-form-label-sm"
                 :disabled="isLoading"
-                :errors="startFieldError"
+                :errors="validation('start')"
             )
         div.col-md.mb-3
             InputUI(
@@ -31,7 +31,7 @@ form(@submit.prevent="check")
                 input-class="form-control-sm"
                 label-class="col-form-label-sm"
                 :disabled="isLoading"
-                :errors="endFieldError"
+                :errors="validation('end')"
             )
     ButtonWithLoading.btn.btn-secondary.w-100(
         type="submit"
@@ -45,17 +45,14 @@ form(@submit.prevent="check")
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 
 import AlertDisplay from '@/Components/UI/AlertDisplay.vue'
 import ButtonWithLoading from '@/Components/UI/ButtonWithLoading.vue'
 import InputUI from '@/Components/UI/InputUI.vue'
+import { useApiErrors } from '@/Composable/useApiErrors'
 import BookingDates from '@/Layouts/BookableView/Componets/BookingDates.vue'
-import { ApiError } from '@/Services/ApiError'
-import { ApiValidationError } from '@/Services/ApiValidationError'
 import HttpApiService from '@/Services/HttpApiService'
-import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
-import type { ApiValidationErrorInterface } from '@/Services/Interfaces/ApiValidationErrorInterface'
 import { useBookingViewStore } from '@/stores/booking-view'
 import type { IBookingAvailability } from '@/Types/IBookingAvailability'
 import type { IBookingDates } from '@/Types/IBookingAvailability'
@@ -64,15 +61,9 @@ const props = defineProps<{id: string}>()
 const store = useBookingViewStore()
 
 const { dateRange } = storeToRefs(store)
-
-const apiError: Ref<string|null> = ref(null)
-const apiValidationError: Ref<ApiValidationError|null> = ref(null)
-
-const startFieldError = computed(() => apiValidationError.value?.getErrorsByField('start'))
-const endFieldError = computed(() => apiValidationError.value?.getErrorsByField('end'))
+const { apiError, validation, errors } = useApiErrors()
 
 const isLoading: Ref<boolean> = ref(false)
-
 const bookingAvailability: Ref<IBookingAvailability|null> = ref(null)
 
 const emit = defineEmits<{
@@ -81,8 +72,7 @@ const emit = defineEmits<{
 
 const check = async () => {
     isLoading.value = true
-    apiError.value = null
-    apiValidationError.value = null
+    errors(null)
     bookingAvailability.value = null
     emit('isAvailability', null)
 
@@ -99,15 +89,7 @@ const check = async () => {
 
         emit('isAvailability', isAvailabilityDates)
     } catch (reason) {
-        const error = reason as Error | ApiErrorInterface | ApiValidationErrorInterface
-
-        if (error instanceof ApiValidationError) {
-            apiValidationError.value = error
-        } else if (error instanceof ApiError) {
-            apiError.value = error.apiError?.message || error.requestError
-        } else {
-            apiError.value = (error as Error).message
-        }
+        errors(reason)
     }
 
     isLoading.value = false
