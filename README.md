@@ -1,10 +1,55 @@
 # Учебный проект - аренда жилья.
+🎫 [Сертификат об успешном прохождении курса.](https://www.udemy.com/certificate/UC-005208ce-5326-4bb4-a17b-4f5c3128b280/)
+
+Создано SPA приложение "Анернда" с возможностью
+регистарции пользователя и верификации аккаунта чрезе
+email сообщение.
+
+Добавлена возможность управление аккаунтом пользователя - смена email адреса, имени, смена пароля,
+сброс и смена забытого пароля, ссылка подтверждения email адреса.
+
+Для страницы просмотра предложений аренды разработана система
+фильтарции предложений и пагинации (постраничный вывод).
+
+Для сделанных бронирований пользоватля или анонимного пользователя предустмотерна возжноноть оставить отзыв 
+с выставлнием рейтинга адрендуемого жилья.
+
+Разработана система оповещения через email о возможности оставить отзыв о бронированиии арендуемом жилье. 
 
 **Стек:**
-- 🐘 Php 8.2 + Laravel 9
+- 🐘 Php 8.2 + Laravel 9 (пакет Fortify для авторизации и регистрации пользователя)
 - 🥉 Vue 3 by composition api + TypeScript + Pug + Pinia
 - 🧶 Boostrap css 5
 - 🦖 MariaDb
+
+-------
+Темы изученые в курсе
+
+In Laravel:
+
+- Routing, Routing api resource
+- Eloquent ORM
+- Models, Models event, Migrations
+- Seeding databases with fake data
+- Database relations - creating, managing
+- _Laravel Fortify_: authentication & authorization - registering users, signing in, user verification, limiting access
+- Sending emails, and testing emails locally using Mailtip!
+- Pagination & Filtering for collection
+- Input data validation from SPA forms
+
+In Vue:
+
+- Composition API
+- Reactive data
+- Computed properties
+- Use composable function
+- Passing data using props
+- Emitting custom events
+- Making requests with axios
+- Components & component slots
+- Creating layouts
+- Use Pinia as data **store** 
+- Form data validation
 
 ### Установка проекта
 
