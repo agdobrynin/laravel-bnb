@@ -26,6 +26,7 @@ div
                             href="#"
                             @click.prevent.stop="displayProfileMenu = !displayProfileMenu"
                         )
+                            span.badge.bg-warning.me-1(v-if="newReviewsCount") {{ newReviewsCount }}
                             span.position-relative
                                 SvgIcon(
                                     type="mdi"
