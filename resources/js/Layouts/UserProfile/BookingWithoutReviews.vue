@@ -13,6 +13,10 @@ Transition
                 :key="booking.reviewKey"
             )
                 BookingWithoutReviewItem(:data="booking")
+        PaginationUI(
+            v-if="paginatorData.lastPage > 1"
+            :data="paginatorData"
+            @change-page="onChangePage")
 </template>
 
 <script lang="ts" setup>
