@@ -1,9 +1,8 @@
 <template lang="pug">
-div
-    PlaceholderCard.text-center.fs-4(v-if="isLoading" )
-        | Verifying email. Please wait...
-    Transition
-        AlertDisplay.alert.alert-danger(v-if="apiError") {{ apiError }}
+PlaceholderCard.text-center.fs-4(v-if="isLoading" )
+    | Verifying email. Please wait...
+Transition
+    AlertDisplay.alert.alert-danger(v-if="apiError") {{ apiError }}
 </template>
 
 <script lang="ts" setup>
@@ -23,25 +22,20 @@ const isLoading = ref<boolean>(true)
 const { errors, apiError } = useApiErrors()
 
 onBeforeMount(async () => {
-    const { id, hash, expires, signature } = router.currentRoute.value.params as {[key: string]: string}
+    const { id, hash, expires, signature } = router.currentRoute.value.params as { [key: string]: string }
 
-    const params: IVerifyEmail = { id, hash , expires, signature }
+    const params: IVerifyEmail = { id, hash, expires, signature }
+    const srv = new HttpAuthService()
 
-    if (authStore.user === null) {
-        await router.push({ name: 'login', query: { ...params, ... { 'verification.verify' : '' } } })
-    } else {
-        const srv = new HttpAuthService()
-
-        try {
-            await srv.verifyEmail(params)
-            // update user store
-            await authStore.fetchUser()
-            await router.push({ name: 'home' })
-        } catch (reason) {
-            errors(reason)
-        }
-
-        isLoading.value = false
+    try {
+        await srv.verifyEmail(params)
+        // update user store
+        await authStore.fetchUser()
+        await router.push({ name: 'home' })
+    } catch (reason) {
+        errors(reason)
     }
+
+    isLoading.value = false
 })
 </script>
