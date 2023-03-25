@@ -21,12 +21,14 @@ import type { ApiErrorInterface } from '@/Services/Interfaces/ApiErrorInterface'
 import { useAuthStore } from '@/stores/auth'
 
 const authStore = storeToRefs(useAuthStore())
-const inProgress = ref<boolean>(true)
+const inProgress = ref<boolean>(false)
 const success = ref<string | null>(null)
 
 const { apiError, errors } = useApiErrors()
 
 const sendConfirm = async () => {
+    inProgress.value = true
+
     try {
         await (new HttpAuthService()).resendConfirmLink()
         success.value = 'Verification link was send to your email'

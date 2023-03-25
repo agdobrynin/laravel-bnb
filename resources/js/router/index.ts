@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
 import BookableList from '@/Layouts/BookableList/BookableList.vue'
+import NotFound from '@/Layouts/ErrorPage/NotFound.vue'
 import { useAuthStore } from '@/stores/auth'
 
 const BookableView = () => import('@/Layouts/BookableView/BookableView.vue')
@@ -60,6 +61,7 @@ const routes: RouteRecordWithProtected[] = [
         name: 'resend-confirm-link',
         path: '/resend-confirm-link',
         component: ResendConfirmLink,
+        meta: { isProtected: true }
     },
     {
         name: 'forgot-password',
@@ -75,6 +77,7 @@ const routes: RouteRecordWithProtected[] = [
         name: 'verify-email',
         path: '/verify-email/:id/:hash/:expires/:signature',
         component: VerifyEmail,
+        meta: { isProtected: true }
     },
     {
         name: 'user-profile',
@@ -87,7 +90,12 @@ const routes: RouteRecordWithProtected[] = [
         path: '/user-profile/booking-without-reviews',
         component: BookingWithoutReviews,
         meta: { isProtected: true },
-    }
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'not-found',
+        component: () => NotFound,
+    },
 ]
 
 const router = createRouter({
@@ -109,7 +117,7 @@ router.beforeEach((to, from, next) => {
     const authStore = useAuthStore()
 
     if (to.meta.isProtected && authStore.user === null) {
-        next({ name: 'login' })
+        next({ name: 'login', query: { from: to.path } })
     } else {
         next()
     }
