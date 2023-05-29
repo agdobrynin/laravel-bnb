@@ -6,11 +6,11 @@ namespace App\Dto;
 readonly class BookablesFilterDto
 {
     public function __construct(
-        public ?string $bookableCategoryId,
-        public ?int $priceMin,
-        public ?int $priceMax,
-        public ?int $priceWeekendMin,
-        public ?int $priceWeekendMax
+        public ?string $bookableCategoryId = null,
+        public ?int $priceMin = null,
+        public ?int $priceMax = null,
+        public ?int $priceWeekendMin = null,
+        public ?int $priceWeekendMax = null,
     )
     {
     }

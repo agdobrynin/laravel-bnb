@@ -2,18 +2,33 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Dto\DateRangeDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BookingDatesRequest;
 use App\Http\Resources\BookingAvailabilityResource;
 use App\Models\Bookable;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Resources\Json\JsonResource;
+use OpenApi\Attributes as OA;
 
 class BookableAvailabilityController extends Controller
 {
-    public function __invoke(Bookable $bookable, BookingDatesRequest $request): AnonymousResourceCollection
+    #[OA\Get(
+        path: '/bookables/{bookable}/availability',
+        description: 'Check abilities date for booking',
+        tags: ['Booking'],
+    )]
+    #[OA\PathParameter(ref: '#/components/parameters/bookable')]
+    #[OA\QueryParameter(ref: '#/components/parameters/start')]
+    #[OA\QueryParameter(ref: '#/components/parameters/end')]
+    #[OA\Response(
+        response: 200,
+        description: 'Dates are not available for booking. If the list is empty, then the booking is available',
+        content: new OA\JsonContent(ref: BookingAvailabilityResource::class)
+    )]
+    public function __invoke(Bookable $bookable, BookingDatesRequest $request): JsonResource
     {
-        $data = $request->validated();
+        $dto = new DateRangeDto(...$request->validated());
 
-        return BookingAvailabilityResource::collection($bookable->availableForDate($data['start'], $data['end']));
+        return BookingAvailabilityResource::collection($bookable->availableForDate($dto->start, $dto->end));
     }
 }

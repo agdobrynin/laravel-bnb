@@ -1,0 +1,452 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API for BnB service",
+        "version": "1.0.1"
+    },
+    "servers": [
+        {
+            "url": "/api",
+            "description": "Main endpoint"
+        }
+    ],
+    "paths": {
+        "/bookables/{bookable}/availability": {
+            "get": {
+                "tags": [
+                    "Booking"
+                ],
+                "description": "Check abilities date for booking",
+                "operationId": "be879219ab6c0895a271047d1ffc025c",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/bookable"
+                    },
+                    {
+                        "$ref": "#/components/parameters/start"
+                    },
+                    {
+                        "$ref": "#/components/parameters/end"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dates are not available for booking. If the list is empty, then the booking is available",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BookingAvailabilityResource"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/bookables": {
+            "get": {
+                "tags": [
+                    "Bookable"
+                ],
+                "description": "Show bookable list by filter and paginator",
+                "operationId": "ef202577f81c80f36629e639df8a3b5a",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/bookableCategoryId"
+                    },
+                    {
+                        "$ref": "#/components/parameters/priceMin"
+                    },
+                    {
+                        "$ref": "#/components/parameters/priceMax"
+                    },
+                    {
+                        "$ref": "#/components/parameters/priceWeekendMin"
+                    },
+                    {
+                        "$ref": "#/components/parameters/priceWeekendMax"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/BookableIndexResource"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/PaginateShort"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/PaginateMeta"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error for input query parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/bookables/{bookable}": {
+            "get": {
+                "tags": [
+                    "Bookable"
+                ],
+                "description": "Show bookable by bookable id",
+                "operationId": "ec06f6269c0f16ec49b2eb097cf26d5f",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/bookable"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BookableShowResource"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found bookable by id",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "BookableIndexResource": {
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                },
+                                "title": {
+                                    "type": "string"
+                                },
+                                "description": {
+                                    "description": "Short description",
+                                    "type": "string",
+                                    "maximum": 80
+                                },
+                                "price": {
+                                    "description": "Regular price per day",
+                                    "type": "integer",
+                                    "minimum": 1
+                                },
+                                "price_weekend": {
+                                    "description": "Weekend price per day",
+                                    "type": "integer",
+                                    "minimum": 1
+                                },
+                                "category": {
+                                    "description": "Bookable category",
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "minItems": 0
+                    }
+                },
+                "type": "object"
+            },
+            "BookableShowResource": {
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                },
+                                "title": {
+                                    "type": "string"
+                                },
+                                "description": {
+                                    "description": "Short description",
+                                    "type": "string"
+                                },
+                                "price": {
+                                    "description": "Regular price per day",
+                                    "type": "integer",
+                                    "minimum": 1
+                                },
+                                "price_weekend": {
+                                    "description": "Weekend price per day",
+                                    "type": "integer",
+                                    "minimum": 1
+                                },
+                                "category": {
+                                    "description": "Bookable category",
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "maxItems": 1,
+                        "minItems": 1
+                    }
+                },
+                "type": "object"
+            },
+            "BookingAvailabilityResource": {
+                "description": "Items with dates are not available",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "start": {
+                                    "type": "string",
+                                    "format": "date"
+                                },
+                                "end": {
+                                    "type": "string",
+                                    "format": "date"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "minItems": 0
+                    }
+                },
+                "type": "object"
+            },
+            "ErrorMessage": {
+                "title": "Error message",
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "PaginateMeta": {
+                "properties": {
+                    "meta": {
+                        "properties": {
+                            "current_page": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "from": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "to": {
+                                "type": "integer",
+                                "example": 12
+                            },
+                            "last_page": {
+                                "type": "integer",
+                                "example": 9
+                            },
+                            "path": {
+                                "type": "string",
+                                "format": "url",
+                                "example": "http://localhost/api/bookables"
+                            },
+                            "per_page": {
+                                "type": "integer",
+                                "example": 12
+                            },
+                            "total": {
+                                "type": "integer",
+                                "example": 100
+                            },
+                            "links": {
+                                "type": "array",
+                                "items": {
+                                    "properties": {
+                                        "active": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "label": {
+                                            "type": "string",
+                                            "example": "1"
+                                        },
+                                        "url": {
+                                            "type": "string",
+                                            "format": "url",
+                                            "example": "http://localhost/api/bookables?page=1",
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "minItems": 1
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "PaginateShort": {
+                "properties": {
+                    "links": {
+                        "properties": {
+                            "first": {
+                                "type": "string",
+                                "format": "url",
+                                "example": "http://localhost/api/bookables?page=1"
+                            },
+                            "last": {
+                                "type": "string",
+                                "format": "url",
+                                "example": "http://localhost/api/bookables?page=9"
+                            },
+                            "next": {
+                                "type": "string",
+                                "format": "url",
+                                "example": "http://localhost/api/bookables?page=2",
+                                "nullable": true
+                            },
+                            "prev": {
+                                "type": "string",
+                                "format": "url",
+                                "example": null,
+                                "nullable": true
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "ValidationError": {
+                "properties": {
+                    "message": {
+                        "description": "Main validation error",
+                        "type": "string"
+                    },
+                    "errors": {
+                        "properties": {
+                            "fieldName": {
+                                "title": "All error for field name (field key)",
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "parameters": {
+            "bookable": {
+                "name": "bookable",
+                "in": "path",
+                "required": true,
+                "schema": {
+                    "title": "Bookable uuid",
+                    "type": "string",
+                    "format": "uuid"
+                }
+            },
+            "bookableCategoryId": {
+                "name": "bookableCategoryId",
+                "in": "path",
+                "required": false,
+                "schema": {
+                    "title": "Bookable category",
+                    "type": "integer"
+                }
+            },
+            "priceMin": {
+                "name": "priceMin",
+                "in": "path",
+                "required": false,
+                "schema": {
+                    "title": "Bookable min regular price per pay",
+                    "type": "integer"
+                }
+            },
+            "priceMax": {
+                "name": "priceMax",
+                "in": "path",
+                "required": false,
+                "schema": {
+                    "title": "Bookable max regular price per pay",
+                    "type": "integer"
+                }
+            },
+            "priceWeekendMin": {
+                "name": "priceWeekendMin",
+                "in": "path",
+                "required": false,
+                "schema": {
+                    "title": "Bookable min weekend price per pay",
+                    "type": "integer"
+                }
+            },
+            "priceWeekendMax": {
+                "name": "priceWeekendMax",
+                "in": "path",
+                "required": false,
+                "schema": {
+                    "title": "Bookable max weekend price per pay",
+                    "type": "integer"
+                }
+            },
+            "start": {
+                "name": "start",
+                "in": "query",
+                "required": true,
+                "schema": {
+                    "title": "Start date for check ability booking",
+                    "type": "string",
+                    "format": "date",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                }
+            },
+            "end": {
+                "name": "end",
+                "in": "query",
+                "required": true,
+                "schema": {
+                    "title": "End date for check ability booking",
+                    "type": "string",
+                    "format": "date",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                }
+            }
+        }
+    }
+}
