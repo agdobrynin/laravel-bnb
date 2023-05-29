@@ -16,7 +16,7 @@
                 "tags": [
                     "Booking"
                 ],
-                "description": "Check abilities date for booking",
+                "summary": "Check abilities date for booking",
                 "operationId": "be879219ab6c0895a271047d1ffc025c",
                 "parameters": [
                     {
@@ -43,12 +43,33 @@
                 }
             }
         },
+        "/bookables/categories": {
+            "get": {
+                "tags": [
+                    "Bookable"
+                ],
+                "summary": "Get bookable categories",
+                "operationId": "bbed88cbe3024b4a657730aff3d0b3e4",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BookableCategoriesResource"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/bookables": {
             "get": {
                 "tags": [
                     "Bookable"
                 ],
-                "description": "Show bookable list by filter and paginator",
+                "summary": "Show bookable list by filter and paginator",
                 "operationId": "ef202577f81c80f36629e639df8a3b5a",
                 "parameters": [
                     {
@@ -107,7 +128,7 @@
                 "tags": [
                     "Bookable"
                 ],
-                "description": "Show bookable by bookable id",
+                "summary": "Show bookable by bookable id",
                 "operationId": "ec06f6269c0f16ec49b2eb097cf26d5f",
                 "parameters": [
                     {
@@ -141,6 +162,28 @@
     },
     "components": {
         "schemas": {
+            "BookableCategoriesResource": {
+                "title": "Show available bookable category",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                },
+                                "name": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "minItems": 0
+                    }
+                },
+                "type": "object"
+            },
             "BookableIndexResource": {
                 "properties": {
                     "data": {

@@ -5,12 +5,23 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BookableCategoriesResource;
 use App\Models\BookableCategory;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Cache;
+use OpenApi\Attributes as OA;
 
 class BookableCategoryController extends Controller
 {
-    public function __invoke(): AnonymousResourceCollection
+    #[OA\Get(
+        path: '/bookables/categories',
+        summary: 'Get bookable categories',
+        tags: ['Bookable'],
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Success',
+        content: new OA\JsonContent(ref: BookableCategoriesResource::class)
+    )]
+    public function __invoke(): JsonResource
     {
         $dictionary = Cache::remember(
             BookableCategory::class, (int)env('CACHE_TTL_DICTIONARY', 300),

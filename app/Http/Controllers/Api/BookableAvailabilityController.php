@@ -14,7 +14,7 @@ class BookableAvailabilityController extends Controller
 {
     #[OA\Get(
         path: '/bookables/{bookable}/availability',
-        description: 'Check abilities date for booking',
+        summary: 'Check abilities date for booking',
         tags: ['Booking'],
     )]
     #[OA\PathParameter(ref: '#/components/parameters/bookable')]

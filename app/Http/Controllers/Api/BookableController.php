@@ -19,7 +19,7 @@ class BookableController extends Controller
 {
     #[OA\Get(
         path: '/bookables',
-        description: 'Show bookable list by filter and paginator',
+        summary: 'Show bookable list by filter and paginator',
         tags: ['Bookable'],
     )]
     // Path parameters defined in BookableIndexRequest::class
@@ -57,7 +57,7 @@ class BookableController extends Controller
 
     #[OA\Get(
         path: '/bookables/{bookable}',
-        description: 'Show bookable by bookable id',
+        summary: 'Show bookable by bookable id',
         tags: ['Bookable'],
     )]
     #[OA\PathParameter(ref: '#/components/parameters/bookable')]
