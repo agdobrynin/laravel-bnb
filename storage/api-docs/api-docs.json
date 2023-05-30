@@ -158,6 +158,53 @@
                     }
                 }
             }
+        },
+        "/bookables/{bookable}/reviews": {
+            "get": {
+                "tags": [
+                    "Review"
+                ],
+                "summary": "Get bookable list review with pagination",
+                "operationId": "492606a33da3933b8a7213e0f6e0d42e",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/bookable"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/BookableReviewResource"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/PaginateShort"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/PaginateMeta"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found bookable by id",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -185,6 +232,7 @@
                 "type": "object"
             },
             "BookableIndexResource": {
+                "title": "Bookable item",
                 "properties": {
                     "data": {
                         "type": "array",
@@ -215,6 +263,48 @@
                                 "category": {
                                     "description": "Bookable category",
                                     "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "minItems": 0
+                    }
+                },
+                "type": "object"
+            },
+            "BookableReviewResource": {
+                "title": "Review item",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                },
+                                "description": {
+                                    "description": "Review description",
+                                    "type": "string"
+                                },
+                                "rating": {
+                                    "description": "Bookable rating",
+                                    "type": "integer",
+                                    "maximum": 5,
+                                    "minimum": 1
+                                },
+                                "createdAt": {
+                                    "description": "Review created date",
+                                    "type": "string",
+                                    "format": "date"
+                                },
+                                "user": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/UserReviewResource"
+                                        }
+                                    ],
+                                    "nullable": true
                                 }
                             },
                             "type": "object"
@@ -283,6 +373,17 @@
                             "type": "object"
                         },
                         "minItems": 0
+                    }
+                },
+                "type": "object"
+            },
+            "UserReviewResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
                     }
                 },
                 "type": "object"
