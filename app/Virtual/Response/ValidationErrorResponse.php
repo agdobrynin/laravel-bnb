@@ -14,6 +14,7 @@ class ValidationErrorResponse extends OA\Response
         parent::__construct(
             response: 422,
             description: $description,
+            headers: [new HeaderSetCookieToken],
             content: new OA\JsonContent(ref: ValidationError::class),
         );
     }

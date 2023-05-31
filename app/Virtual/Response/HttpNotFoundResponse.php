@@ -14,6 +14,7 @@ class HttpNotFoundResponse extends OA\Response
         parent::__construct(
             response: 404,
             description: $description,
+            headers: [new HeaderSetCookieToken],
             content: new OA\JsonContent(ref: Message::class),
         );
     }
