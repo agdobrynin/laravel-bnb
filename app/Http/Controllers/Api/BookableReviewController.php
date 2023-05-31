@@ -7,14 +7,14 @@ use App\Http\Resources\BookableReviewResource;
 use App\Models\Bookable;
 use App\Virtual\PaginateMeta;
 use App\Virtual\PaginateShort;
-use App\Virtual\Response\NotFoundErrorResponse;
+use App\Virtual\Response\HttpNotFoundResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use OpenApi\Attributes as OA;
 
 class BookableReviewController extends Controller
 {
     #[OA\Get(
-        path: '/bookables/{bookable}/reviews',
+        path: '/api/bookables/{bookable}/reviews',
         summary: 'Get bookable list review with pagination',
         tags: ['Review'],
     )]
@@ -31,7 +31,7 @@ class BookableReviewController extends Controller
             ],
         ),
     )]
-    #[NotFoundErrorResponse(description: 'Not found bookable by id')]
+    #[HttpNotFoundResponse(description: 'Not found bookable by id')]
     public function __invoke(Bookable $bookable): AnonymousResourceCollection
     {
         $perPage = env('PAGINATION_REVIEW_LIST_PER_PAGE', 5);

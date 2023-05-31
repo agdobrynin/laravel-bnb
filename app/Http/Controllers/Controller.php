@@ -13,8 +13,16 @@ use OpenApi\Attributes as OA;
     title: 'API for BnB service'
 )]
 #[OA\Server(
-    url: '/api',
+    url: '/',
     description: 'Main endpoint'
+)]
+#[OA\SecurityScheme(
+    securityScheme: 'sanctum',
+    type: 'apiKey',
+    description: 'Authentication in application base on session authorization with  Laravel\Fortify.
+                  response set Cookie to client.',
+    name: 'XSRF-TOKEN',
+    in: 'cookie',
 )]
 // Reusable parameters
 #[OA\PathParameter(

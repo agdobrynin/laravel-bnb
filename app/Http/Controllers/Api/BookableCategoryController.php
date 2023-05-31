@@ -12,7 +12,7 @@ use OpenApi\Attributes as OA;
 class BookableCategoryController extends Controller
 {
     #[OA\Get(
-        path: '/bookables/categories',
+        path: '/api/bookables/categories',
         summary: 'Get bookable categories',
         tags: ['Bookable'],
     )]

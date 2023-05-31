@@ -10,7 +10,7 @@ use App\Http\Resources\BookableShowResource;
 use App\Models\Bookable;
 use App\Virtual\PaginateMeta;
 use App\Virtual\PaginateShort;
-use App\Virtual\Response\NotFoundErrorResponse;
+use App\Virtual\Response\HttpNotFoundResponse;
 use App\Virtual\Response\ValidationErrorResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use OpenApi\Attributes as OA;
@@ -18,7 +18,7 @@ use OpenApi\Attributes as OA;
 class BookableController extends Controller
 {
     #[OA\Get(
-        path: '/bookables',
+        path: '/api/bookables',
         summary: 'Show bookable list by filter and paginator',
         tags: ['Bookable'],
     )]
@@ -56,7 +56,7 @@ class BookableController extends Controller
     }
 
     #[OA\Get(
-        path: '/bookables/{bookable}',
+        path: '/api/bookables/{bookable}',
         summary: 'Show bookable by bookable id',
         tags: ['Bookable'],
     )]
@@ -66,7 +66,7 @@ class BookableController extends Controller
         description: 'Success',
         content: new OA\JsonContent(ref: BookableShowResource::class),
     )]
-    #[NotFoundErrorResponse(description: 'Not found bookable by id')]
+    #[HttpNotFoundResponse(description: 'Not found bookable by id')]
     public function show(Bookable $bookable): BookableShowResource
     {
         return new BookableShowResource($bookable);

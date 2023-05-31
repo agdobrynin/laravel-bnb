@@ -6,18 +6,18 @@
     },
     "servers": [
         {
-            "url": "/api",
+            "url": "/",
             "description": "Main endpoint"
         }
     ],
     "paths": {
-        "/bookables/{bookable}/availability": {
+        "/api/bookables/{bookable}/availability": {
             "get": {
                 "tags": [
                     "Booking"
                 ],
                 "summary": "Check abilities date for booking",
-                "operationId": "be879219ab6c0895a271047d1ffc025c",
+                "operationId": "293525a94bee202cffe6118f47e50c83",
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/bookable"
@@ -43,13 +43,13 @@
                 }
             }
         },
-        "/bookables/categories": {
+        "/api/bookables/categories": {
             "get": {
                 "tags": [
                     "Bookable"
                 ],
                 "summary": "Get bookable categories",
-                "operationId": "bbed88cbe3024b4a657730aff3d0b3e4",
+                "operationId": "d1927c0410e4c4406bdd5b52a4c29f86",
                 "responses": {
                     "200": {
                         "description": "Success",
@@ -64,13 +64,13 @@
                 }
             }
         },
-        "/bookables": {
+        "/api/bookables": {
             "get": {
                 "tags": [
                     "Bookable"
                 ],
                 "summary": "Show bookable list by filter and paginator",
-                "operationId": "ef202577f81c80f36629e639df8a3b5a",
+                "operationId": "d64f80e35e4a71265f1055227b2d8227",
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/bookableCategoryId"
@@ -123,13 +123,13 @@
                 }
             }
         },
-        "/bookables/{bookable}": {
+        "/api/bookables/{bookable}": {
             "get": {
                 "tags": [
                     "Bookable"
                 ],
                 "summary": "Show bookable by bookable id",
-                "operationId": "ec06f6269c0f16ec49b2eb097cf26d5f",
+                "operationId": "26fb3ceb7a77b34e03cfba8fa809d7f5",
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/bookable"
@@ -151,7 +151,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ErrorMessage"
+                                    "$ref": "#/components/schemas/Message"
                                 }
                             }
                         }
@@ -159,13 +159,13 @@
                 }
             }
         },
-        "/bookables/{bookable}/reviews": {
+        "/api/bookables/{bookable}/reviews": {
             "get": {
                 "tags": [
                     "Review"
                 ],
                 "summary": "Get bookable list review with pagination",
-                "operationId": "492606a33da3933b8a7213e0f6e0d42e",
+                "operationId": "20c7ad5d45a6f5c98078f8eccf6875bd",
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/bookable"
@@ -198,17 +198,336 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ErrorMessage"
+                                    "$ref": "#/components/schemas/Message"
                                 }
                             }
                         }
                     }
                 }
             }
+        },
+        "/api/booking-by-review/{reviewKey}": {
+            "get": {
+                "tags": [
+                    "Review"
+                ],
+                "summary": "Get data for write review",
+                "operationId": "83fe101dd2fd5151c29ca2bc38cd606d",
+                "parameters": [
+                    {
+                        "name": "reviewKey",
+                        "in": "path",
+                        "schema": {
+                            "description": "Review key",
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BookingByReviewKeyResource"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Not owner review",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/user": {
+            "get": {
+                "tags": [
+                    "Auth",
+                    "User"
+                ],
+                "summary": "Get info about authenticated user",
+                "operationId": "4e44cf9a540963d379e34df9bf78481c",
+                "responses": {
+                    "201": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FetchUserResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Auth user and generating cookie header.",
+                "operationId": "bdf09eecbdc94e71cbd77eeea63ba325",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EmailPassword"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "422": {
+                        "description": "These credentials do not match our records",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Success auth",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logoff user. Invalidate auth cookie.",
+                "operationId": "47e830778114b69f85de7aec2912702a",
+                "responses": {
+                    "204": {
+                        "description": "Logout success",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/sanctum/csrf-cookie": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Refresh CSRF cookie (app protection app)",
+                "operationId": "5ce50283bd16af5f2d2f80b3a73b0327",
+                "responses": {
+                    "204": {
+                        "description": "Get new cookie",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/forgot-password": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Emailed link for reset password",
+                "operationId": "96dfdf387e941aaa80796834e2f0617c",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "$ref": "#/components/schemas/EmailPassword/properties/email"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register new user",
+                "description": "After register user application emailed verification link. Firstly account is unverified.",
+                "operationId": "6b566abaed3e4207964a225b1d3258a8",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/EmailPassword"
+                                    },
+                                    {
+                                        "properties": {
+                                            "first_name": {
+                                                "title": "user name",
+                                                "type": "string",
+                                                "minimum": 2
+                                            },
+                                            "last_name": {
+                                                "title": "user last name",
+                                                "type": "string",
+                                                "minimum": 2
+                                            },
+                                            "password_confirmation": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Success register",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
         }
     },
     "components": {
         "schemas": {
+            "BookableByReviewKeyResource": {
+                "properties": {
+                    "id": {
+                        "description": "Bookable id",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "category": {
+                        "description": "Bookable category name",
+                        "type": "string"
+                    },
+                    "title": {
+                        "description": "Bookable name",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "BookableCategoriesResource": {
                 "title": "Show available bookable category",
                 "properties": {
@@ -377,6 +696,74 @@
                 },
                 "type": "object"
             },
+            "BookingByReviewKeyResource": {
+                "properties": {
+                    "data": {
+                        "properties": {
+                            "id": {
+                                "description": "Booking id",
+                                "type": "string",
+                                "format": "uuid"
+                            },
+                            "start": {
+                                "description": "Booking start date",
+                                "type": "string",
+                                "format": "data"
+                            },
+                            "end": {
+                                "description": "Booking end date",
+                                "type": "string",
+                                "format": "data"
+                            },
+                            "user": {
+                                "$ref": "#/components/schemas/ReviewerResource"
+                            },
+                            "bookable": {
+                                "$ref": "#/components/schemas/BookableByReviewKeyResource"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "FetchUserResource": {
+                "title": "Info about authenticated user",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "name": {
+                        "description": "Full user name",
+                        "type": "string"
+                    },
+                    "newReviewCount": {
+                        "description": "Count of reviews waite user comment",
+                        "type": "integer"
+                    },
+                    "isVerified": {
+                        "description": "User account is verified",
+                        "type": "boolean"
+                    }
+                },
+                "type": "object"
+            },
+            "ReviewerResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "UserReviewResource": {
                 "properties": {
                     "id": {
@@ -388,10 +775,22 @@
                 },
                 "type": "object"
             },
-            "ErrorMessage": {
-                "title": "Error message",
+            "Message": {
+                "title": "Message",
                 "properties": {
                     "message": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "EmailPassword": {
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "password": {
                         "type": "string"
                     }
                 },
@@ -590,6 +989,14 @@
                     "format": "date",
                     "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
                 }
+            }
+        },
+        "securitySchemes": {
+            "sanctum": {
+                "type": "apiKey",
+                "description": "Authentication in application base on session authorization with  Laravel\\Fortify.\n                  response set Cookie to client.",
+                "name": "XSRF-TOKEN",
+                "in": "cookie"
             }
         }
     }

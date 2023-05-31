@@ -3,18 +3,18 @@ declare(strict_types=1);
 
 namespace App\Virtual\Response;
 
-use App\Virtual\ErrorMessage;
+use App\Virtual\Message;
 use OpenApi\Attributes as OA;
 
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
-class NotFoundErrorResponse extends OA\Response
+class HttpErrorResponse extends OA\Response
 {
-    public function __construct(string $description = 'Not found')
+    public function __construct(int $code, string $description = 'Http exception')
     {
         parent::__construct(
-            response: 404,
+            response: $code,
             description: $description,
-            content: new OA\JsonContent(ref: ErrorMessage::class),
+            content: new OA\JsonContent(ref: Message::class),
         );
     }
 }

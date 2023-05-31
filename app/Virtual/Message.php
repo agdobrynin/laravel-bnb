@@ -5,8 +5,8 @@ namespace App\Virtual;
 
 use OpenApi\Attributes as OA;
 
-#[OA\Schema(title: 'Error message')]
-class ErrorMessage
+#[OA\Schema(title: 'Message')]
+class Message
 {
     #[OA\Property]
     public string $message;

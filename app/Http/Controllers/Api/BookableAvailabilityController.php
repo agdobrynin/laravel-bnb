@@ -13,7 +13,7 @@ use OpenApi\Attributes as OA;
 class BookableAvailabilityController extends Controller
 {
     #[OA\Get(
-        path: '/bookables/{bookable}/availability',
+        path: '/api/bookables/{bookable}/availability',
         summary: 'Check abilities date for booking',
         tags: ['Booking'],
     )]
