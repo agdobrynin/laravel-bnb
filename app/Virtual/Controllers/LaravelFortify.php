@@ -27,9 +27,9 @@ final class LaravelFortify
     #[OA\Response(
         response: 200,
         description: 'Success auth',
+        headers: [new HeaderSetCookieToken],
         content: new OA\JsonContent(),
     )]
-    #[HeaderSetCookieToken]
     public function login(): void
     {
     }

@@ -297,6 +297,16 @@
                     },
                     "403": {
                         "description": "Not owner review",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -321,6 +331,69 @@
                         "sanctum": []
                     }
                 ]
+            }
+        },
+        "/api/booking-without-review": {
+            "get": {
+                "tags": [
+                    "Review",
+                    "User"
+                ],
+                "summary": "Get user's review without rating",
+                "operationId": "f7e54cae447d7d2d844ba2a81cba9c65",
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Success",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/BookingWithoutReviewResource"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/PaginateShort"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/PaginateMeta"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/api/user": {
@@ -354,6 +427,16 @@
                     },
                     "401": {
                         "description": "Unauthenticated",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -687,6 +770,16 @@
                     },
                     "401": {
                         "description": "Unauthenticated",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -937,6 +1030,53 @@
                             }
                         },
                         "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "BookingWithoutReviewResource": {
+                "title": "Items review without rating",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "bookable": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "string",
+                                            "format": "uuid"
+                                        },
+                                        "title": {
+                                            "title": "Bookable name with category",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "start": {
+                                    "title": "Booking start date",
+                                    "type": "string",
+                                    "format": "date"
+                                },
+                                "end": {
+                                    "title": "Booking end date",
+                                    "type": "string",
+                                    "format": "date"
+                                },
+                                "price": {
+                                    "title": "Total cost",
+                                    "type": "integer",
+                                    "minimum": 1
+                                },
+                                "reviewKey": {
+                                    "title": "Key for review",
+                                    "type": "string",
+                                    "format": "uuid"
+                                }
+                            },
+                            "type": "object"
+                        }
                     }
                 },
                 "type": "object"
@@ -1202,16 +1342,6 @@
                     "type": "string",
                     "format": "date",
                     "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
-                }
-            }
-        },
-        "headers": {
-            "Set-Cookie": {
-                "description": "Set Sanctum session auth header",
-                "required": true,
-                "schema": {
-                    "type": "string",
-                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
                 }
             }
         },

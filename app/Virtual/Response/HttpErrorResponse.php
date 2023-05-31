@@ -14,6 +14,7 @@ class HttpErrorResponse extends OA\Response
         parent::__construct(
             response: $code,
             description: $description,
+            headers: [new HeaderSetCookieToken],
             content: new OA\JsonContent(ref: Message::class),
         );
     }
