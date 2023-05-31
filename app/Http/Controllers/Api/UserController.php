@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\FetchUserResource;
+use App\Virtual\Response\HeaderSetCookieToken;
 use App\Virtual\Response\HttpErrorResponse;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
@@ -18,6 +19,7 @@ class UserController extends Controller
     #[OA\Response(
         response: 201,
         description: 'Success',
+        headers: [new HeaderSetCookieToken],
         content: new OA\JsonContent(ref: FetchUserResource::class),
     )]
     #[HttpErrorResponse(code: 401, description: 'Unauthenticated')]

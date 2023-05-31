@@ -5,6 +5,7 @@ namespace App\Virtual\Controllers;
 
 use App\Virtual\Message;
 use App\Virtual\Models\EmailPassword;
+use App\Virtual\Response\HeaderSetCookieToken;
 use App\Virtual\Response\HttpErrorResponse;
 use App\Virtual\Response\ValidationErrorResponse;
 use OpenApi\Attributes as OA;
@@ -23,7 +24,12 @@ final class LaravelFortify
         tags: ['Auth'],
     )]
     #[HttpErrorResponse(code: 422, description: 'These credentials do not match our records')]
-    #[OA\Response(response: 200, description: 'Success auth', content: new OA\JsonContent())]
+    #[OA\Response(
+        response: 200,
+        description: 'Success auth',
+        content: new OA\JsonContent(),
+    )]
+    #[HeaderSetCookieToken]
     public function login(): void
     {
     }
@@ -34,7 +40,12 @@ final class LaravelFortify
         security: [['sanctum' => []]],
         tags: ['Auth'],
     )]
-    #[OA\Response(response: 204, description: 'Logout success', content: new OA\JsonContent())]
+    #[OA\Response(
+        response: 204,
+        description: 'Logout success',
+        headers: [new HeaderSetCookieToken],
+        content: new OA\JsonContent()
+    )]
     public function logout(): void
     {
     }
@@ -45,7 +56,12 @@ final class LaravelFortify
         security: [['sanctum' => []]],
         tags: ['Auth'],
     )]
-    #[OA\Response(response: 204, description: 'Get new cookie', content: new OA\JsonContent())]
+    #[OA\Response(
+        response: 204,
+        description: 'Get new cookie',
+        headers: [new HeaderSetCookieToken],
+        content: new OA\JsonContent(),
+    )]
     public function csrfCookie(): void
     {
     }
@@ -63,7 +79,12 @@ final class LaravelFortify
             ])
     )]
     #[ValidationErrorResponse]
-    #[OA\Response(response: 200, description: 'Success', content: new OA\JsonContent(ref: Message::class))]
+    #[OA\Response(
+        response: 200,
+        description: 'Success',
+        headers: [new HeaderSetCookieToken],
+        content: new OA\JsonContent(ref: Message::class),
+    )]
     public function forgotPassword(): void
     {
     }
@@ -88,8 +109,13 @@ final class LaravelFortify
         )
     )]
     #[ValidationErrorResponse]
-    #[OA\Response(response: 201, description: 'Success register', content: new OA\JsonContent())]
-    public function register():void
+    #[OA\Response(
+        response: 201,
+        description: 'Success register',
+        headers: [new HeaderSetCookieToken],
+        content: new OA\JsonContent(),
+    )]
+    public function register(): void
     {
     }
 }

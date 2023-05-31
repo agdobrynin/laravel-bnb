@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BookingByReviewKeyResource;
 use App\Models\Booking;
+use App\Virtual\Response\HeaderSetCookieToken;
 use App\Virtual\Response\HttpErrorResponse;
 use App\Virtual\Response\HttpNotFoundResponse;
 use Illuminate\Http\Request;
@@ -22,6 +23,7 @@ class BookingByReviewController extends Controller
     #[OA\Response(
         response: 200,
         description: 'Success',
+        headers: [new HeaderSetCookieToken],
         content: new OA\JsonContent(ref: BookingByReviewKeyResource::class),
     )]
     #[HttpErrorResponse(code: 403, description: 'Not owner review')]

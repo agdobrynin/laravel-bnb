@@ -32,6 +32,16 @@
                 "responses": {
                     "200": {
                         "description": "Dates are not available for booking. If the list is empty, then the booking is available",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -53,6 +63,16 @@
                 "responses": {
                     "200": {
                         "description": "Success",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -91,6 +111,16 @@
                 "responses": {
                     "200": {
                         "description": "Success",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -138,6 +168,16 @@
                 "responses": {
                     "200": {
                         "description": "Success",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -174,6 +214,16 @@
                 "responses": {
                     "200": {
                         "description": "Success",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -227,6 +277,16 @@
                 "responses": {
                     "200": {
                         "description": "Success",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -274,6 +334,16 @@
                 "responses": {
                     "201": {
                         "description": "Success",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -319,6 +389,16 @@
                 "responses": {
                     "422": {
                         "description": "These credentials do not match our records",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -329,6 +409,16 @@
                     },
                     "200": {
                         "description": "Success auth",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {}
@@ -353,6 +443,16 @@
                 "responses": {
                     "204": {
                         "description": "Logout success",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {}
@@ -377,6 +477,16 @@
                 "responses": {
                     "204": {
                         "description": "Get new cookie",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {}
@@ -425,6 +535,16 @@
                     },
                     "200": {
                         "description": "Success",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -493,6 +613,16 @@
                     },
                     "201": {
                         "description": "Success register",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {}
@@ -988,6 +1118,16 @@
                     "type": "string",
                     "format": "date",
                     "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                }
+            }
+        },
+        "headers": {
+            "Set-Cookie": {
+                "description": "Set Sanctum session auth header",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
                 }
             }
         },

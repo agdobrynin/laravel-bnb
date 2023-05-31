@@ -10,6 +10,7 @@ use App\Http\Resources\BookableShowResource;
 use App\Models\Bookable;
 use App\Virtual\PaginateMeta;
 use App\Virtual\PaginateShort;
+use App\Virtual\Response\HeaderSetCookieToken;
 use App\Virtual\Response\HttpNotFoundResponse;
 use App\Virtual\Response\ValidationErrorResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -31,6 +32,7 @@ class BookableController extends Controller
     #[OA\Response(
         response: 200,
         description: 'Success',
+        headers: [new HeaderSetCookieToken],
         content: new OA\JsonContent(
             type: 'object',
             allOf: [
@@ -64,6 +66,7 @@ class BookableController extends Controller
     #[OA\Response(
         response: 200,
         description: 'Success',
+        headers: [new HeaderSetCookieToken],
         content: new OA\JsonContent(ref: BookableShowResource::class),
     )]
     #[HttpNotFoundResponse(description: 'Not found bookable by id')]
