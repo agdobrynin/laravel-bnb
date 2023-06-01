@@ -540,6 +540,81 @@
                 }
             }
         },
+        "/api/checkout": {
+            "post": {
+                "tags": [
+                    "Booking"
+                ],
+                "summary": "Checkout bookings by user.",
+                "operationId": "969a63e05572fd44d018396e7edd0b94",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CheckoutRequestDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success booking",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CheckoutSuccessResource"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/user": {
             "get": {
                 "tags": [
@@ -992,6 +1067,61 @@
     },
     "components": {
         "schemas": {
+            "CheckoutBookingDto": {
+                "properties": {
+                    "start": {
+                        "description": "From date booking",
+                        "type": "string"
+                    },
+                    "end": {
+                        "description": "To date booking",
+                        "type": "string"
+                    },
+                    "bookable_id": {
+                        "description": "Bookable Id",
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                },
+                "type": "object"
+            },
+            "CheckoutPersonDto": {
+                "properties": {
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "pattern": "^([0-9]{6,11})$",
+                        "nullable": true
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    }
+                },
+                "type": "object"
+            },
+            "CheckoutRequestDto": {
+                "properties": {
+                    "person": {
+                        "$ref": "#/components/schemas/CheckoutPersonDto"
+                    },
+                    "bookings": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CheckoutBookingDto"
+                        }
+                    }
+                },
+                "type": "object"
+            },
             "BookableByReviewKeyResource": {
                 "properties": {
                     "id": {
@@ -1259,6 +1389,68 @@
                                 }
                             },
                             "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "CheckoutSuccessBookableResource": {
+                "required": [
+                    "id",
+                    "title"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Bookable Id",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "description": "Bookable name",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "CheckoutSuccessResource": {
+                "required": [
+                    "data"
+                ],
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "required": [
+                                "start",
+                                "end",
+                                "price",
+                                "reviewKey",
+                                "bookable"
+                            ],
+                            "properties": {
+                                "start": {
+                                    "type": "string",
+                                    "format": "date"
+                                },
+                                "end": {
+                                    "type": "string",
+                                    "format": "date"
+                                },
+                                "price": {
+                                    "type": "integer",
+                                    "minimum": 1
+                                },
+                                "reviewKey": {
+                                    "description": "Review key for this booking",
+                                    "type": "string",
+                                    "format": "uuid"
+                                },
+                                "bookable": {
+                                    "$ref": "#/components/schemas/CheckoutSuccessBookableResource"
+                                }
+                            },
+                            "type": "object",
+                            "minItems": 1
                         }
                     }
                 },

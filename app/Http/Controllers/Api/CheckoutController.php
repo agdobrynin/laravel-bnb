@@ -2,47 +2,65 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\ValueObject\PriceBreakdownVO;
+use App\Dto\CheckoutBookingDto;
+use App\Dto\CheckoutRequestDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CheckoutRequest;
 use App\Http\Resources\CheckoutSuccessResource;
 use App\Models\Bookable;
 use App\Models\Booking;
 use App\Models\PersonAddress;
+use App\ValueObject\PriceBreakdownVO;
+use App\Virtual\Response\HttpErrorResponse;
+use App\Virtual\Response\HttpNotFoundResponse;
+use App\Virtual\Response\ValidationErrorResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use OpenApi\Attributes as OA;
 
 class CheckoutController extends Controller
 {
+    #[OA\Post(
+        path: '/api/checkout',
+        summary: 'Checkout bookings by user.',
+        security: [['sanctum' => []]],
+        tags: ['Booking'],
+    )]
+    #[OA\RequestBody(
+        content: new OA\JsonContent(ref: CheckoutRequestDto::class),
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Success booking',
+        content: new OA\JsonContent(
+            ref: CheckoutSuccessResource::class,
+        ),
+    )]
+    #[HttpNotFoundResponse]
+    #[ValidationErrorResponse]
     public function __invoke(CheckoutRequest $request): AnonymousResourceCollection
     {
-        $data = $request->validated();
+        $dto = CheckoutRequestDto::fromRequest($request);
+        $personAddress = PersonAddress::create((array)$dto->person);
 
-        if ($user = $request->user()) {
-            $data['person']['email'] = $user->email;
-        }
+        $bookings = collect($dto->bookings)->map(static function (CheckoutBookingDto $checkoutBooking) use ($personAddress, $request) {
 
-        $personAddress = PersonAddress::create($data['person']);
-
-        $bookings = collect($data['bookings'])->map(static function (array $bookingData) use ($personAddress, $user) {
-            $bookableId = $bookingData['bookable_id'];
-
-            $bookable = Bookable::findOr($bookableId, static function () use ($bookableId) {
-                $message = sprintf('Bookable with id "%s" not found', $bookableId);
+            $bookable = Bookable::findOr($checkoutBooking->bookable_id, static function () use ($checkoutBooking) {
+                $message = sprintf('Bookable with id "%s" not found', $checkoutBooking->bookable_id);
 
                 throw new ModelNotFoundException($message);
             })->load('bookableCategory');
 
 
             /** @var Booking $booking */
-            $booking = Booking::make($bookingData);
+            $booking = Booking::make((array)$checkoutBooking);
             $priceBreakdown = new PriceBreakdownVO($bookable, $booking->start, $booking->end);
             $booking->price = $priceBreakdown->totalPrice;
             $booking->bookable()->associate($bookable);
             $booking->personAddress()->associate($personAddress);
 
-            if ($user) {
-                $booking->user_id = $user->id;
+            if ($user = $request->user()) {
+                $booking->user()->associate($user);
             }
 
             $booking->save();
