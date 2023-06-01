@@ -15,6 +15,7 @@ use App\Virtual\Response\HeaderSetCookieToken;
 use App\Virtual\Response\HttpNotFoundResponse;
 use App\Virtual\Response\ValidationErrorResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OA;
 
 class BookableController extends Controller
@@ -73,7 +74,7 @@ class BookableController extends Controller
         content: new OA\JsonContent(ref: BookableShowResource::class),
     )]
     #[HttpNotFoundResponse(description: 'Not found bookable by id')]
-    public function show(Bookable $bookable): BookableShowResource
+    public function show(Bookable $bookable): JsonResource
     {
         return new BookableShowResource($bookable);
     }
