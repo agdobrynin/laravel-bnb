@@ -5,17 +5,44 @@ namespace App\ValueObject;
 
 use App\Models\Bookable;
 use Carbon\CarbonPeriod;
+use OpenApi\Attributes as OA;
 
+#[OA\Schema]
 readonly class PriceBreakdownVO
 {
+    #[OA\Property(format: 'uuid')]
     public string $bookableId;
+
+    #[OA\Property]
     public ?int $totalPrice;
-    /**
-     * @var PriceBreakdownItemVO[]
-     */
+
+    #[OA\Property(
+        property: 'breakdown',
+        properties: [
+            new OA\Property(
+                property: 'weekend',
+                ref: PriceBreakdownItemVO::class,
+                title: 'Price for weekend days',
+                nullable: true,
+            ),
+            new OA\Property(
+                property: 'regular',
+                ref: PriceBreakdownItemVO::class,
+                title: 'Price for regular days',
+                nullable: true,
+            ),
+        ],
+        nullable: true,
+    )]
     public ?array $breakdown;
 
-    public function __construct(Bookable $bookable, public string $dateStart, public string $dateEnd)
+    public function __construct(
+        Bookable $bookable,
+        #[OA\Property(format: 'date')]
+        public string $dateStart,
+        #[OA\Property(format: 'date')]
+        public string $dateEnd
+    )
     {
         $this->bookableId = $bookable->id;
 

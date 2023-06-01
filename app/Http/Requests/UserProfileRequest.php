@@ -21,7 +21,7 @@ class UserProfileRequest extends FormRequest
      *
      * @return array<string, mixed>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'first_name' => ['required', 'string', 'max:255', 'min:2'],

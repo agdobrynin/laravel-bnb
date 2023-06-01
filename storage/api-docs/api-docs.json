@@ -1,0 +1,1971 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API for BnB service",
+        "version": "1.0.1"
+    },
+    "servers": [
+        {
+            "url": "/",
+            "description": "Main endpoint"
+        }
+    ],
+    "paths": {
+        "/api/bookables/{bookable}/availability": {
+            "get": {
+                "tags": [
+                    "Booking"
+                ],
+                "summary": "Check abilities date for booking",
+                "description": "Describe parameters in BookingDatesRequest::class",
+                "operationId": "293525a94bee202cffe6118f47e50c83",
+                "parameters": [
+                    {
+                        "name": "bookable",
+                        "in": "path",
+                        "description": "Bookable Id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/dateStartInQuery"
+                    },
+                    {
+                        "$ref": "#/components/parameters/dateEndInQuery"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dates are not available for booking. If the list is empty, then the booking is available",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BookingAvailabilityResource"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/bookables/categories": {
+            "get": {
+                "tags": [
+                    "Bookable"
+                ],
+                "summary": "Get bookable categories",
+                "operationId": "d1927c0410e4c4406bdd5b52a4c29f86",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BookableCategoriesResource"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/bookables": {
+            "get": {
+                "tags": [
+                    "Bookable"
+                ],
+                "summary": "Show bookable list by filter and paginator",
+                "description": "Path parameters defined in BookableIndexRequest::class",
+                "operationId": "d64f80e35e4a71265f1055227b2d8227",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/bookableCategoryIdInQuery"
+                    },
+                    {
+                        "$ref": "#/components/parameters/priceMinInQuery"
+                    },
+                    {
+                        "$ref": "#/components/parameters/priceMaxInQuery"
+                    },
+                    {
+                        "$ref": "#/components/parameters/priceWeekendMinInQuery"
+                    },
+                    {
+                        "$ref": "#/components/parameters/priceWeekendMaxInQuery"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/BookableIndexResource"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/PaginateShort"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/PaginateMeta"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error for input query parameters",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/bookables/{bookable}": {
+            "get": {
+                "tags": [
+                    "Bookable"
+                ],
+                "summary": "Show bookable by bookable id",
+                "operationId": "26fb3ceb7a77b34e03cfba8fa809d7f5",
+                "parameters": [
+                    {
+                        "name": "bookable",
+                        "in": "path",
+                        "description": "Bookable Id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BookableShowResource"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found bookable by id",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/bookables/{bookable}/reviews": {
+            "get": {
+                "tags": [
+                    "Review"
+                ],
+                "summary": "Get bookable list review with pagination",
+                "operationId": "20c7ad5d45a6f5c98078f8eccf6875bd",
+                "parameters": [
+                    {
+                        "name": "bookable",
+                        "in": "path",
+                        "description": "Bookable Id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/BookableReviewResource"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/PaginateShort"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/PaginateMeta"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found bookable by id",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/booking-by-review/{reviewKey}": {
+            "get": {
+                "tags": [
+                    "Review"
+                ],
+                "summary": "Get data for write review",
+                "operationId": "83fe101dd2fd5151c29ca2bc38cd606d",
+                "parameters": [
+                    {
+                        "name": "reviewKey",
+                        "in": "path",
+                        "description": "Review key",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BookingByReviewKeyResource"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Not owner review",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/booking-without-review": {
+            "get": {
+                "tags": [
+                    "Review",
+                    "User"
+                ],
+                "summary": "Get user's review without rating",
+                "operationId": "f7e54cae447d7d2d844ba2a81cba9c65",
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Success",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/BookingWithoutReviewResource"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/PaginateShort"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/PaginateMeta"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/bookables/{bookable}/calculate": {
+            "get": {
+                "tags": [
+                    "Booking"
+                ],
+                "summary": "Booking price calculate",
+                "description": "Describe parameters in BookingDatesRequest::class",
+                "operationId": "0b1b60a6ff3a8e2c93e5269471820c18",
+                "parameters": [
+                    {
+                        "name": "bookable",
+                        "in": "path",
+                        "description": "Bookable Id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/dateStartInQuery"
+                    },
+                    {
+                        "$ref": "#/components/parameters/dateEndInQuery"
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Not found",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Success",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "calculate": {
+                                                    "$ref": "#/components/schemas/PriceBreakdownVO"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/checkout": {
+            "post": {
+                "tags": [
+                    "Booking"
+                ],
+                "summary": "Checkout bookings by user.",
+                "operationId": "969a63e05572fd44d018396e7edd0b94",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CheckoutRequestDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success booking",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CheckoutSuccessResource"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/reviews": {
+            "post": {
+                "tags": [
+                    "Review"
+                ],
+                "summary": "Store new review for bookable object",
+                "operationId": "f9bf17f06508aa2dd6aecbb9771092da",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ReviewRequestDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "422": {
+                        "description": "Validation error",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Review not found by review key",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Your are not owner this review",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReviewResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/reviews/{review}": {
+            "get": {
+                "tags": [
+                    "Review"
+                ],
+                "summary": "Check has review by review key.",
+                "operationId": "bc15d59ab65a3c25b207e0dc7cfb97b4",
+                "parameters": [
+                    {
+                        "name": "review",
+                        "in": "path",
+                        "description": "Review key",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReviewResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/user": {
+            "get": {
+                "tags": [
+                    "Auth",
+                    "User"
+                ],
+                "summary": "Get info about authenticated user",
+                "operationId": "4e44cf9a540963d379e34df9bf78481c",
+                "responses": {
+                    "201": {
+                        "description": "Success",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FetchUserResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Auth user and generating cookie header.",
+                "operationId": "bdf09eecbdc94e71cbd77eeea63ba325",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EmailPassword"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "422": {
+                        "description": "These credentials do not match our records",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Success auth",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logoff user. Invalidate auth cookie.",
+                "operationId": "47e830778114b69f85de7aec2912702a",
+                "responses": {
+                    "204": {
+                        "description": "Logout success",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/sanctum/csrf-cookie": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Refresh CSRF cookie (app protection app)",
+                "operationId": "5ce50283bd16af5f2d2f80b3a73b0327",
+                "responses": {
+                    "204": {
+                        "description": "Get new cookie",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/forgot-password": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Emailed link for reset password",
+                "operationId": "96dfdf387e941aaa80796834e2f0617c",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "422": {
+                        "description": "Validation error",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Success",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register new user",
+                "description": "After register user application emailed verification link. Firstly account is unverified.",
+                "operationId": "6b566abaed3e4207964a225b1d3258a8",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/EmailPassword"
+                                    },
+                                    {
+                                        "properties": {
+                                            "first_name": {
+                                                "title": "user name",
+                                                "type": "string",
+                                                "minimum": 2
+                                            },
+                                            "last_name": {
+                                                "title": "user last name",
+                                                "type": "string",
+                                                "minimum": 2
+                                            },
+                                            "password_confirmation": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "422": {
+                        "description": "Validation error",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Success register",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/user/profile-information": {
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update user profile information",
+                "operationId": "fd4e4ccdc2117a2134b4eb7dd36c5415",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "first_name",
+                                    "last_name",
+                                    "email"
+                                ],
+                                "properties": {
+                                    "first_name": {
+                                        "description": "user name",
+                                        "type": "string",
+                                        "minimum": 2
+                                    },
+                                    "last_name": {
+                                        "description": "user last name",
+                                        "type": "string",
+                                        "minimum": 2
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "422": {
+                        "description": "Validation error",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Success update",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "CheckoutBookingDto": {
+                "properties": {
+                    "start": {
+                        "description": "From date booking",
+                        "type": "string"
+                    },
+                    "end": {
+                        "description": "To date booking",
+                        "type": "string"
+                    },
+                    "bookable_id": {
+                        "description": "Bookable Id",
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                },
+                "type": "object"
+            },
+            "CheckoutPersonDto": {
+                "properties": {
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "pattern": "^([0-9]{6,11})$",
+                        "nullable": true
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    }
+                },
+                "type": "object"
+            },
+            "CheckoutRequestDto": {
+                "properties": {
+                    "person": {
+                        "$ref": "#/components/schemas/CheckoutPersonDto"
+                    },
+                    "bookings": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CheckoutBookingDto"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "ReviewRequestDto": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "description": {
+                        "type": "string",
+                        "minLength": 2
+                    },
+                    "rating": {
+                        "type": "integer",
+                        "enum": [
+                            1,
+                            2,
+                            3,
+                            4,
+                            5
+                        ]
+                    }
+                },
+                "type": "object"
+            },
+            "BookableByReviewKeyResource": {
+                "properties": {
+                    "id": {
+                        "description": "Bookable id",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "category": {
+                        "description": "Bookable category name",
+                        "type": "string"
+                    },
+                    "title": {
+                        "description": "Bookable name",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "BookableCategoriesResource": {
+                "title": "Show available bookable category",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                },
+                                "name": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "minItems": 0
+                    }
+                },
+                "type": "object"
+            },
+            "BookableIndexResource": {
+                "title": "Bookable item",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                },
+                                "title": {
+                                    "type": "string"
+                                },
+                                "description": {
+                                    "description": "Short description",
+                                    "type": "string",
+                                    "maximum": 80
+                                },
+                                "price": {
+                                    "description": "Regular price per day",
+                                    "type": "integer",
+                                    "minimum": 1
+                                },
+                                "price_weekend": {
+                                    "description": "Weekend price per day",
+                                    "type": "integer",
+                                    "minimum": 1
+                                },
+                                "category": {
+                                    "description": "Bookable category",
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "minItems": 0
+                    }
+                },
+                "type": "object"
+            },
+            "BookableReviewResource": {
+                "title": "Review item",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                },
+                                "description": {
+                                    "description": "Review description",
+                                    "type": "string"
+                                },
+                                "rating": {
+                                    "description": "Bookable rating",
+                                    "type": "integer",
+                                    "default": 1,
+                                    "maximum": 5,
+                                    "minimum": 1,
+                                    "enum": [
+                                        1,
+                                        2,
+                                        3,
+                                        4,
+                                        5
+                                    ]
+                                },
+                                "createdAt": {
+                                    "description": "Review created date",
+                                    "type": "string",
+                                    "format": "date"
+                                },
+                                "user": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/UserReviewResource"
+                                        }
+                                    ],
+                                    "nullable": true
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "minItems": 0
+                    }
+                },
+                "type": "object"
+            },
+            "BookableShowResource": {
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                },
+                                "title": {
+                                    "type": "string"
+                                },
+                                "description": {
+                                    "description": "Short description",
+                                    "type": "string"
+                                },
+                                "price": {
+                                    "description": "Regular price per day",
+                                    "type": "integer",
+                                    "minimum": 1
+                                },
+                                "price_weekend": {
+                                    "description": "Weekend price per day",
+                                    "type": "integer",
+                                    "minimum": 1
+                                },
+                                "category": {
+                                    "description": "Bookable category",
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "maxItems": 1,
+                        "minItems": 1
+                    }
+                },
+                "type": "object"
+            },
+            "BookingAvailabilityResource": {
+                "description": "Items with dates are not available",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "start": {
+                                    "type": "string",
+                                    "format": "date"
+                                },
+                                "end": {
+                                    "type": "string",
+                                    "format": "date"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "minItems": 0
+                    }
+                },
+                "type": "object"
+            },
+            "BookingByReviewKeyResource": {
+                "properties": {
+                    "data": {
+                        "properties": {
+                            "id": {
+                                "description": "Booking id",
+                                "type": "string",
+                                "format": "uuid"
+                            },
+                            "start": {
+                                "description": "Booking start date",
+                                "type": "string",
+                                "format": "data"
+                            },
+                            "end": {
+                                "description": "Booking end date",
+                                "type": "string",
+                                "format": "data"
+                            },
+                            "user": {
+                                "$ref": "#/components/schemas/ReviewerResource"
+                            },
+                            "bookable": {
+                                "$ref": "#/components/schemas/BookableByReviewKeyResource"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "BookingWithoutReviewResource": {
+                "title": "Items review without rating",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "bookable": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "string",
+                                            "format": "uuid"
+                                        },
+                                        "title": {
+                                            "title": "Bookable name with category",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "start": {
+                                    "title": "Booking start date",
+                                    "type": "string",
+                                    "format": "date"
+                                },
+                                "end": {
+                                    "title": "Booking end date",
+                                    "type": "string",
+                                    "format": "date"
+                                },
+                                "price": {
+                                    "title": "Total cost",
+                                    "type": "integer",
+                                    "minimum": 1
+                                },
+                                "reviewKey": {
+                                    "title": "Key for review",
+                                    "type": "string",
+                                    "format": "uuid"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "CheckoutSuccessBookableResource": {
+                "required": [
+                    "id",
+                    "title"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Bookable Id",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "description": "Bookable name",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "CheckoutSuccessResource": {
+                "required": [
+                    "data"
+                ],
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "required": [
+                                "start",
+                                "end",
+                                "price",
+                                "reviewKey",
+                                "bookable"
+                            ],
+                            "properties": {
+                                "start": {
+                                    "type": "string",
+                                    "format": "date"
+                                },
+                                "end": {
+                                    "type": "string",
+                                    "format": "date"
+                                },
+                                "price": {
+                                    "type": "integer",
+                                    "minimum": 1
+                                },
+                                "reviewKey": {
+                                    "description": "Review key for this booking",
+                                    "type": "string",
+                                    "format": "uuid"
+                                },
+                                "bookable": {
+                                    "$ref": "#/components/schemas/CheckoutSuccessBookableResource"
+                                }
+                            },
+                            "type": "object",
+                            "minItems": 1
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "FetchUserResource": {
+                "title": "Info about authenticated user",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "name": {
+                        "description": "Full user name",
+                        "type": "string"
+                    },
+                    "newReviewCount": {
+                        "description": "Count of reviews waite user comment",
+                        "type": "integer"
+                    },
+                    "isVerified": {
+                        "description": "User account is verified",
+                        "type": "boolean"
+                    }
+                },
+                "type": "object"
+            },
+            "ReviewResource": {
+                "properties": {
+                    "data": {
+                        "properties": {
+                            "hasReview": {
+                                "description": "Has review by review key",
+                                "type": "boolean"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "ReviewerResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "UserReviewResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "PriceBreakdownItemVO": {
+                "properties": {
+                    "pricePerDay": {
+                        "title": "Price per daya",
+                        "type": "integer"
+                    },
+                    "days": {
+                        "title": "How many days bookign appatment",
+                        "type": "integer"
+                    },
+                    "totalPrice": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "PriceBreakdownVO": {
+                "properties": {
+                    "dateStart": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "dateEnd": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "bookableId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "totalPrice": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "breakdown": {
+                        "properties": {
+                            "weekend": {
+                                "oneOf": [
+                                    {
+                                        "$ref": "#/components/schemas/PriceBreakdownItemVO"
+                                    }
+                                ],
+                                "nullable": true
+                            },
+                            "regular": {
+                                "oneOf": [
+                                    {
+                                        "$ref": "#/components/schemas/PriceBreakdownItemVO"
+                                    }
+                                ],
+                                "nullable": true
+                            }
+                        },
+                        "type": "object",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "Message": {
+                "title": "Message",
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "EmailPassword": {
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "PaginateMeta": {
+                "properties": {
+                    "meta": {
+                        "properties": {
+                            "current_page": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "from": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "to": {
+                                "type": "integer",
+                                "example": 12
+                            },
+                            "last_page": {
+                                "type": "integer",
+                                "example": 9
+                            },
+                            "path": {
+                                "type": "string",
+                                "format": "url",
+                                "example": "http://localhost/api/bookables"
+                            },
+                            "per_page": {
+                                "type": "integer",
+                                "example": 12
+                            },
+                            "total": {
+                                "type": "integer",
+                                "example": 100
+                            },
+                            "links": {
+                                "type": "array",
+                                "items": {
+                                    "properties": {
+                                        "active": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "label": {
+                                            "type": "string",
+                                            "example": "1"
+                                        },
+                                        "url": {
+                                            "type": "string",
+                                            "format": "url",
+                                            "example": "http://localhost/api/bookables?page=1",
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "minItems": 1
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "PaginateShort": {
+                "properties": {
+                    "links": {
+                        "properties": {
+                            "first": {
+                                "type": "string",
+                                "format": "url",
+                                "example": "http://localhost/api/bookables?page=1"
+                            },
+                            "last": {
+                                "type": "string",
+                                "format": "url",
+                                "example": "http://localhost/api/bookables?page=9"
+                            },
+                            "next": {
+                                "type": "string",
+                                "format": "url",
+                                "example": "http://localhost/api/bookables?page=2",
+                                "nullable": true
+                            },
+                            "prev": {
+                                "type": "string",
+                                "format": "url",
+                                "example": null,
+                                "nullable": true
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "ValidationError": {
+                "properties": {
+                    "message": {
+                        "description": "Main validation error",
+                        "type": "string"
+                    },
+                    "errors": {
+                        "properties": {
+                            "fieldName": {
+                                "title": "All error for field name (field key)",
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "parameters": {
+            "bookableCategoryIdInQuery": {
+                "name": "bookableCategoryId",
+                "in": "query",
+                "description": "Bookable category",
+                "required": false,
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "priceMinInQuery": {
+                "name": "priceMin",
+                "in": "query",
+                "description": "Bookable min regular price per pay",
+                "required": false,
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "priceMaxInQuery": {
+                "name": "priceMax",
+                "in": "query",
+                "description": "Bookable max regular price per pay",
+                "required": false,
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "priceWeekendMinInQuery": {
+                "name": "priceWeekendMin",
+                "in": "query",
+                "description": "Bookable min weekend price per pay",
+                "required": false,
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "priceWeekendMaxInQuery": {
+                "name": "priceWeekendMax",
+                "in": "query",
+                "description": "Bookable max weekend price per pay",
+                "required": false,
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "dateStartInQuery": {
+                "name": "start",
+                "in": "query",
+                "description": "Date from",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "format": "date",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                }
+            },
+            "dateEndInQuery": {
+                "name": "end",
+                "in": "query",
+                "description": "Date to",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "format": "date",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                }
+            }
+        },
+        "securitySchemes": {
+            "sanctum": {
+                "type": "apiKey",
+                "description": "Authentication in application base on session authorization with  Laravel\\Fortify.\n                  response set Cookie to client.",
+                "name": "XSRF-TOKEN",
+                "in": "cookie"
+            }
+        }
+    }
+}
