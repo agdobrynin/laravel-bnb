@@ -11,6 +11,7 @@ use App\Models\Bookable;
 use App\Models\Booking;
 use App\Models\PersonAddress;
 use App\ValueObject\PriceBreakdownVO;
+use App\Virtual\Response\HeaderSetCookieToken;
 use App\Virtual\Response\HttpErrorResponse;
 use App\Virtual\Response\HttpNotFoundResponse;
 use App\Virtual\Response\ValidationErrorResponse;
@@ -32,9 +33,11 @@ class CheckoutController extends Controller
     #[OA\Response(
         response: 200,
         description: 'Success booking',
+        headers: [new HeaderSetCookieToken],
         content: new OA\JsonContent(
             ref: CheckoutSuccessResource::class,
         ),
+
     )]
     #[HttpNotFoundResponse]
     #[ValidationErrorResponse]
