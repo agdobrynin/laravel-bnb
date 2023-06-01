@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\BookableIndexResource;
 use App\Http\Resources\BookingWithoutReviewResource;
 use App\Models\Booking;
 use App\Virtual\PaginateMeta;
@@ -13,6 +12,7 @@ use App\Virtual\Response\HttpErrorResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use OpenApi\Attributes as OA;
+
 class BookingWithoutReview extends Controller
 {
     #[OA\Get(

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BookingByReviewKeyResource;
 use App\Models\Booking;
+use App\Virtual\Parameters\UuidPathParameter;
 use App\Virtual\Response\HeaderSetCookieToken;
 use App\Virtual\Response\HttpErrorResponse;
 use App\Virtual\Response\HttpNotFoundResponse;
@@ -19,7 +20,7 @@ class BookingByReviewController extends Controller
         security: [['sanctum' => []]],
         tags: ['Review']
     )]
-    #[OA\PathParameter(name: 'reviewKey', schema: new OA\Schema(description: 'Review key', type: 'string', format: 'uuid'))]
+    #[UuidPathParameter(name: 'reviewKey', description: 'Review key')]
     #[OA\Response(
         response: 200,
         description: 'Success',

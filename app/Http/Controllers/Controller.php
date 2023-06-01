@@ -24,12 +24,6 @@ use OpenApi\Attributes as OA;
     name: 'XSRF-TOKEN',
     in: 'cookie',
 )]
-// Reusable parameters
-#[OA\PathParameter(
-    name: 'bookable',
-    required: true,
-    schema: new OA\Schema(title: 'Bookable uuid', type: 'string', format: 'uuid'),
-)]
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;

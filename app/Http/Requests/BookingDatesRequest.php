@@ -6,20 +6,22 @@ use Illuminate\Foundation\Http\FormRequest;
 use OpenApi\Attributes as OA;
 
 #[OA\QueryParameter(
+    parameter: 'dateStartInQuery',
     name: 'start',
+    description: 'Date from',
     required: true,
     schema: new OA\Schema(
-        title: 'Start date for check ability booking',
         type: 'string',
         format: 'date',
         pattern: '^\d{4}-\d{2}-\d{2}$'
     )
 )]
 #[OA\QueryParameter(
+    parameter: 'dateEndInQuery',
     name: 'end',
+    description: 'Date to',
     required: true,
     schema: new OA\Schema(
-        title: 'End date for check ability booking',
         type: 'string',
         format: 'date',
         pattern: '^\d{4}-\d{2}-\d{2}$',

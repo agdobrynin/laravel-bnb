@@ -75,7 +75,7 @@ final class LaravelFortify
     #[OA\RequestBody(
         content: new OA\JsonContent(
             properties: [
-                new OA\Property(property: 'email', ref: '#/components/schemas/EmailPassword/properties/email')
+                new OA\Property(property: 'email', type: 'string', format: 'email')
             ])
     )]
     #[ValidationErrorResponse]

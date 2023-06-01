@@ -7,6 +7,7 @@ use App\Http\Resources\BookableReviewResource;
 use App\Models\Bookable;
 use App\Virtual\PaginateMeta;
 use App\Virtual\PaginateShort;
+use App\Virtual\Parameters\UuidPathParameter;
 use App\Virtual\Response\HeaderSetCookieToken;
 use App\Virtual\Response\HttpNotFoundResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -19,7 +20,7 @@ class BookableReviewController extends Controller
         summary: 'Get bookable list review with pagination',
         tags: ['Review'],
     )]
-    #[OA\PathParameter(ref: '#/components/parameters/bookable')]
+    #[UuidPathParameter(name: 'bookable', description: 'Bookable Id')]
     #[OA\Response(
         response: 200,
         description: 'Success',

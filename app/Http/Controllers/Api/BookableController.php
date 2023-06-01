@@ -10,6 +10,7 @@ use App\Http\Resources\BookableShowResource;
 use App\Models\Bookable;
 use App\Virtual\PaginateMeta;
 use App\Virtual\PaginateShort;
+use App\Virtual\Parameters\UuidPathParameter;
 use App\Virtual\Response\HeaderSetCookieToken;
 use App\Virtual\Response\HttpNotFoundResponse;
 use App\Virtual\Response\ValidationErrorResponse;
@@ -23,12 +24,14 @@ class BookableController extends Controller
         summary: 'Show bookable list by filter and paginator',
         tags: ['Bookable'],
     )]
-    // Path parameters defined in BookableIndexRequest::class
-    #[OA\PathParameter(ref: '#/components/parameters/bookableCategoryId')]
-    #[OA\PathParameter(ref: '#/components/parameters/priceMin')]
-    #[OA\PathParameter(ref: '#/components/parameters/priceMax')]
-    #[OA\PathParameter(ref: '#/components/parameters/priceWeekendMin')]
-    #[OA\PathParameter(ref: '#/components/parameters/priceWeekendMax')]
+    /**
+     * Path parameters defined in BookableIndexRequest::class
+     */
+    #[OA\QueryParameter(ref: '#/components/parameters/bookableCategoryIdInQuery')]
+    #[OA\QueryParameter(ref: '#/components/parameters/priceMinInQuery')]
+    #[OA\QueryParameter(ref: '#/components/parameters/priceMaxInQuery')]
+    #[OA\QueryParameter(ref: '#/components/parameters/priceWeekendMinInQuery')]
+    #[OA\QueryParameter(ref: '#/components/parameters/priceWeekendMaxInQuery')]
     #[OA\Response(
         response: 200,
         description: 'Success',
@@ -62,7 +65,7 @@ class BookableController extends Controller
         summary: 'Show bookable by bookable id',
         tags: ['Bookable'],
     )]
-    #[OA\PathParameter(ref: '#/components/parameters/bookable')]
+    #[UuidPathParameter(name: 'bookable', description: 'Bookable Id')]
     #[OA\Response(
         response: 200,
         description: 'Success',

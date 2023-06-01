@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Virtual\Properties\PropertyRating;
 use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OA;
 
@@ -15,7 +16,7 @@ use OpenApi\Attributes as OA;
                 properties: [
                     new OA\Property(property: 'id', type: 'string', format: 'uuid'),
                     new OA\Property(property: 'description', description: 'Review description', type: 'string'),
-                    new OA\Property(property: 'rating', description: 'Bookable rating', type: 'integer', maximum: 5, minimum: 1),
+                    new PropertyRating,
                     new OA\Property(property: 'createdAt', description: 'Review created date', type: 'string', format: 'date'),
                     new OA\Property(
                         property: 'user',

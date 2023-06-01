@@ -20,8 +20,8 @@ class LaravelFortifyUser
         content: new OA\JsonContent(
             required: ['first_name', 'last_name', 'email'],
             properties: [
-                new OA\Property(property: 'first_name', title: 'user name', type: 'string', minimum: 2),
-                new OA\Property(property: 'last_name', title: 'user last name', type: 'string', minimum: 2),
+                new OA\Property(property: 'first_name', description: 'user name', type: 'string', minimum: 2),
+                new OA\Property(property: 'last_name', description: 'user last name', type: 'string', minimum: 2),
                 new OA\Property(property: 'email', type: 'string', format: 'email')
             ],
         )

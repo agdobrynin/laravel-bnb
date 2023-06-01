@@ -17,16 +17,24 @@
                     "Booking"
                 ],
                 "summary": "Check abilities date for booking",
+                "description": "Describe parameters in BookingDatesRequest::class",
                 "operationId": "293525a94bee202cffe6118f47e50c83",
                 "parameters": [
                     {
-                        "$ref": "#/components/parameters/bookable"
+                        "name": "bookable",
+                        "in": "path",
+                        "description": "Bookable Id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
                     },
                     {
-                        "$ref": "#/components/parameters/start"
+                        "$ref": "#/components/parameters/dateStartInQuery"
                     },
                     {
-                        "$ref": "#/components/parameters/end"
+                        "$ref": "#/components/parameters/dateEndInQuery"
                     }
                 ],
                 "responses": {
@@ -90,22 +98,23 @@
                     "Bookable"
                 ],
                 "summary": "Show bookable list by filter and paginator",
+                "description": "Path parameters defined in BookableIndexRequest::class",
                 "operationId": "d64f80e35e4a71265f1055227b2d8227",
                 "parameters": [
                     {
-                        "$ref": "#/components/parameters/bookableCategoryId"
+                        "$ref": "#/components/parameters/bookableCategoryIdInQuery"
                     },
                     {
-                        "$ref": "#/components/parameters/priceMin"
+                        "$ref": "#/components/parameters/priceMinInQuery"
                     },
                     {
-                        "$ref": "#/components/parameters/priceMax"
+                        "$ref": "#/components/parameters/priceMaxInQuery"
                     },
                     {
-                        "$ref": "#/components/parameters/priceWeekendMin"
+                        "$ref": "#/components/parameters/priceWeekendMinInQuery"
                     },
                     {
-                        "$ref": "#/components/parameters/priceWeekendMax"
+                        "$ref": "#/components/parameters/priceWeekendMaxInQuery"
                     }
                 ],
                 "responses": {
@@ -172,7 +181,14 @@
                 "operationId": "26fb3ceb7a77b34e03cfba8fa809d7f5",
                 "parameters": [
                     {
-                        "$ref": "#/components/parameters/bookable"
+                        "name": "bookable",
+                        "in": "path",
+                        "description": "Bookable Id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
                     }
                 ],
                 "responses": {
@@ -228,7 +244,14 @@
                 "operationId": "20c7ad5d45a6f5c98078f8eccf6875bd",
                 "parameters": [
                     {
-                        "$ref": "#/components/parameters/bookable"
+                        "name": "bookable",
+                        "in": "path",
+                        "description": "Bookable Id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
                     }
                 ],
                 "responses": {
@@ -297,8 +320,9 @@
                     {
                         "name": "reviewKey",
                         "in": "path",
+                        "description": "Review key",
+                        "required": true,
                         "schema": {
-                            "description": "Review key",
                             "type": "string",
                             "format": "uuid"
                         }
@@ -429,6 +453,86 @@
                                             "$ref": "#/components/schemas/PaginateMeta"
                                         }
                                     ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/bookables/{bookable}/calculate": {
+            "get": {
+                "tags": [
+                    "Booking"
+                ],
+                "summary": "Booking price calculate",
+                "description": "Describe parameters in BookingDatesRequest::class",
+                "operationId": "0b1b60a6ff3a8e2c93e5269471820c18",
+                "parameters": [
+                    {
+                        "name": "bookable",
+                        "in": "path",
+                        "description": "Bookable Id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/dateStartInQuery"
+                    },
+                    {
+                        "$ref": "#/components/parameters/dateEndInQuery"
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Not found",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Success",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "calculate": {
+                                                    "$ref": "#/components/schemas/PriceBreakdownVO"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -637,7 +741,8 @@
                             "schema": {
                                 "properties": {
                                     "email": {
-                                        "$ref": "#/components/schemas/EmailPassword/properties/email"
+                                        "type": "string",
+                                        "format": "email"
                                     }
                                 },
                                 "type": "object"
@@ -798,12 +903,12 @@
                                 ],
                                 "properties": {
                                     "first_name": {
-                                        "title": "user name",
+                                        "description": "user name",
                                         "type": "string",
                                         "minimum": 2
                                     },
                                     "last_name": {
-                                        "title": "user last name",
+                                        "description": "user last name",
                                         "type": "string",
                                         "minimum": 2
                                     },
@@ -986,8 +1091,16 @@
                                 "rating": {
                                     "description": "Bookable rating",
                                     "type": "integer",
+                                    "default": 1,
                                     "maximum": 5,
-                                    "minimum": 1
+                                    "minimum": 1,
+                                    "enum": [
+                                        1,
+                                        2,
+                                        3,
+                                        4,
+                                        5
+                                    ]
                                 },
                                 "createdAt": {
                                     "description": "Review created date",
@@ -1199,6 +1312,65 @@
                 },
                 "type": "object"
             },
+            "PriceBreakdownItemVO": {
+                "properties": {
+                    "pricePerDay": {
+                        "title": "Price per daya",
+                        "type": "integer"
+                    },
+                    "days": {
+                        "title": "How many days bookign appatment",
+                        "type": "integer"
+                    },
+                    "totalPrice": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "PriceBreakdownVO": {
+                "properties": {
+                    "dateStart": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "dateEnd": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "bookableId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "totalPrice": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "breakdown": {
+                        "properties": {
+                            "weekend": {
+                                "oneOf": [
+                                    {
+                                        "$ref": "#/components/schemas/PriceBreakdownItemVO"
+                                    }
+                                ],
+                                "nullable": true
+                            },
+                            "regular": {
+                                "oneOf": [
+                                    {
+                                        "$ref": "#/components/schemas/PriceBreakdownItemVO"
+                                    }
+                                ],
+                                "nullable": true
+                            }
+                        },
+                        "type": "object",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
             "Message": {
                 "title": "Message",
                 "properties": {
@@ -1337,78 +1509,68 @@
             }
         },
         "parameters": {
-            "bookable": {
-                "name": "bookable",
-                "in": "path",
-                "required": true,
-                "schema": {
-                    "title": "Bookable uuid",
-                    "type": "string",
-                    "format": "uuid"
-                }
-            },
-            "bookableCategoryId": {
+            "bookableCategoryIdInQuery": {
                 "name": "bookableCategoryId",
-                "in": "path",
+                "in": "query",
+                "description": "Bookable category",
                 "required": false,
                 "schema": {
-                    "title": "Bookable category",
                     "type": "integer"
                 }
             },
-            "priceMin": {
+            "priceMinInQuery": {
                 "name": "priceMin",
-                "in": "path",
+                "in": "query",
+                "description": "Bookable min regular price per pay",
                 "required": false,
                 "schema": {
-                    "title": "Bookable min regular price per pay",
                     "type": "integer"
                 }
             },
-            "priceMax": {
+            "priceMaxInQuery": {
                 "name": "priceMax",
-                "in": "path",
+                "in": "query",
+                "description": "Bookable max regular price per pay",
                 "required": false,
                 "schema": {
-                    "title": "Bookable max regular price per pay",
                     "type": "integer"
                 }
             },
-            "priceWeekendMin": {
+            "priceWeekendMinInQuery": {
                 "name": "priceWeekendMin",
-                "in": "path",
+                "in": "query",
+                "description": "Bookable min weekend price per pay",
                 "required": false,
                 "schema": {
-                    "title": "Bookable min weekend price per pay",
                     "type": "integer"
                 }
             },
-            "priceWeekendMax": {
+            "priceWeekendMaxInQuery": {
                 "name": "priceWeekendMax",
-                "in": "path",
+                "in": "query",
+                "description": "Bookable max weekend price per pay",
                 "required": false,
                 "schema": {
-                    "title": "Bookable max weekend price per pay",
                     "type": "integer"
                 }
             },
-            "start": {
+            "dateStartInQuery": {
                 "name": "start",
                 "in": "query",
+                "description": "Date from",
                 "required": true,
                 "schema": {
-                    "title": "Start date for check ability booking",
                     "type": "string",
                     "format": "date",
                     "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
                 }
             },
-            "end": {
+            "dateEndInQuery": {
                 "name": "end",
                 "in": "query",
+                "description": "Date to",
                 "required": true,
                 "schema": {
-                    "title": "End date for check ability booking",
                     "type": "string",
                     "format": "date",
                     "pattern": "^\\d{4}-\\d{2}-\\d{2}$"

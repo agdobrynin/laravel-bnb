@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\BookingDatesRequest;
 use App\Http\Resources\BookingAvailabilityResource;
 use App\Models\Bookable;
+use App\Virtual\Parameters\UuidPathParameter;
 use App\Virtual\Response\HeaderSetCookieToken;
 use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OA;
@@ -18,9 +19,12 @@ class BookableAvailabilityController extends Controller
         summary: 'Check abilities date for booking',
         tags: ['Booking'],
     )]
-    #[OA\PathParameter(ref: '#/components/parameters/bookable')]
-    #[OA\QueryParameter(ref: '#/components/parameters/start')]
-    #[OA\QueryParameter(ref: '#/components/parameters/end')]
+    #[UuidPathParameter(name: 'bookable', description: 'Bookable Id')]
+    /**
+     * Describe parameters in BookingDatesRequest::class
+     */
+    #[OA\QueryParameter(description: 'Date start for ability booking', ref: '#/components/parameters/dateStartInQuery')]
+    #[OA\QueryParameter(description: 'Date end for ability booking', ref: '#/components/parameters/dateEndInQuery')]
     #[OA\Response(
         response: 200,
         description: 'Dates are not available for booking. If the list is empty, then the booking is available',
