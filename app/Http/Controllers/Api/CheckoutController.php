@@ -12,7 +12,6 @@ use App\Models\Booking;
 use App\Models\PersonAddress;
 use App\ValueObject\PriceBreakdownVO;
 use App\Virtual\Response\HeaderSetCookieToken;
-use App\Virtual\Response\HttpErrorResponse;
 use App\Virtual\Response\HttpNotFoundResponse;
 use App\Virtual\Response\ValidationErrorResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
