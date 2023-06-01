@@ -10,6 +10,7 @@ use App\Virtual\Response\HeaderSetCookieToken;
 use App\Virtual\Response\HttpErrorResponse;
 use App\Virtual\Response\HttpNotFoundResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OA;
 
 class BookingByReviewController extends Controller
@@ -29,7 +30,7 @@ class BookingByReviewController extends Controller
     )]
     #[HttpErrorResponse(code: 403, description: 'Not owner review')]
     #[HttpNotFoundResponse]
-    public function __invoke(string $reviewKey, Request $request)
+    public function __invoke(string $reviewKey, Request $request): JsonResource
     {
         if ($booking = Booking::findByReviewKey($reviewKey)) {
             if ($booking->user && $request->user()?->id !== $booking->user_id) {
