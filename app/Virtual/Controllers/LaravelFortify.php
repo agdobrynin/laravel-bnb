@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Virtual\Controllers;
 
-use App\Virtual\Message;
+use App\Dto\MessageResponseDto;
 use App\Virtual\Models\EmailPassword;
 use App\Virtual\Response\HeaderSetCookieToken;
 use App\Virtual\Response\HttpErrorResponse;
@@ -83,7 +83,7 @@ final class LaravelFortify
         response: 200,
         description: 'Success',
         headers: [new HeaderSetCookieToken],
-        content: new OA\JsonContent(ref: Message::class),
+        content: new OA\JsonContent(ref: MessageResponseDto::class),
     )]
     public function forgotPassword(): void
     {

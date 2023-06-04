@@ -9,6 +9,8 @@ use App\Http\Resources\BookingAvailabilityResource;
 use App\Models\Bookable;
 use App\Virtual\Parameters\UuidPathParameter;
 use App\Virtual\Response\HeaderSetCookieToken;
+use App\Virtual\Response\HttpNotFoundResponse;
+use App\Virtual\Response\ValidationErrorResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OA;
 
@@ -31,6 +33,8 @@ class BookableAvailabilityController extends Controller
         headers: [new HeaderSetCookieToken],
         content: new OA\JsonContent(ref: BookingAvailabilityResource::class)
     )]
+    #[ValidationErrorResponse(description: 'Validation error for input query parameters')]
+    #[HttpNotFoundResponse]
     public function __invoke(Bookable $bookable, BookingDatesRequest $request): JsonResource
     {
         $dto = new DateRangeDto(...$request->validated());
