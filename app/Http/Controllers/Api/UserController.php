@@ -18,7 +18,7 @@ class UserController extends Controller
         tags: ['Auth', 'User'],
     )]
     #[OA\Response(
-        response: 201,
+        response: 200,
         description: 'Success',
         headers: [new HeaderSetCookieToken],
         content: new OA\JsonContent(ref: FetchUserResource::class),

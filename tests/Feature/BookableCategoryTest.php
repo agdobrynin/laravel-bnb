@@ -12,7 +12,7 @@ class BookableCategoryTest extends TestCase
 
     public function testEmptyCategory()
     {
-        $response = $this->get('/api/bookables/categories');
+        $response = $this->getJson('/api/bookables/categories');
         $response->assertOk()
             ->assertJsonStructure([
                 'data'
@@ -24,7 +24,7 @@ class BookableCategoryTest extends TestCase
     {
         $categories = BookableCategory::factory(2)->create();
 
-        $response = $this->get('/api/bookables/categories');
+        $response = $this->getJson('/api/bookables/categories');
         $response->assertOk()
             ->assertJsonStructure([
                 'data' => ['*' => ['id', 'name']]
