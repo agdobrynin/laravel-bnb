@@ -95,13 +95,9 @@ class BookableTest extends TestCase
         $lastPage = $response->json('links.last');
         $response = $this->getJson($lastPage);
 
-        $response->assertOk()
-            ->assertJsonPath('data.0.category', $bookableCategory->name)
-            ->assertJson(
-                fn(AssertableJson $json) => $json->where(
-                    'data.0.price',
-                    fn(int $price) => $price <= $priceMax
-                )->etc()
-            );
+        $response->assertOk();
+        $lastBookable = last($response->json('data'));
+        $this->assertLessThanOrEqual($priceMax, $lastBookable['price']);
+        $this->assertEquals($bookableCategory->name, $lastBookable['category']);
     }
 }

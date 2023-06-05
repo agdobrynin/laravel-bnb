@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\BookableCategory;
+use Database\Seeders\BookableCategorySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -22,14 +23,15 @@ class BookableCategoryTest extends TestCase
 
     public function testCategory()
     {
-        $categories = BookableCategory::factory(2)->create();
+        $this->seed(BookableCategorySeeder::class);
+        $categories = BookableCategory::all();
 
         $response = $this->getJson('/api/bookables/categories');
         $response->assertOk()
             ->assertJsonStructure([
                 'data' => ['*' => ['id', 'name']]
             ])
-            ->assertJsonCount(2, 'data')
+            ->assertJsonCount($categories->count(), 'data')
             ->assertJson(
                 ['data' =>
                     [
