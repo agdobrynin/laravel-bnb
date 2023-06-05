@@ -37,7 +37,7 @@ class BookableReviewController extends Controller
     #[HttpNotFoundResponse(description: 'Not found bookable by id')]
     public function __invoke(Bookable $bookable): AnonymousResourceCollection
     {
-        $perPage = env('PAGINATION_REVIEW_LIST_PER_PAGE', 5);
+        $perPage = config('bnb.review_per_page');
 
         return BookableReviewResource::collection(
             $bookable->reviews()

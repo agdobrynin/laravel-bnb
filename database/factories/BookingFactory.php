@@ -21,8 +21,9 @@ class BookingFactory extends Factory
         $end = (clone $start)->add(new \DateInterval($interval));
 
         return [
-            'start' => $start,
-            'end' => $end
+            'start' => $start->format('Y-m-d'),
+            'end' => $end->format('Y-m-d'),
+            'review_key' => '',
         ];
     }
 }
