@@ -100,4 +100,29 @@ class BookableTest extends TestCase
         $this->assertLessThanOrEqual($priceMax, $lastBookable['price']);
         $this->assertEquals($bookableCategory->name, $lastBookable['category']);
     }
+
+    public function testShowSuccess(): void
+    {
+        $category = BookableCategory::factory()->create();
+        $bookable = Bookable::factory()->create(['bookable_category_id' => $category->id]);
+
+        $response = $this->getJson('/api/bookables/'.$bookable->id);
+
+        $response->assertOk()
+            ->assertJson(['data' => [
+                'id' => $bookable->id,
+                'title' => $bookable->title,
+                'description' => $bookable->description,
+                'price' => $bookable->price,
+                'price_weekend' => $bookable->price_weekend,
+                'category' => $category->name,
+            ]]);
+    }
+
+    public function testShowNotFound(): void
+    {
+        $this->getJson('/api/bookables/'.Str::uuid())
+            ->assertNotFound()
+            ->assertJsonStructure(['message']);
+    }
 }
