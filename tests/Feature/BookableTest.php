@@ -106,7 +106,7 @@ class BookableTest extends TestCase
         $category = BookableCategory::factory()->create();
         $bookable = Bookable::factory()->create(['bookable_category_id' => $category->id]);
 
-        $response = $this->getJson('/api/bookables/'.$bookable->id);
+        $response = $this->getJson('/api/bookables/' . $bookable->id);
 
         $response->assertOk()
             ->assertJson(['data' => [
@@ -121,7 +121,7 @@ class BookableTest extends TestCase
 
     public function testShowNotFound(): void
     {
-        $this->getJson('/api/bookables/'.Str::uuid())
+        $this->getJson('/api/bookables/' . Str::uuid())
             ->assertNotFound()
             ->assertJsonStructure(['message']);
     }
