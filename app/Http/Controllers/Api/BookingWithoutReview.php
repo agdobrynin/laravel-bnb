@@ -20,7 +20,6 @@ class BookingWithoutReview extends Controller
         summary: 'Get user\'s review without rating',
         tags: ['Review', 'User']
     )]
-    #[HttpErrorResponse(code: 401, description: 'Unauthorized')]
     #[OA\Response(
         response: 200,
         description: 'Success',
@@ -34,6 +33,7 @@ class BookingWithoutReview extends Controller
             ],
         ),
     )]
+    #[HttpErrorResponse(code: 401, description: 'Unauthorized')]
     public function __invoke(Request $request): AnonymousResourceCollection
     {
         $perPage = env('PAGINATION_BOOKING_WITHOUT_REVIEW_PER_PAGE', 10);
