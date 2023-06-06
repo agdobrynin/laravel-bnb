@@ -57,7 +57,12 @@ class BookingWithoutReviewTest extends TestCase
             $booking->save();
         });
         // Return collection sorted by start date booking.
-        $bookings->sortBy('start');
+        $firstBooking = $bookings->sort(function (Booking $a, Booking $b) {
+            $at = strtotime($a->start);
+            $bt = strtotime($b->start);
+
+            return $at === $bt ? 0 : ($at > $bt ? 1 : -1);
+        })->first();
 
         $this->actingAs($user)
             ->getJson('/api/booking-without-review')
@@ -71,10 +76,10 @@ class BookingWithoutReviewTest extends TestCase
                         'id' => $bookable->id,
                         'title' => $category->name . ': ' . $bookable->title,
                     ],
-                    'start' => $bookings[0]->start,
-                    'end' => $bookings[0]->end,
-                    'price' => $bookings[0]->price,
-                    'reviewKey' => (string)$bookings[0]->review_key,
+                    'start' => $firstBooking->start,
+                    'end' => $firstBooking->end,
+                    'price' => $firstBooking->price,
+                    'reviewKey' => (string)$firstBooking->review_key,
                 ]
             );
     }

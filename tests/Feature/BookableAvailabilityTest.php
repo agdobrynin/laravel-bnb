@@ -36,16 +36,14 @@ class BookableAvailabilityTest extends TestCase
         $bookable = $this->makeBookable();
         /** @var Booking $booking */
         $booking = Booking::factory()->make([
-            'id' => Str::orderedUuid(),
-            'review_key' => Str::orderedUuid(),
             'start' => Carbon::now()->addDay(),
             'end' => Carbon::now()->addDays(5),
+            'price' => 100,
         ]);
         $booking->bookable()->associate($bookable);
         $booking->personAddress()
             ->associate(PersonAddress::factory()->create());
-        $booking->price = 100;
-        $booking->saveQuietly();
+        $booking->save();
 
         $from = Carbon::now()->format('Y-m-d');
         $to = Carbon::now()->addDay()->format('Y-m-d');
@@ -117,14 +115,10 @@ class BookableAvailabilityTest extends TestCase
 
     protected function makeBookable(): Bookable
     {
-        /** @var BookableCategory $category */
-        $category = BookableCategory::factory()->create();
-        /** @var Bookable $bookable */
-        $bookable = Bookable::factory()->make();
-        $bookable->bookableCategory()
-            ->associate($category)
-            ->save();
-
-        return $bookable;
+        return BookableCategory::factory()
+            ->hasBookables()
+            ->create()
+            ->bookables()
+            ->first();
     }
 }
