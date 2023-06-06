@@ -12,7 +12,7 @@ use App\Virtual\Parameters\UuidPathParameter;
 use App\Virtual\Response\HeaderSetCookieToken;
 use App\Virtual\Response\HttpErrorResponse;
 use App\Virtual\Response\HttpNotFoundResponse;
-use App\Virtual\Response\ValidationErrorResponse;
+use App\Virtual\Response\HttpValidationErrorResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Validator;
@@ -29,7 +29,7 @@ class ReviewController extends Controller
     #[OA\RequestBody(
         content: new OA\JsonContent(ref: ReviewRequestDto::class),
     )]
-    #[ValidationErrorResponse]
+    #[HttpValidationErrorResponse]
     #[HttpNotFoundResponse(description: 'Review not found by review key')]
     #[HttpErrorResponse(code: 403, description: 'Your are not owner this review')]
     #[OA\Response(

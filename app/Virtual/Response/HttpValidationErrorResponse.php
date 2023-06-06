@@ -7,7 +7,7 @@ use App\Virtual\ValidationError;
 use OpenApi\Attributes as OA;
 
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
-class ValidationErrorResponse extends OA\Response
+class HttpValidationErrorResponse extends OA\Response
 {
     public function __construct(string $description = 'Validation error')
     {

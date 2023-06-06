@@ -13,7 +13,7 @@ use App\Models\PersonAddress;
 use App\ValueObject\PriceBreakdownVO;
 use App\Virtual\Response\HeaderSetCookieToken;
 use App\Virtual\Response\HttpNotFoundResponse;
-use App\Virtual\Response\ValidationErrorResponse;
+use App\Virtual\Response\HttpValidationErrorResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use OpenApi\Attributes as OA;
@@ -39,7 +39,7 @@ class CheckoutController extends Controller
 
     )]
     #[HttpNotFoundResponse]
-    #[ValidationErrorResponse]
+    #[HttpValidationErrorResponse]
     public function __invoke(CheckoutRequest $request): AnonymousResourceCollection
     {
         $dto = CheckoutRequestDto::fromRequest($request);

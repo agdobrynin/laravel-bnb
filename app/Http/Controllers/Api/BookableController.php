@@ -13,7 +13,7 @@ use App\Virtual\PaginateShort;
 use App\Virtual\Parameters\UuidPathParameter;
 use App\Virtual\Response\HeaderSetCookieToken;
 use App\Virtual\Response\HttpNotFoundResponse;
-use App\Virtual\Response\ValidationErrorResponse;
+use App\Virtual\Response\HttpValidationErrorResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OA;
@@ -46,7 +46,7 @@ class BookableController extends Controller
             ],
         )
     )]
-    #[ValidationErrorResponse(description: 'Validation error for input query parameters')]
+    #[HttpValidationErrorResponse(description: 'Validation error for input query parameters')]
     public function index(BookableIndexRequest $request): AnonymousResourceCollection
     {
         $filter = new BookablesFilterDto(...$request->validated());

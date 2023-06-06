@@ -9,6 +9,7 @@ use App\ValueObject\PriceBreakdownVO;
 use App\Virtual\Parameters\UuidPathParameter;
 use App\Virtual\Response\HeaderSetCookieToken;
 use App\Virtual\Response\HttpNotFoundResponse;
+use App\Virtual\Response\HttpValidationErrorResponse;
 use Illuminate\Http\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -25,7 +26,6 @@ class CalculateBookingController extends Controller
      */
     #[OA\QueryParameter(description: 'Date start for booking', ref: '#/components/parameters/dateStartInQuery')]
     #[OA\QueryParameter(description: 'Date end for booking', ref: '#/components/parameters/dateEndInQuery')]
-    #[HttpNotFoundResponse]
     #[OA\Response(
         response: 200,
         description: 'Success',
@@ -45,6 +45,8 @@ class CalculateBookingController extends Controller
             ],
         )
     )]
+    #[HttpNotFoundResponse]
+    #[HttpValidationErrorResponse]
     public function __invoke(Bookable $bookable, BookingDatesRequest $request): JsonResponse
     {
         $data = $request->validated();
