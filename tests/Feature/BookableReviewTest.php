@@ -22,56 +22,47 @@ class BookableReviewTest extends TestCase
         /** @var User $user */
         $user = User::factory()->create();
         /** @var BookableCategory $category */
-        $category = BookableCategory::factory()->hasBookables()->create();
-        /** @var Bookable $bookable */
-        $bookable = $category->bookables()->first();
-        $personAddress = PersonAddress::factory()->create();
+        $category = BookableCategory::factory()
+            ->has(
+                Bookable::factory()
+                    ->has(
+                        Booking::factory(3)
+                            ->sequence(
+                                ['user_id' => null],
+                                ['user_id' => $user->id],
+                            )
+                            ->afterMaking(function (Booking $booking) {
+                                $booking->personAddress()->associate(PersonAddress::factory()->create());
+                            })
+                    )
+            )->create();
 
-        $bookings = Booking::factory(2)
-            ->sequence(
-                ['user_id' => null],
-                ['user_id' => $user->id],
-            )
-            ->create([
-                'bookable_id' => $bookable->id,
-                'price' => 100,
-                'person_address_id' => $personAddress->id,
-            ]);
+        Booking::all()->each(function (Booking $booking) {
+           Review::factory()->create([
+               'booking_id' => $booking->id,
+               'bookable_id' => $booking->bookable()->first('id'),
+           ]);
+        });
 
-        Review::factory(2)
-            ->sequence(
-                ['booking_id' => $bookings[0]->id],
-                ['booking_id' => $bookings[1]->id],
-            )
-            ->create(['bookable_id' => $bookable->id]);
-
-        $response = $this->getJson('/api/bookables/' . $bookable->id . '/reviews');
+        $response = $this->getJson('/api/bookables/' . $category->bookables[0]->id . '/reviews');
 
         $response->assertOk()
-            ->assertJsonCount(2, 'data')
+            ->assertJsonCount(3, 'data')
             ->assertJson(
-                fn(AssertableJson $json) => $json->where(
-                    'data.0.id',
-                    fn(string $id) => Str::isUuid($id)
-                )->whereType(
-                    'data.0.description', 'string'
-                )->whereType(
-                    'data.0.rating', 'integer'
-                )->whereType(
-                    'data.0.createdAt', 'string'
-                )->whereType(
-                    'data.0.user', 'null'
-                )->whereType(
-                    'data.1.user', 'array'
-                )->whereType(
-                    'data.1.user.id', 'integer'
-                )->whereType(
-                    'data.1.user.name', 'string'
-                )
-                    ->etc()
+                function (AssertableJson $json) {
+                    $json->where('data.0.id', fn(string $id) => Str::isUuid($id));
+                    $json->whereType('data.0.description', 'string');
+                    $json->whereType('data.0.rating', 'integer');
+                    $json->whereType('data.0.createdAt', 'string');
+                    $json->whereType('data.0.user', 'null');
+                    $json->whereType('data.1.user', 'array');
+                    $json->whereType('data.1.user.id', 'integer');
+                    $json->whereType('data.1.user.name', 'string');
+                    $json->etc();
+                }
             )
             ->assertJsonStructure([
-                'data' => [['id', 'description', 'rating', 'createdAt', 'user']],
+                'data' => ['*' => ['id', 'description', 'rating', 'createdAt', 'user']],
                 'links' => ['first', 'last', 'prev', 'next'],
                 'meta' => [
                     'current_page',
@@ -86,7 +77,7 @@ class BookableReviewTest extends TestCase
                     ],
                 ]
             ])
-            ->assertJsonPath('meta.total', 2)
+            ->assertJsonPath('meta.total', 3)
             ->assertJsonPath('meta.per_page', (int)config('bnb.review_per_page'));
     }
 

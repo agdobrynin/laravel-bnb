@@ -54,15 +54,5 @@ class Booking extends Model
         parent::boot();
 
         static::creating(fn(Booking $booking) => $booking->review_key = Str::uuid());
-
-        static::created(function (Booking $booking) {
-            $email = $booking->personAddress->email;
-
-            if ($booking->user->id) {
-                $email = $booking->user->email;
-            }
-
-            Mail::to($email)->send(new BookingMade($booking));
-        });
     }
 }

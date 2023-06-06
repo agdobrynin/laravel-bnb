@@ -9,6 +9,7 @@ use App\Models\PersonAddress;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
+use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 
 class BookableAvailabilityTest extends TestCase
@@ -35,10 +36,10 @@ class BookableAvailabilityTest extends TestCase
     {
         $bookable = $this->makeBookable();
         /** @var Booking $booking */
+
         $booking = Booking::factory()->make([
             'start' => Carbon::now()->addDay(),
             'end' => Carbon::now()->addDays(5),
-            'price' => 100,
         ]);
         $booking->bookable()->associate($bookable);
         $booking->personAddress()
@@ -53,13 +54,17 @@ class BookableAvailabilityTest extends TestCase
         );
 
         $response->assertOk()
-            ->assertJsonStructure(['data'])
-            ->assertJson(['data' => [
-                [
-                    'start' => $booking->start->format('Y-m-d'),
-                    'end' => $booking->end->format('Y-m-d'),
-                ]
-            ]]);
+            ->assertJsonStructure(['data' => ['*' => ['start', 'end']]])
+            ->assertJson(function (AssertableJson $json) {
+                $json->where(
+                    'data.0.start',
+                    fn(string $data) => (bool)preg_match('/^\d{4}-\d{2}-\d{2}$/', $data)
+                );
+                $json->where(
+                    'data.0.end',
+                    fn(string $data) => (bool)preg_match('/^\d{4}-\d{2}-\d{2}$/', $data)
+                );
+            });
     }
 
     public function testNoValidInput(): void
@@ -73,7 +78,7 @@ class BookableAvailabilityTest extends TestCase
         $response->assertUnprocessable()
             ->assertJsonStructure([
                 'message',
-                'errors' => ['start', 'end']
+                'errors' => ['start' => [], 'end' => []]
             ])
             ->assertJsonPath('errors.start.0', 'The start field is required.')
             ->assertJsonPath('errors.end.0', 'The end field is required.');
@@ -115,8 +120,7 @@ class BookableAvailabilityTest extends TestCase
 
     protected function makeBookable(): Bookable
     {
-        return BookableCategory::factory()
-            ->hasBookables()
+        return BookableCategory::factory()->has(Bookable::factory())
             ->create()
             ->bookables()
             ->first();

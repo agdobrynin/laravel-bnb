@@ -21,9 +21,10 @@ class CalculateBookingTest extends TestCase
         $dateFrom = '2023-06-06';
         $dateTo = '2023-06-11';
 
-        $response = $this->getJson('/api/bookables/' . $bookable->id . '/calculate?start=' . $dateFrom . '&end=' . $dateTo);
-
-        $response->assertOk()
+        $this->getJson(
+            '/api/bookables/' . $bookable->id . '/calculate?start=' . $dateFrom . '&end=' . $dateTo
+        )
+            ->assertOk()
             ->assertJson(function (AssertableJson $json) {
                 $json->where(
                     'data.calculate.bookableId',
@@ -47,7 +48,9 @@ class CalculateBookingTest extends TestCase
         $dateFrom = '2023-01-01';
         $dateTo = '2023-01-02';
 
-        $this->getJson('/api/bookables/' . Str::uuid() . '/calculate?start=' . $dateFrom . '&end=' . $dateTo)
+        $this->getJson(
+            '/api/bookables/' . Str::uuid() . '/calculate?start=' . $dateFrom . '&end=' . $dateTo
+        )
             ->assertNotFound();
     }
 
@@ -58,7 +61,9 @@ class CalculateBookingTest extends TestCase
         $dateFrom = '2023';
         $dateTo = '2023';
 
-        $this->getJson('/api/bookables/' . $bookable->id . '/calculate?start=' . $dateFrom . '&end=' . $dateTo)
+        $this->getJson(
+            '/api/bookables/' . $bookable->id . '/calculate?start=' . $dateFrom . '&end=' . $dateTo
+        )
             ->assertUnprocessable()
             ->assertJsonStructure([
                 'message', 'errors' => ['start' => [], 'end' => []]

@@ -7,6 +7,7 @@ use App\Dto\CheckoutRequestDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CheckoutRequest;
 use App\Http\Resources\CheckoutSuccessResource;
+use App\Mail\BookingMade;
 use App\Models\Bookable;
 use App\Models\Booking;
 use App\Models\PersonAddress;
@@ -16,6 +17,7 @@ use App\Virtual\Response\HttpNotFoundResponse;
 use App\Virtual\Response\HttpValidationErrorResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Mail;
 use OpenApi\Attributes as OA;
 
 class CheckoutController extends Controller
@@ -43,9 +45,10 @@ class CheckoutController extends Controller
     public function __invoke(CheckoutRequest $request): AnonymousResourceCollection
     {
         $dto = CheckoutRequestDto::fromRequest($request);
+        /** @var PersonAddress $personAddress */
         $personAddress = PersonAddress::create((array)$dto->person);
 
-        $bookings = collect($dto->bookings)->map(static function (CheckoutBookingDto $checkoutBooking) use ($personAddress, $request) {
+        $bookings = collect($dto->bookings)->map(static function (CheckoutBookingDto $checkoutBooking) use ($personAddress, $request, $dto) {
 
             $bookable = Bookable::findOr($checkoutBooking->bookable_id, static function () use ($checkoutBooking) {
                 $message = sprintf('Bookable with id "%s" not found', $checkoutBooking->bookable_id);
@@ -66,11 +69,13 @@ class CheckoutController extends Controller
             }
 
             $booking->save();
+            //Send email with review link to user.
+            $email = $request->user()?->email ?: $dto->person->email;
+            Mail::to($email)->send(new BookingMade($booking));
+
 
             return $booking;
         });
-
-        // send emails for review feedback... maybe with models event?
 
         return CheckoutSuccessResource::collection($bookings);
     }
