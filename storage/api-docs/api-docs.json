@@ -57,6 +57,46 @@
                                 }
                             }
                         }
+                    },
+                    "422": {
+                        "description": "Validation error for input query parameters",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponseDto"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -227,7 +267,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Message"
+                                    "$ref": "#/components/schemas/MessageResponseDto"
                                 }
                             }
                         }
@@ -301,7 +341,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Message"
+                                    "$ref": "#/components/schemas/MessageResponseDto"
                                 }
                             }
                         }
@@ -364,7 +404,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Message"
+                                    "$ref": "#/components/schemas/MessageResponseDto"
                                 }
                             }
                         }
@@ -384,7 +424,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Message"
+                                    "$ref": "#/components/schemas/MessageResponseDto"
                                 }
                             }
                         }
@@ -406,26 +446,6 @@
                 "summary": "Get user's review without rating",
                 "operationId": "f7e54cae447d7d2d844ba2a81cba9c65",
                 "responses": {
-                    "401": {
-                        "description": "Unauthorized",
-                        "headers": {
-                            "Set-Cookie": {
-                                "description": "Set Sanctum session auth header",
-                                "required": true,
-                                "schema": {
-                                    "type": "string",
-                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
-                                }
-                            }
-                        },
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Message"
-                                }
-                            }
-                        }
-                    },
                     "200": {
                         "description": "Success",
                         "headers": {
@@ -453,6 +473,26 @@
                                             "$ref": "#/components/schemas/PaginateMeta"
                                         }
                                     ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponseDto"
                                 }
                             }
                         }
@@ -487,26 +527,6 @@
                     }
                 ],
                 "responses": {
-                    "404": {
-                        "description": "Not found",
-                        "headers": {
-                            "Set-Cookie": {
-                                "description": "Set Sanctum session auth header",
-                                "required": true,
-                                "schema": {
-                                    "type": "string",
-                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
-                                }
-                            }
-                        },
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Message"
-                                }
-                            }
-                        }
-                    },
                     "200": {
                         "description": "Success",
                         "headers": {
@@ -533,6 +553,46 @@
                                         }
                                     },
                                     "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Set Sanctum session auth header",
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "example": "XSRF-TOKEN=eyJpdiI6I; expires=Wed, 31 May 2023 10:31:16 GMT; Max-Age=7200; path=/; samesite=lax"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
                                 }
                             }
                         }
@@ -592,13 +652,13 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Message"
+                                    "$ref": "#/components/schemas/MessageResponseDto"
                                 }
                             }
                         }
                     },
                     "422": {
-                        "description": "Validation error",
+                        "description": "Input validation or Fail for availability booking dates",
                         "headers": {
                             "Set-Cookie": {
                                 "description": "Set Sanctum session auth header",
@@ -677,7 +737,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Message"
+                                    "$ref": "#/components/schemas/MessageResponseDto"
                                 }
                             }
                         }
@@ -697,7 +757,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Message"
+                                    "$ref": "#/components/schemas/MessageResponseDto"
                                 }
                             }
                         }
@@ -777,7 +837,7 @@
                 "summary": "Get info about authenticated user",
                 "operationId": "4e44cf9a540963d379e34df9bf78481c",
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "Success",
                         "headers": {
                             "Set-Cookie": {
@@ -812,7 +872,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Message"
+                                    "$ref": "#/components/schemas/MessageResponseDto"
                                 }
                             }
                         }
@@ -857,7 +917,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Message"
+                                    "$ref": "#/components/schemas/MessageResponseDto"
                                 }
                             }
                         }
@@ -1014,7 +1074,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Message"
+                                    "$ref": "#/components/schemas/MessageResponseDto"
                                 }
                             }
                         }
@@ -1186,7 +1246,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Message"
+                                    "$ref": "#/components/schemas/MessageResponseDto"
                                 }
                             }
                         }
@@ -1271,6 +1331,15 @@
                         "items": {
                             "$ref": "#/components/schemas/CheckoutBookingDto"
                         }
+                    }
+                },
+                "type": "object"
+            },
+            "MessageResponseDto": {
+                "title": "Message",
+                "properties": {
+                    "message": {
+                        "type": "string"
                     }
                 },
                 "type": "object"
@@ -1749,15 +1818,6 @@
                         },
                         "type": "object",
                         "nullable": true
-                    }
-                },
-                "type": "object"
-            },
-            "Message": {
-                "title": "Message",
-                "properties": {
-                    "message": {
-                        "type": "string"
                     }
                 },
                 "type": "object"

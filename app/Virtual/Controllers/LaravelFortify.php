@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace App\Virtual\Controllers;
 
-use App\Virtual\Message;
+use App\Dto\MessageResponseDto;
 use App\Virtual\Models\EmailPassword;
 use App\Virtual\Response\HeaderSetCookieToken;
 use App\Virtual\Response\HttpErrorResponse;
-use App\Virtual\Response\ValidationErrorResponse;
+use App\Virtual\Response\HttpValidationErrorResponse;
 use OpenApi\Attributes as OA;
 
 // Virtual controller for Laravel Fortify package.
@@ -78,12 +78,12 @@ final class LaravelFortify
                 new OA\Property(property: 'email', type: 'string', format: 'email')
             ])
     )]
-    #[ValidationErrorResponse]
+    #[HttpValidationErrorResponse]
     #[OA\Response(
         response: 200,
         description: 'Success',
         headers: [new HeaderSetCookieToken],
-        content: new OA\JsonContent(ref: Message::class),
+        content: new OA\JsonContent(ref: MessageResponseDto::class),
     )]
     public function forgotPassword(): void
     {
@@ -108,7 +108,7 @@ final class LaravelFortify
             ]
         )
     )]
-    #[ValidationErrorResponse]
+    #[HttpValidationErrorResponse]
     #[OA\Response(
         response: 201,
         description: 'Success register',

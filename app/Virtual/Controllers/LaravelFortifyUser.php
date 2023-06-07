@@ -5,7 +5,7 @@ namespace App\Virtual\Controllers;
 
 use App\Virtual\Response\HeaderSetCookieToken;
 use App\Virtual\Response\HttpErrorResponse;
-use App\Virtual\Response\ValidationErrorResponse;
+use App\Virtual\Response\HttpValidationErrorResponse;
 use OpenApi\Attributes as OA;
 
 class LaravelFortifyUser
@@ -26,7 +26,7 @@ class LaravelFortifyUser
             ],
         )
     )]
-    #[ValidationErrorResponse]
+    #[HttpValidationErrorResponse]
     #[HttpErrorResponse(code: 401, description: 'Unauthenticated')]
     #[OA\Response(
         response: 200,

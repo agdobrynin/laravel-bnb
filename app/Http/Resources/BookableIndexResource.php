@@ -38,7 +38,7 @@ class BookableIndexResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'description' => Str::limit($this->description, 80),
+            'description' => Str::limit($this->description, config('bnb.index_description_short_length')),
             'price' => $this->price,
             'price_weekend' => $this->price_weekend,
             'category' => $this->bookableCategory->name,

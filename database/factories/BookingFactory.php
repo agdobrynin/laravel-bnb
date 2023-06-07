@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Booking>
@@ -21,8 +22,10 @@ class BookingFactory extends Factory
         $end = (clone $start)->add(new \DateInterval($interval));
 
         return [
-            'start' => $start,
-            'end' => $end
+            'start' => $start->format('Y-m-d'),
+            'end' => $end->format('Y-m-d'),
+            'review_key' => Str::uuid(),
+            'price' => rand(5, 100),
         ];
     }
 }

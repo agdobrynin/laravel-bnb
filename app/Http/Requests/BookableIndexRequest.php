@@ -20,7 +20,7 @@ class BookableIndexRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'bookableCategoryId' => 'nullable|integer',
+            'bookableCategoryId' => 'nullable|uuid',
             'priceMin' => 'nullable|integer',
             'priceMax' => 'nullable|integer',
             'priceWeekendMin' => 'nullable|integer',
