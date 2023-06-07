@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Mail\BookingMade;
 use App\Models\Bookable;
 use App\Models\BookableCategory;
 use App\Models\Booking;
@@ -9,6 +10,7 @@ use App\Models\PersonAddress;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
@@ -121,6 +123,8 @@ class CheckoutTest extends TestCase
 
     public function testCheckoutSuccess(): void
     {
+        Mail::fake();
+
         BookableCategory::factory()
             ->has(Bookable::factory())
             ->create();
@@ -155,6 +159,8 @@ class CheckoutTest extends TestCase
                     ->where('data.0.bookable.id', fn(string $id) => Str::isUuid($id))
                     ->whereType('data.0.bookable.title', 'string');
             });
+
+        Mail::assertSent(BookingMade::class);
     }
 
     protected function makeBookableWithBooking(): Bookable
