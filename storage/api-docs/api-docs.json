@@ -658,7 +658,7 @@
                         }
                     },
                     "422": {
-                        "description": "Validation error",
+                        "description": "Input validation or Fail for availability booking dates",
                         "headers": {
                             "Set-Cookie": {
                                 "description": "Set Sanctum session auth header",

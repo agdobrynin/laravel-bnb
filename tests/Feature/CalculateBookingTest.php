@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Bookable;
 use App\Models\BookableCategory;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Illuminate\Testing\Fluent\AssertableJson;
@@ -18,8 +19,8 @@ class CalculateBookingTest extends TestCase
         $bookable = $this->makeBookable();
 
         // Dates include weekdays from Tuesday to Sunday
-        $dateFrom = '2023-06-06';
-        $dateTo = '2023-06-11';
+        $dateFrom = Carbon::now()->format('Y-m-d');
+        $dateTo = Carbon::now()->addDays(7)->format('Y-m-d');
 
         $this->getJson(
             '/api/bookables/' . $bookable->id . '/calculate?start=' . $dateFrom . '&end=' . $dateTo

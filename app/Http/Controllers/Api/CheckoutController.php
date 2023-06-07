@@ -41,7 +41,7 @@ class CheckoutController extends Controller
 
     )]
     #[HttpNotFoundResponse]
-    #[HttpValidationErrorResponse]
+    #[HttpValidationErrorResponse(description: 'Input validation or Fail for availability booking dates')]
     public function __invoke(CheckoutRequest $request): AnonymousResourceCollection
     {
         $dto = CheckoutRequestDto::fromRequest($request);
@@ -49,14 +49,8 @@ class CheckoutController extends Controller
         $personAddress = PersonAddress::create((array)$dto->person);
 
         $bookings = collect($dto->bookings)->map(static function (CheckoutBookingDto $checkoutBooking) use ($personAddress, $request, $dto) {
-
-            $bookable = Bookable::findOr($checkoutBooking->bookable_id, static function () use ($checkoutBooking) {
-                $message = sprintf('Bookable with id "%s" not found', $checkoutBooking->bookable_id);
-
-                throw new ModelNotFoundException($message);
-            })->load('bookableCategory');
-
-
+            /** @var Bookable $bookable */
+            $bookable = Bookable::with('bookableCategory')->find($checkoutBooking->bookable_id);
             /** @var Booking $booking */
             $booking = Booking::make((array)$checkoutBooking);
             $priceBreakdown = new PriceBreakdownVO($bookable, $booking->start, $booking->end);
