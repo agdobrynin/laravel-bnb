@@ -72,7 +72,7 @@ In Vue:
 cp .env.example .env
 ```
 
-Собрать контейнеры docker:
+Собрать docker контейнеры:
 
 ```shell
 docker run --rm -u "$(id -u):$(id -g)" \
@@ -82,10 +82,10 @@ docker run --rm -u "$(id -u):$(id -g)" \
     composer install --ignore-platform-reqs
 ```
 
-на этом подготовка к работе с Laravel Sail закончен.
+на этом подготовка к работе с Laravel Sail закончена.
 
 ### Запуск проекта
-Поднять docker контейнеры с помощтю Laravel Sail
+Поднять docker контейнеры с помощью Laravel Sail
 ```shell
 ./vendor/bin/sail up -d
 ```
