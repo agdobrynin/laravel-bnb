@@ -64,15 +64,13 @@ In Vue:
 легковесный [Laravel Sail](https://laravel.com/docs/9.x/sail)
 для работы с docker контейнерами.
 
-#### Сборка образов докера
-
 Настроить переменные окружения (если требуется изменить их):
 
 ```shell
 cp .env.example .env
 ```
 
-Собрать docker контейнеры:
+Установить зависимости проекта:
 
 ```shell
 docker run --rm -u "$(id -u):$(id -g)" \
