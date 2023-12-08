@@ -23,14 +23,14 @@ use OpenApi\Attributes as OA;
                 ]
             ),
             minItems: 0,
-        )
+        ),
     ])]
 class BookableIndexResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
     public function toArray($request)

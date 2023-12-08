@@ -36,8 +36,8 @@ class ReviewStoreTest extends TestCase
         $this->postJson('/api/reviews', $data)
             ->assertUnprocessable()
             ->assertJson(function (AssertableJson $json) {
-                $json->where('errors.description.0', fn(string $error) => str_contains($error, 'must be at least 2 characters'))
-                    ->where('errors.rating', fn(string $error) => str_contains($error, 'The selected rating is invalid'))
+                $json->where('errors.description.0', fn (string $error) => str_contains($error, 'must be at least 2 characters'))
+                    ->where('errors.rating', fn (string $error) => str_contains($error, 'The selected rating is invalid'))
                     ->etc();
             })
             ->assertJsonStructure(['message', 'errors' => ['description', 'rating']]);

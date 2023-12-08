@@ -23,13 +23,13 @@ class CalculateBookingTest extends TestCase
         $dateTo = Carbon::now()->addDays(7)->format('Y-m-d');
 
         $this->getJson(
-            '/api/bookables/' . $bookable->id . '/calculate?start=' . $dateFrom . '&end=' . $dateTo
+            '/api/bookables/'.$bookable->id.'/calculate?start='.$dateFrom.'&end='.$dateTo
         )
             ->assertOk()
             ->assertJson(function (AssertableJson $json) {
                 $json->where(
                     'data.calculate.bookableId',
-                    fn(string $id) => Str::isUuid($id)
+                    fn (string $id) => Str::isUuid($id)
                 )
                     ->whereType('data.calculate.totalPrice', 'integer')
                     ->whereType('data.calculate.breakdown.weekend.totalPrice', 'integer')
@@ -50,7 +50,7 @@ class CalculateBookingTest extends TestCase
         $dateTo = '2023-01-02';
 
         $this->getJson(
-            '/api/bookables/' . Str::uuid() . '/calculate?start=' . $dateFrom . '&end=' . $dateTo
+            '/api/bookables/'.Str::uuid().'/calculate?start='.$dateFrom.'&end='.$dateTo
         )
             ->assertNotFound();
     }
@@ -63,11 +63,11 @@ class CalculateBookingTest extends TestCase
         $dateTo = '2023';
 
         $this->getJson(
-            '/api/bookables/' . $bookable->id . '/calculate?start=' . $dateFrom . '&end=' . $dateTo
+            '/api/bookables/'.$bookable->id.'/calculate?start='.$dateFrom.'&end='.$dateTo
         )
             ->assertUnprocessable()
             ->assertJsonStructure([
-                'message', 'errors' => ['start' => [], 'end' => []]
+                'message', 'errors' => ['start' => [], 'end' => []],
             ])
             ->assertJsonPath('errors.start.0', 'The start does not match the format Y-m-d.')
             ->assertJsonPath('errors.end.0', 'The end does not match the format Y-m-d.')

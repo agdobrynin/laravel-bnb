@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Dto;
@@ -19,8 +20,7 @@ readonly class CheckoutRequestDto implements DtoFromRequest
             items: new OA\Items(ref: CheckoutBookingDto::class),
         )]
         public array $bookings,
-    )
-    {
+    ) {
     }
 
     public static function fromRequest(CheckoutRequest|FormRequest $request): static

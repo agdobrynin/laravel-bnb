@@ -26,7 +26,7 @@ use OpenApi\Attributes as OA;
                     new OA\Property(property: 'reviewKey', title: 'Key for review', type: 'string', format: 'uuid'),
                 ],
             ),
-        )
+        ),
     ]
 )]
 class BookingWithoutReviewResource extends JsonResource
@@ -36,7 +36,7 @@ class BookingWithoutReviewResource extends JsonResource
         return [
             'bookable' => [
                 'id' => $this->bookable->id,
-                'title' => $this->bookable->bookableCategory->name.': '. $this->bookable->title,
+                'title' => $this->bookable->bookableCategory->name.': '.$this->bookable->title,
             ],
             'start' => $this->start,
             'end' => $this->end,

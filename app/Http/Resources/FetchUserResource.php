@@ -24,7 +24,7 @@ class FetchUserResource extends JsonResource
             'email' => $this->email,
             'name' => $this->name,
             'newReviewCount' => $this->bookings()->where('review_key', '!=', '')->count(),
-            'isVerified' => !is_null($this->email_verified_at),
+            'isVerified' => ! is_null($this->email_verified_at),
         ];
     }
 }

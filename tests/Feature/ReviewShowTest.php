@@ -15,7 +15,7 @@ class ReviewShowTest extends TestCase
 
     public function testReviewNotExist()
     {
-        $this->getJson('/api/reviews/' . Str::uuid())
+        $this->getJson('/api/reviews/'.Str::uuid())
             ->assertOk()->assertJson(['data' => ['hasReview' => false]]);
     }
 
@@ -27,7 +27,7 @@ class ReviewShowTest extends TestCase
 
         $review = Review::factory()->create(['bookable_id' => $bookable->id]);
 
-        $this->getJson('/api/reviews/' . $review->id)
+        $this->getJson('/api/reviews/'.$review->id)
             ->assertOk()->assertJson(['data' => ['hasReview' => true]]);
     }
 }

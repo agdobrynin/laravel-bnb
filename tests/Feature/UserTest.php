@@ -12,7 +12,6 @@ use Tests\TestCase;
 
 class UserTest extends TestCase
 {
-
     use RefreshDatabase;
 
     public function testUnauthorized()

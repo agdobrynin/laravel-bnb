@@ -30,10 +30,10 @@ class BookingWithoutReviewTest extends TestCase
             ->assertJsonCount(0, 'data')
             ->assertJsonStructure([
                 'data',
-                'links' => ['first', 'last', 'next', 'prev',],
+                'links' => ['first', 'last', 'next', 'prev'],
                 'meta' => [
                     'current_page', 'from', 'last_page', 'path', 'per_page', 'to', 'total',
-                    'links' => ['*' => ['url', 'label', 'active',]],
+                    'links' => ['*' => ['url', 'label', 'active']],
                 ],
             ]);
     }
@@ -50,8 +50,8 @@ class BookingWithoutReviewTest extends TestCase
                 Bookable::factory()
                     ->has(
                         Booking::factory(2)
-                            ->afterMaking(fn(Booking $booking) => $booking->personAddress()->associate($address))
-                            ->afterMaking(fn(Booking $booking) => $booking->user()->associate($user))
+                            ->afterMaking(fn (Booking $booking) => $booking->personAddress()->associate($address))
+                            ->afterMaking(fn (Booking $booking) => $booking->user()->associate($user))
                     )
             )
             ->create();
@@ -63,16 +63,16 @@ class BookingWithoutReviewTest extends TestCase
             ->assertJsonPath('meta.total', 2)
             ->assertJsonStructure([
                 'data' => [
-                    '*' => ['bookable' => ['id', 'title'], 'start', 'end', 'price', 'reviewKey']
-                ]
+                    '*' => ['bookable' => ['id', 'title'], 'start', 'end', 'price', 'reviewKey'],
+                ],
             ])
             ->assertJson(function (AssertableJson $json) {
-                $json->where('data.0.bookable.id', fn(string $id) => Str::isUuid($id));
+                $json->where('data.0.bookable.id', fn (string $id) => Str::isUuid($id));
                 $json->whereType('data.0.bookable.title', 'string');
-                $json->where('data.0.start', fn(string $date) => (bool)preg_match('/\d{4}-\d{2}-\d{2}/', $date));
-                $json->where('data.0.end', fn(string $date) => (bool)preg_match('/\d{4}-\d{2}-\d{2}/', $date));
+                $json->where('data.0.start', fn (string $date) => (bool) preg_match('/\d{4}-\d{2}-\d{2}/', $date));
+                $json->where('data.0.end', fn (string $date) => (bool) preg_match('/\d{4}-\d{2}-\d{2}/', $date));
                 $json->whereType('data.0.price', 'integer');
-                $json->where('data.0.reviewKey', fn(string $id) => Str::isUuid($id));
+                $json->where('data.0.reviewKey', fn (string $id) => Str::isUuid($id));
                 $json->etc();
             });
     }

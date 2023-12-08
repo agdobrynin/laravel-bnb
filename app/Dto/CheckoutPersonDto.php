@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Dto;
@@ -19,7 +20,6 @@ readonly class CheckoutPersonDto
         public ?string $phone,
         #[OA\Property(format: 'email')]
         public string $email,
-    )
-    {
+    ) {
     }
 }

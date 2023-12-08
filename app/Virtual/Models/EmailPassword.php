@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Virtual\Models;
@@ -10,6 +11,7 @@ final class EmailPassword
 {
     #[OA\Property(property: 'email', format: 'email')]
     public string $email;
+
     #[OA\Property]
     public string $password;
 }

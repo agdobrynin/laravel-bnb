@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Virtual\Controllers;
@@ -22,7 +23,7 @@ class LaravelFortifyUser
             properties: [
                 new OA\Property(property: 'first_name', description: 'user name', type: 'string', minimum: 2),
                 new OA\Property(property: 'last_name', description: 'user last name', type: 'string', minimum: 2),
-                new OA\Property(property: 'email', type: 'string', format: 'email')
+                new OA\Property(property: 'email', type: 'string', format: 'email'),
             ],
         )
     )]

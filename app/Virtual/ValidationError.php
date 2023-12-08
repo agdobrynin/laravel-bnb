@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Virtual;
@@ -16,10 +17,10 @@ use OpenApi\Attributes as OA;
                     title: 'All error for field name (field key)',
                     type: 'array',
                     items: new OA\Items(type: 'string'),
-                )
+                ),
             ],
             type: 'object',
-        )
+        ),
     ]
 )]
 class ValidationError

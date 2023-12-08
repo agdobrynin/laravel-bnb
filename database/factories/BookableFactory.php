@@ -15,7 +15,7 @@ class BookableFactory extends Factory
     public function definition(): array
     {
         $regularPrice = rand(5, 100);
-        $weekendPrice = (int)($regularPrice + ($regularPrice * 0.15));
+        $weekendPrice = (int) ($regularPrice + ($regularPrice * 0.15));
 
         return [
             'title' => fake()->city,

@@ -54,7 +54,7 @@ class Handler extends ExceptionHandler
         $this->renderable(function (Throwable $e, Request $request) {
             if ($request->expectsJson() && $e->getPrevious() instanceof ModelNotFoundException) {
                 return response()->json(
-                    (array)new MessageResponseDto('Not found by id: ' . implode(',', $e->getPrevious()->getIds())),
+                    (array) new MessageResponseDto('Not found by id: '.implode(',', $e->getPrevious()->getIds())),
                     ResponseAlias::HTTP_NOT_FOUND
                 );
             }

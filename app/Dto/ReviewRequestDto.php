@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Dto;
@@ -14,8 +15,7 @@ readonly class ReviewRequestDto
         #[OA\Property(minLength: 2)]
         public string $description,
         #[OA\Property(enum: [1, 2, 3, 4, 5])]
-        public int    $rating,
-    )
-    {
+        public int $rating,
+    ) {
     }
 }

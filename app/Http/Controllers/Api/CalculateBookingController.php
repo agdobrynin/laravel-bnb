@@ -38,7 +38,7 @@ class CalculateBookingController extends Controller
                         new OA\Property(
                             property: 'calculate',
                             ref: PriceBreakdownVO::class,
-                        )
+                        ),
                     ],
                     type: 'object',
                 ),

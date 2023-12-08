@@ -13,7 +13,6 @@ use App\Virtual\Response\HeaderSetCookieToken;
 use App\Virtual\Response\HttpErrorResponse;
 use App\Virtual\Response\HttpNotFoundResponse;
 use App\Virtual\Response\HttpValidationErrorResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Validator;
 use OpenApi\Attributes as OA;
@@ -41,7 +40,7 @@ class ReviewController extends Controller
     {
         if ($request->user()) {
             Validator::validate(
-                ['verify-email'=> $request->user()->email_verified_at],
+                ['verify-email' => $request->user()->email_verified_at],
                 ['verify-email' => 'required'],
                 ['verify-email' => 'Please verify email']);
         }
@@ -49,7 +48,6 @@ class ReviewController extends Controller
         $dto = new ReviewRequestDto(...$request->validated());
 
         if ($booking = Booking::findByReviewKey($dto->id)) {
-
             if ($booking->user_id !== $request->user()?->id) {
                 abort(403, 'Forbidden. Your are not owner this booking');
             }
@@ -57,7 +55,7 @@ class ReviewController extends Controller
             $booking->review_key = '';
             $booking->save();
 
-            $review = Review::make((array)$dto);
+            $review = Review::make((array) $dto);
             $review->bookable_id = $booking->bookable_id;
             $review->booking_id = $booking->id;
 

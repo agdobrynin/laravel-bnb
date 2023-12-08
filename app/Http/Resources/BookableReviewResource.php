@@ -28,7 +28,7 @@ use OpenApi\Attributes as OA;
                 ]
             ),
             minItems: 0,
-        )
+        ),
     ]
 )]
 class BookableReviewResource extends JsonResource
@@ -36,7 +36,7 @@ class BookableReviewResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
     public function toArray($request): array
@@ -45,7 +45,7 @@ class BookableReviewResource extends JsonResource
             'id' => $this->id,
             'description' => $this->description,
             'rating' => $this->rating,
-            'createdAt' => (string)$this->created_at,
+            'createdAt' => (string) $this->created_at,
             'user' => $this->booking->user->id ? new UserReviewResource($this->booking->user) : null,
         ];
     }

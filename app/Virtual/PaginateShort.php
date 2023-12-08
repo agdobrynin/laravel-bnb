@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Virtual;
@@ -16,7 +17,7 @@ use OpenApi\Attributes as OA;
                 new OA\Property(property: 'prev', type: 'string', format: 'url', example: null, nullable: true),
             ],
             type: 'object',
-        )
+        ),
     ]
 )]
 class PaginateShort

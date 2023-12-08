@@ -15,7 +15,7 @@ class ReviewForBookablesSeeder extends Seeder
      */
     public function run()
     {
-        Bookable::all()->each(function (Bookable $bookable) {
+        Bookable::query()->cursor()->each(function (Bookable $bookable) {
             $reviews = [];
 
             foreach ($bookable->bookings as $booking) {

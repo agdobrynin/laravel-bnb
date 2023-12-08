@@ -28,8 +28,8 @@ class CheckoutTest extends TestCase
             ->assertJsonStructure([
                 'message',
                 'errors' => [
-                    'bookings', 'person.first_name', 'person.last_name', 'person.address', 'person.email'
-                ]
+                    'bookings', 'person.first_name', 'person.last_name', 'person.address', 'person.email',
+                ],
             ])
             ->assertJson(function (AssertableJson $json) {
                 $json->where('errors', function (Collection $fields) {
@@ -51,22 +51,22 @@ class CheckoutTest extends TestCase
                 'first_name' => 'a',
                 'last_name' => 'a',
                 'email' => 'asas',
-                'address' => 'short'
-            ]
+                'address' => 'short',
+            ],
         ];
 
         $this->postJson('/api/checkout', $data)
             ->assertUnprocessable()
             ->assertJson(function (AssertableJson $json) {
                 $json->where('errors', function (Collection $fields) {
-                    return (bool)preg_grep('/must be a valid email address/', $fields['person.email']);
+                    return (bool) preg_grep('/must be a valid email address/', $fields['person.email']);
                 })->where('errors', function (Collection $fields) {
-                    return (bool)preg_grep('/must be at least 2 characters/', $fields['person.first_name']);
+                    return (bool) preg_grep('/must be at least 2 characters/', $fields['person.first_name']);
                 })->where('errors', function (Collection $fields) {
-                    return (bool)preg_grep('/must be at least 2 characters/', $fields['person.last_name']);
+                    return (bool) preg_grep('/must be at least 2 characters/', $fields['person.last_name']);
                 });
                 $json->where('errors', function (Collection $fields) {
-                    return (bool)preg_grep('/must be at least 10 characters/', $fields['person.address']);
+                    return (bool) preg_grep('/must be at least 10 characters/', $fields['person.address']);
                 });
                 $json->etc();
             });
@@ -83,7 +83,7 @@ class CheckoutTest extends TestCase
                     'end' => '20',
                     'bookable_id' => $bookable->id,
                 ],
-            ]
+            ],
         ];
 
         $this->postJson('/api/checkout', $data)
@@ -112,8 +112,8 @@ class CheckoutTest extends TestCase
         $data = [
             'person' => ['first_name' => 'Ivan', 'last_name' => 'Ivanov', 'address' => 'My address here', 'email' => 'a@a.com'],
             'bookings' => [
-                ['start' => $start, 'end' => $end, 'bookable_id' => $bookable->id]
-            ]
+                ['start' => $start, 'end' => $end, 'bookable_id' => $bookable->id],
+            ],
         ];
 
         $this->postJson('/api/checkout', $data)
@@ -142,21 +142,21 @@ class CheckoutTest extends TestCase
                 'phone' => null,
             ],
             'bookings' => [
-                ['start' => $start, 'end' => $end, 'bookable_id' => $bookable->id]
-            ]
+                ['start' => $start, 'end' => $end, 'bookable_id' => $bookable->id],
+            ],
         ];
 
         $this->postJson('/api/checkout', $data)
             ->assertOk()
             ->assertJsonStructure([
-                'data' => [['start', 'end', 'price', 'reviewKey', 'bookable' => ['id', 'title']]]
+                'data' => [['start', 'end', 'price', 'reviewKey', 'bookable' => ['id', 'title']]],
             ])
             ->assertJson(function (AssertableJson $json) {
-                $json->where('data.0.start', fn(string $date) => (bool)preg_match('/\d{4}-\d{2}-\d{2}/', $date))
-                    ->where('data.0.end', fn(string $date) => (bool)preg_match('/\d{4}-\d{2}-\d{2}/', $date))
+                $json->where('data.0.start', fn (string $date) => (bool) preg_match('/\d{4}-\d{2}-\d{2}/', $date))
+                    ->where('data.0.end', fn (string $date) => (bool) preg_match('/\d{4}-\d{2}-\d{2}/', $date))
                     ->whereType('data.0.price', 'integer')
-                    ->where('data.0.reviewKey', fn(string $id) => Str::isUuid($id))
-                    ->where('data.0.bookable.id', fn(string $id) => Str::isUuid($id))
+                    ->where('data.0.reviewKey', fn (string $id) => Str::isUuid($id))
+                    ->where('data.0.bookable.id', fn (string $id) => Str::isUuid($id))
                     ->whereType('data.0.bookable.title', 'string');
             });
 

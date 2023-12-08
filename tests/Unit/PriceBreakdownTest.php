@@ -18,7 +18,6 @@ class PriceBreakdownTest extends TestCase
         $regularPriceTotal = $bookable->price * 5;
         $weekendPriceTotal = $bookable->price_weekend * 2;
 
-
         $this->assertEquals($regularPriceTotal + $weekendPriceTotal, $vo->totalPrice);
 
         $this->assertEquals($regularPriceTotal, $vo->breakdown['regular']->totalPrice);

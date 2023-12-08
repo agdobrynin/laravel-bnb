@@ -8,8 +8,8 @@ use OpenApi\Attributes as OA;
 #[OA\Schema(
     required: ['id', 'title'],
     properties: [
-        new OA\Property(property: 'id', description: 'Bookable Id',type: 'string', format: 'uuid'),
-        new OA\Property(property: 'title', description: 'Bookable name',type: 'string'),
+        new OA\Property(property: 'id', description: 'Bookable Id', type: 'string', format: 'uuid'),
+        new OA\Property(property: 'title', description: 'Bookable name', type: 'string'),
     ]
 )]
 class CheckoutSuccessBookableResource extends JsonResource

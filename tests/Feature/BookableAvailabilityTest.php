@@ -24,7 +24,7 @@ class BookableAvailabilityTest extends TestCase
         $to = Carbon::now()->addDays(4)->format('Y-m-d');
 
         $response = $this->getJson(
-            '/api/bookables/' . $bookable->id . '/availability?start=' . $from . '&end=' . $to
+            '/api/bookables/'.$bookable->id.'/availability?start='.$from.'&end='.$to
         );
 
         $response->assertOk()
@@ -36,7 +36,6 @@ class BookableAvailabilityTest extends TestCase
     {
         $bookable = $this->makeBookable();
         /** @var Booking $booking */
-
         $booking = Booking::factory()->make([
             'start' => Carbon::now()->addDay(),
             'end' => Carbon::now()->addDays(5),
@@ -50,7 +49,7 @@ class BookableAvailabilityTest extends TestCase
         $to = Carbon::now()->addDay()->format('Y-m-d');
 
         $response = $this->getJson(
-            '/api/bookables/' . $bookable->id . '/availability?start=' . $from . '&end=' . $to
+            '/api/bookables/'.$bookable->id.'/availability?start='.$from.'&end='.$to
         );
 
         $response->assertOk()
@@ -58,11 +57,11 @@ class BookableAvailabilityTest extends TestCase
             ->assertJson(function (AssertableJson $json) {
                 $json->where(
                     'data.0.start',
-                    fn(string $data) => (bool)preg_match('/^\d{4}-\d{2}-\d{2}$/', $data)
+                    fn (string $data) => (bool) preg_match('/^\d{4}-\d{2}-\d{2}$/', $data)
                 );
                 $json->where(
                     'data.0.end',
-                    fn(string $data) => (bool)preg_match('/^\d{4}-\d{2}-\d{2}$/', $data)
+                    fn (string $data) => (bool) preg_match('/^\d{4}-\d{2}-\d{2}$/', $data)
                 );
             });
     }
@@ -72,13 +71,13 @@ class BookableAvailabilityTest extends TestCase
         $bookable = $this->makeBookable();
 
         $response = $this->getJson(
-            '/api/bookables/' . $bookable->id . '/availability'
+            '/api/bookables/'.$bookable->id.'/availability'
         );
 
         $response->assertUnprocessable()
             ->assertJsonStructure([
                 'message',
-                'errors' => ['start' => [], 'end' => []]
+                'errors' => ['start' => [], 'end' => []],
             ])
             ->assertJsonPath('errors.start.0', 'The start field is required.')
             ->assertJsonPath('errors.end.0', 'The end field is required.');
@@ -86,7 +85,7 @@ class BookableAvailabilityTest extends TestCase
         $from = Carbon::now()->addDays(-1);
 
         $response = $this->getJson(
-            '/api/bookables/' . $bookable->id . '/availability?start=' . $from->format('Y-m-d')
+            '/api/bookables/'.$bookable->id.'/availability?start='.$from->format('Y-m-d')
         );
 
         $response->assertUnprocessable()
@@ -96,7 +95,7 @@ class BookableAvailabilityTest extends TestCase
         $from = Carbon::now();
 
         $response = $this->getJson(
-            '/api/bookables/' . $bookable->id . '/availability?start=' . $from . '&end=' . $from
+            '/api/bookables/'.$bookable->id.'/availability?start='.$from.'&end='.$from
         );
 
         $response->assertUnprocessable()
@@ -111,11 +110,11 @@ class BookableAvailabilityTest extends TestCase
         $uuid = Str::orderedUuid();
 
         $response = $this->getJson(
-            '/api/bookables/' . $uuid . '/availability?start=' . $from . '&end=' . $to
+            '/api/bookables/'.$uuid.'/availability?start='.$from.'&end='.$to
         );
 
         $response->assertNotFound()
-            ->assertJsonPath('message', 'Not found by id: ' . $uuid);
+            ->assertJsonPath('message', 'Not found by id: '.$uuid);
     }
 
     protected function makeBookable(): Bookable

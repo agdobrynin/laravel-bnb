@@ -38,19 +38,19 @@ class BookableReviewTest extends TestCase
             )->create();
 
         Booking::all()->each(function (Booking $booking) {
-           Review::factory()->create([
-               'booking_id' => $booking->id,
-               'bookable_id' => $booking->bookable()->first('id'),
-           ]);
+            Review::factory()->create([
+                'booking_id' => $booking->id,
+                'bookable_id' => $booking->bookable()->first('id'),
+            ]);
         });
 
-        $response = $this->getJson('/api/bookables/' . $category->bookables[0]->id . '/reviews');
+        $response = $this->getJson('/api/bookables/'.$category->bookables[0]->id.'/reviews');
 
         $response->assertOk()
             ->assertJsonCount(3, 'data')
             ->assertJson(
                 function (AssertableJson $json) {
-                    $json->where('data.0.id', fn(string $id) => Str::isUuid($id));
+                    $json->where('data.0.id', fn (string $id) => Str::isUuid($id));
                     $json->whereType('data.0.description', 'string');
                     $json->whereType('data.0.rating', 'integer');
                     $json->whereType('data.0.createdAt', 'string');
@@ -73,17 +73,17 @@ class BookableReviewTest extends TestCase
                     'per_page',
                     'total',
                     'links' => [
-                        ['active', 'label', 'url',]
+                        ['active', 'label', 'url'],
                     ],
-                ]
+                ],
             ])
             ->assertJsonPath('meta.total', 3)
-            ->assertJsonPath('meta.per_page', (int)config('bnb.review_per_page'));
+            ->assertJsonPath('meta.per_page', (int) config('bnb.review_per_page'));
     }
 
     public function testReviewsNotFoundByBookableId(): void
     {
-        $this->getJson('/api/bookables/' . Str::uuid() . '/reviews')
+        $this->getJson('/api/bookables/'.Str::uuid().'/reviews')
             ->assertNotFound();
     }
 }

@@ -33,9 +33,9 @@ class BookableTest extends TestCase
                     'per_page',
                     'total',
                     'links' => [
-                        '*' => ['active', 'label', 'url',]
+                        '*' => ['active', 'label', 'url'],
                     ],
-                ]
+                ],
             ]);
 
         $bookableCount = Bookable::all(['id'])->count();
@@ -45,7 +45,7 @@ class BookableTest extends TestCase
         $response->assertJsonPath('meta.total', $bookableCount);
 
         $response->assertJson(function (AssertableJson $json) {
-            $json->where('data.0.id', fn(string $id) => Str::isUuid($id))
+            $json->where('data.0.id', fn (string $id) => Str::isUuid($id))
                 ->whereType('data.0.price', 'integer')
                 ->whereType('data.0.price_weekend', 'integer');
 
@@ -84,14 +84,14 @@ class BookableTest extends TestCase
             ->where('price', '>=', $priceMin)
             ->where('bookable_category_id', $bookableCategory->id)->count();
 
-        $uri = '/api/bookables?priceMax=' . $priceMax . '&priceMin=' . $priceMin . '&bookableCategoryId=' . $bookableCategory->id;
+        $uri = '/api/bookables?priceMax='.$priceMax.'&priceMin='.$priceMin.'&bookableCategoryId='.$bookableCategory->id;
 
         $response = $this->getJson($uri)
             ->assertOk()
             ->assertJsonPath('meta.total', $bookableFilteredCount)
             ->assertJsonPath('data.0.category', $bookableCategory->name)
             ->assertJson(function (AssertableJson $json) use ($priceMax) {
-                $json->where('data.0.price', fn(int $price) => $price <= $priceMax)
+                $json->where('data.0.price', fn (int $price) => $price <= $priceMax)
                     ->etc();
             });
 
@@ -112,7 +112,7 @@ class BookableTest extends TestCase
         /** @var Bookable $bookable */
         $bookable = $category->bookables()->first();
 
-        $response = $this->getJson('/api/bookables/' . $bookable->id);
+        $response = $this->getJson('/api/bookables/'.$bookable->id);
 
         $response->assertOk()
             ->assertJson(['data' => [
@@ -127,7 +127,7 @@ class BookableTest extends TestCase
 
     public function testShowNotFound(): void
     {
-        $this->getJson('/api/bookables/' . Str::uuid())
+        $this->getJson('/api/bookables/'.Str::uuid())
             ->assertNotFound()
             ->assertJsonStructure(['message']);
     }

@@ -32,11 +32,11 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         ResetPassword::createUrlUsing(function (User $user, string $token) {
-            return env('VITE_API_ENDPOINT') . '/reset-password?token=' . $token . '&email=' . $user->email;
+            return env('VITE_API_ENDPOINT').'/reset-password?token='.$token.'&email='.$user->email;
         });
 
         VerifyEmail::toMailUsing(function (MustVerifyEmail $notifiable, string $url) {
-            $urlPattern = env('VITE_API_ENDPOINT') . '/verify-email/%s/%s/%s/%s';
+            $urlPattern = env('VITE_API_ENDPOINT').'/verify-email/%s/%s/%s/%s';
             parse_str(parse_url($url)['query'] ?? '', $queryString);
             // TODO check vars in $queryString
             $verifyUrl = sprintf(
@@ -50,9 +50,9 @@ class AuthServiceProvider extends ServiceProvider
             $expireDate = date('Y-m-d H:m:i', $queryString['expires']);
 
             return (new MailMessage)->subject(Lang::get('Verify Email Address'))
-                ->greeting('Hello ' . $notifiable->name)
+                ->greeting('Hello '.$notifiable->name)
                 ->line(Lang::get('Please click the button below to verify your email address.'))
-                ->lineIf(!empty($expireDate), 'Verification link available until ' . $expireDate . '.')
+                ->lineIf(! empty($expireDate), 'Verification link available until '.$expireDate.'.')
                 ->action(Lang::get('Verify Email Address'), $verifyUrl)
                 ->line(Lang::get('If you did not create an account, no further action is required.'));
         });

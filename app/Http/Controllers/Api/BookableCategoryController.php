@@ -26,8 +26,8 @@ class BookableCategoryController extends Controller
     public function __invoke(): JsonResource
     {
         $dictionary = Cache::remember(
-            BookableCategory::class, (int)env('CACHE_TTL_DICTIONARY', 300),
-            fn() => BookableCategory::all()
+            BookableCategory::class, (int) env('CACHE_TTL_DICTIONARY', 300),
+            fn () => BookableCategory::all()
         );
 
         return BookableCategoriesResource::collection($dictionary);

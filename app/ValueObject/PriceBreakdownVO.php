@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\ValueObject;
@@ -42,8 +43,7 @@ readonly class PriceBreakdownVO
         public string $dateStart,
         #[OA\Property(format: 'date')]
         public string $dateEnd
-    )
-    {
+    ) {
         $this->bookableId = $bookable->id;
 
         $carbonPeriod = CarbonPeriod::create($dateStart, $dateEnd);

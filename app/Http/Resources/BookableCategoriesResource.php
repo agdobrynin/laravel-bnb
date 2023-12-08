@@ -18,7 +18,7 @@ use OpenApi\Attributes as OA;
                 ],
             ),
             minItems: 0,
-        )
+        ),
     ],
 )]
 class BookableCategoriesResource extends JsonResource

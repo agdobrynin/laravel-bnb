@@ -26,7 +26,7 @@ use OpenApi\Attributes as OA;
                 ],
                 minItems: 1,
             ),
-        )
+        ),
     ]
 )]
 class CheckoutSuccessResource extends JsonResource
@@ -38,7 +38,7 @@ class CheckoutSuccessResource extends JsonResource
             'end' => $this->end,
             'price' => $this->price,
             'reviewKey' => $this->review_key,
-            'bookable' => new CheckoutSuccessBookableResource($this->bookable)
+            'bookable' => new CheckoutSuccessBookableResource($this->bookable),
         ];
     }
 }

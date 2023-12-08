@@ -38,7 +38,7 @@ class BookingDatesRequest extends FormRequest
     {
         return [
             'start' => 'required|date_format:Y-m-d|after_or_equal:today',
-            'end' => 'required|date_format:Y-m-d|after:start'
+            'end' => 'required|date_format:Y-m-d|after:start',
         ];
     }
 }

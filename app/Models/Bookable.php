@@ -37,6 +37,7 @@ class Bookable extends Model
     {
         return $this->belongsTo(BookableCategory::class)->withDefault();
     }
+
     public function availableForDate(string $start, string $end): Collection
     {
         return $this->bookings()->betweenDates($start, $end)->get();
@@ -51,19 +52,19 @@ class Bookable extends Model
     {
         return $builder->when(
             $filterDto->bookableCategoryId,
-            fn(Builder $query, $value) => $query->where('bookable_category_id', $value)
+            fn (Builder $query, $value) => $query->where('bookable_category_id', $value)
         )->when(
             $filterDto->priceMin,
-            fn(Builder $query, $value) => $query->where('price', '>=', $value)
+            fn (Builder $query, $value) => $query->where('price', '>=', $value)
         )->when(
             $filterDto->priceMax,
-            fn(Builder $query, $value) => $query->where('price', '<=', $value)
+            fn (Builder $query, $value) => $query->where('price', '<=', $value)
         )->when(
             $filterDto->priceWeekendMin,
-            fn(Builder $query, $value) => $query->where('price_weekend', '>=', $value)
+            fn (Builder $query, $value) => $query->where('price_weekend', '>=', $value)
         )->when(
             $filterDto->priceWeekendMax,
-            fn(Builder $query, $value) => $query->where('price_weekend', '<=', $value)
+            fn (Builder $query, $value) => $query->where('price_weekend', '<=', $value)
         );
     }
 }

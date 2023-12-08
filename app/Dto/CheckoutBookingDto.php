@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Dto;
@@ -15,7 +16,6 @@ readonly class CheckoutBookingDto
         public string $end,
         #[OA\Property(description: 'Bookable Id', format: 'uuid')]
         public string $bookable_id,
-    )
-    {
+    ) {
     }
 }

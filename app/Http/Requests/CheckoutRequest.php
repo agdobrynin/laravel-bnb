@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use App\Models\Bookable;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CheckoutRequest extends FormRequest
@@ -43,9 +42,8 @@ class CheckoutRequest extends FormRequest
                     if ($bookable->availableForDate($value['start'], $value['end'])->count()) {
                         $fail('Object is not available for given dates');
                     }
-                }
+                },
             ],
         ];
-
     }
 }

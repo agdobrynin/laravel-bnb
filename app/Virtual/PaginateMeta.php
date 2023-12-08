@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Virtual;
@@ -28,10 +29,10 @@ use OpenApi\Attributes as OA;
                         ]
                     ),
                     minItems: 1,
-                )
+                ),
             ],
             type: 'object',
-        )
+        ),
     ]
 )]
 class PaginateMeta

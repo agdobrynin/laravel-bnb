@@ -28,16 +28,24 @@ class BookingDatesSeeder extends Seeder
         $personalAddressCollection = PersonAddress::all();
         $userCollection = User::all(['id']);
 
-        Bookable::all()->each(function (Bookable $bookable) use ($personalAddressCollection, $userCollection) {
+        Bookable::query()->cursor()->each(function (Bookable $bookable) use ($personalAddressCollection, $userCollection) {
             /** @var Booking $booking */
             $booking = Booking::factory()->make();
             $booking->id = Str::uuid();
             $booking->review_key = Str::uuid();
 
+            $startDate = $booking->start instanceof \DateTimeInterface
+                ? $booking->start->format('Y-m-d')
+                : $booking->start;
+
+            $endDate = $booking->end instanceof \DateTimeInterface
+                ? $booking->end->format('Y-m-d')
+                : $booking->end;
+
             $priceBreakdown = new PriceBreakdownVO(
                 $bookable,
-                $booking->start->format('Y-m-d'),
-                $booking->end->format('Y-m-d')
+                $startDate,
+                $endDate
             );
             $booking->price = $priceBreakdown->totalPrice;
             $personal = $personalAddressCollection->random();

@@ -15,7 +15,6 @@ use App\ValueObject\PriceBreakdownVO;
 use App\Virtual\Response\HeaderSetCookieToken;
 use App\Virtual\Response\HttpNotFoundResponse;
 use App\Virtual\Response\HttpValidationErrorResponse;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Mail;
 use OpenApi\Attributes as OA;
@@ -46,13 +45,13 @@ class CheckoutController extends Controller
     {
         $dto = CheckoutRequestDto::fromRequest($request);
         /** @var PersonAddress $personAddress */
-        $personAddress = PersonAddress::create((array)$dto->person);
+        $personAddress = PersonAddress::create((array) $dto->person);
 
         $bookings = collect($dto->bookings)->map(static function (CheckoutBookingDto $checkoutBooking) use ($personAddress, $request, $dto) {
             /** @var Bookable $bookable */
             $bookable = Bookable::with('bookableCategory')->find($checkoutBooking->bookable_id);
             /** @var Booking $booking */
-            $booking = Booking::make((array)$checkoutBooking);
+            $booking = Booking::make((array) $checkoutBooking);
             $priceBreakdown = new PriceBreakdownVO($bookable, $booking->start, $booking->end);
             $booking->price = $priceBreakdown->totalPrice;
             $booking->bookable()->associate($bookable);
@@ -66,7 +65,6 @@ class CheckoutController extends Controller
             //Send email with review link to user.
             $email = $request->user()?->email ?: $dto->person->email;
             Mail::to($email)->send(new BookingMade($booking));
-
 
             return $booking;
         });

@@ -25,7 +25,7 @@ class BookingByReviewKeyTest extends TestCase
         $booking = $this->makeBooking($user);
 
         $this->actingAs($user)
-            ->getJson('/api/booking-by-review/' . $booking->review_key)
+            ->getJson('/api/booking-by-review/'.$booking->review_key)
             ->assertOk()
             ->assertJson([
                 'data' => [
@@ -41,14 +41,14 @@ class BookingByReviewKeyTest extends TestCase
                         'id' => $booking->bookable->id,
                         'title' => $booking->bookable->title,
                         'category' => $booking->bookable->bookableCategory->name,
-                    ]
+                    ],
                 ],
             ]);
     }
 
     public function testGetBookingInfoByReviewNotFound()
     {
-        $this->getJson('/api/booking-by-review/' . Str::uuid())
+        $this->getJson('/api/booking-by-review/'.Str::uuid())
             ->assertNotFound();
     }
 
@@ -57,7 +57,7 @@ class BookingByReviewKeyTest extends TestCase
         $booking = $this->makeBooking(User::factory()->create());
 
         $this->actingAs(User::factory()->create())
-            ->getJson('/api/booking-by-review/' . $booking->review_key)
+            ->getJson('/api/booking-by-review/'.$booking->review_key)
             ->assertForbidden();
     }
 
@@ -68,9 +68,9 @@ class BookingByReviewKeyTest extends TestCase
                 Bookable::factory()
                     ->has(
                         Booking::factory()
-                            ->afterMaking(fn(Booking $booking) => $booking->user()->associate($user))
+                            ->afterMaking(fn (Booking $booking) => $booking->user()->associate($user))
                             ->afterMaking(
-                                fn(Booking $booking) => $booking->personAddress()->associate(PersonAddress::factory()->create())
+                                fn (Booking $booking) => $booking->personAddress()->associate(PersonAddress::factory()->create())
                             )
                     )
             )

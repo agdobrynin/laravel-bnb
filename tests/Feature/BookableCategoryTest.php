@@ -28,12 +28,12 @@ class BookableCategoryTest extends TestCase
         $response = $this->getJson('/api/bookables/categories');
         $response->assertOk()
             ->assertJsonStructure([
-                'data' => ['*' => ['id', 'name']]
+                'data' => ['*' => ['id', 'name']],
             ])
             ->assertJsonCount($categories->count(), 'data')
             ->assertJson(
                 function (AssertableJson $json) {
-                    $json->where('data.0.id', fn(string $id) => Str::isUuid($id));
+                    $json->where('data.0.id', fn (string $id) => Str::isUuid($id));
                     $json->whereType('data.0.name', 'string');
                 }
             );

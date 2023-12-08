@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OA;
+
 #[OA\Schema(properties: [
     new OA\Property(
         property: 'data',
@@ -20,7 +21,7 @@ use OpenApi\Attributes as OA;
         ),
         maxItems: 1,
         minItems: 1,
-    )
+    ),
 ])]
 class BookableShowResource extends JsonResource
 {

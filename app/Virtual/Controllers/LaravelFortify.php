@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Virtual\Controllers;
@@ -75,7 +76,7 @@ final class LaravelFortify
     #[OA\RequestBody(
         content: new OA\JsonContent(
             properties: [
-                new OA\Property(property: 'email', type: 'string', format: 'email')
+                new OA\Property(property: 'email', type: 'string', format: 'email'),
             ])
     )]
     #[HttpValidationErrorResponse]
@@ -101,7 +102,7 @@ final class LaravelFortify
             properties: [
                 new OA\Property(property: 'first_name', title: 'user name', type: 'string', minimum: 2),
                 new OA\Property(property: 'last_name', title: 'user last name', type: 'string', minimum: 2),
-                new OA\Property(property: 'password_confirmation', type: 'string')
+                new OA\Property(property: 'password_confirmation', type: 'string'),
             ],
             allOf: [
                 new OA\Schema(ref: EmailPassword::class),
