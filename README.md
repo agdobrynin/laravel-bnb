@@ -108,7 +108,19 @@ docker run --rm -u "$(id -u):$(id -g)" \
     ```shell
     ./vendor/bin/sail npm run build
     ```
+### Выполенние тестов
 
+Обычный режим выполнения тестов:
+
+```shell
+./vendor/bin/sail test
+```
+
+Выполннение тестов в параллельном режиме
+
+```shell
+./vendor/bin/sail test --parallel
+```
 
 ### Доступные сайты в dev окружении
 
