@@ -33,7 +33,6 @@ Route::prefix('bookables/{bookable}')->name('bookables.')->group(function () {
         ->name('reviews.index.api');
 });
 
-
 Route::apiResource('reviews', ReviewController::class)
     ->only(['show', 'store'])
     ->names('reviews.api');
