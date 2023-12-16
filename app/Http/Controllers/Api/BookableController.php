@@ -50,13 +50,14 @@ class BookableController extends Controller
     public function index(BookableIndexRequest $request): AnonymousResourceCollection
     {
         $filter = new BookablesFilterDto(...$request->validated());
+        $perPage = config('bnb.index_per_page');
 
         return BookableIndexResource::collection(
             Bookable::filter($filter)
                 ->with(['bookableCategory'])
                 ->priceLowToHi()
                 ->latest()
-                ->paginate(config('bnb.index_per_page'))
+                ->paginate($perPage)
                 ->withQueryString()
         );
     }

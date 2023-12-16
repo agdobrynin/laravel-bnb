@@ -10,6 +10,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
 
+/**
+ * App\Models\File
+ *
+ * @method static Builder withoutReviewByUser(User $user): Builder
+ */
 class Booking extends Model
 {
     use HasFactory, HasUuids;
@@ -45,6 +50,14 @@ class Booking extends Model
     public static function findByReviewKey(string $reviewKey): ?Booking
     {
         return static::where('review_key', $reviewKey)->with(['bookable', 'user'])->get()->first();
+    }
+
+    public function scopeWithoutReviewByUser(Builder $builder, User $user): Builder
+    {
+        return $builder->where('review_key', '!=', '')
+            ->where('user_id', $user->id)
+            ->with('bookable.bookableCategory')
+            ->orderBy('start');
     }
 
     protected static function boot()

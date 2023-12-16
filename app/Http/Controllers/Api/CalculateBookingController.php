@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Dto\DateRangeDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BookingDatesRequest;
 use App\Models\Bookable;
@@ -49,8 +50,8 @@ class CalculateBookingController extends Controller
     #[HttpValidationErrorResponse]
     public function __invoke(Bookable $bookable, BookingDatesRequest $request): JsonResponse
     {
-        $data = $request->validated();
-        $priceBreakdown = new PriceBreakdownVO($bookable, $data['start'], $data['end']);
+        $dateRageDto = new DateRangeDto(...$request->validated());
+        $priceBreakdown = new PriceBreakdownVO($bookable, $dateRageDto->start, $dateRageDto->end);
 
         return response()->json([
             'data' => [
