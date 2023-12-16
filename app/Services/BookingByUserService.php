@@ -21,6 +21,11 @@ class BookingByUserService
     ) {
     }
 
+    /**
+     * @template TValue of \App\Models\Booking
+     *
+     * @return \Illuminate\Support\Collection<int, TValue>
+     */
     public function handle(CheckoutRequestDto $dto, ?User $user): Collection
     {
         $personAddress = $this->personAddressRepository->create((array) $dto->person);
