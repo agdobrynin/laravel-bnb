@@ -38,7 +38,7 @@ Route::apiResource('reviews', ReviewController::class)
     ->names('reviews.api');
 
 Route::name('booking.')->group(function () {
-    Route::get('booking-by-review/{reviewKey}', BookingByReviewController::class)
+    Route::get('booking-by-review/{booking:review_key}', BookingByReviewController::class)
         ->name('by-review.show.api');
 
     Route::get('booking-without-review', BookingWithoutReview::class)

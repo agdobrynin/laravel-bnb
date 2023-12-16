@@ -23,9 +23,9 @@ readonly class CheckoutRequestDto implements DtoFromRequest
     ) {
     }
 
-    public static function fromRequest(CheckoutRequest|FormRequest $request): static
+    public static function fromRequest(CheckoutRequest|FormRequest $request): self
     {
-        $bookings = array_map(function (array $booking) {
+        $bookings = array_map(static function (array $booking) {
             return new CheckoutBookingDto(...$booking);
         }, $request->validated('bookings'));
 
@@ -35,7 +35,7 @@ readonly class CheckoutRequestDto implements DtoFromRequest
             $person['email'] = $user->email;
         }
 
-        return new static(
+        return new self(
             new CheckoutPersonDto(...$person),
             $bookings,
         );

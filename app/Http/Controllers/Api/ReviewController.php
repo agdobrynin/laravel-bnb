@@ -6,7 +6,6 @@ use App\Dto\ReviewRequestDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ReviewRequest;
 use App\Http\Resources\ReviewResource;
-use App\Models\Booking;
 use App\Models\Review;
 use App\Virtual\Parameters\UuidPathParameter;
 use App\Virtual\Response\HeaderSetCookieToken;
@@ -14,7 +13,6 @@ use App\Virtual\Response\HttpErrorResponse;
 use App\Virtual\Response\HttpNotFoundResponse;
 use App\Virtual\Response\HttpValidationErrorResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Validator;
 use OpenApi\Attributes as OA;
 
 class ReviewController extends Controller
@@ -36,35 +34,25 @@ class ReviewController extends Controller
     #[HttpValidationErrorResponse]
     #[HttpNotFoundResponse(description: 'Review not found by review key')]
     #[HttpErrorResponse(code: 403, description: 'Your are not owner this review')]
-    public function store(ReviewRequest $request)
+    public function store(ReviewRequest $request): ReviewResource
     {
-        if ($request->user()) {
-            Validator::validate(
-                ['verify-email' => $request->user()->email_verified_at],
-                ['verify-email' => 'required'],
-                ['verify-email' => 'Please verify email']);
+        if (! $request->booking) {
+            abort(404, 'Not found by review id');
         }
 
         $dto = new ReviewRequestDto(...$request->validated());
 
-        if ($booking = Booking::findByReviewKey($dto->id)) {
-            if ($booking->user_id !== $request->user()?->id) {
-                abort(403, 'Forbidden. Your are not owner this booking');
-            }
+        $request->booking->review_key = '';
+        $request->booking->save();
 
-            $booking->review_key = '';
-            $booking->save();
+        /** @var Review $review */
+        $review = Review::make((array) $dto);
+        $review->bookable()->associate($request->booking->bookable);
+        $review->booking()->associate($request->booking);
 
-            $review = Review::make((array) $dto);
-            $review->bookable_id = $booking->bookable_id;
-            $review->booking_id = $booking->id;
+        $review->save();
 
-            $review->save();
-
-            return new ReviewResource($review);
-        }
-
-        abort(404, 'Not found by review id');
+        return new ReviewResource($review);
     }
 
     #[OA\Get(

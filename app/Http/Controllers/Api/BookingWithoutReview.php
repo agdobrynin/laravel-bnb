@@ -36,16 +36,11 @@ class BookingWithoutReview extends Controller
     #[HttpErrorResponse(code: 401, description: 'Unauthorized')]
     public function __invoke(Request $request): AnonymousResourceCollection
     {
-        $perPage = env('PAGINATION_BOOKING_WITHOUT_REVIEW_PER_PAGE', 10);
+        $perPage = config('without_review_per_page');
+        $bookingsWithoutReview = Booking::withoutReviewByUser($request->user())
+            ->paginate($perPage)
+            ->withQueryString();
 
-        return BookingWithoutReviewResource::collection(
-            Booking::query()
-                ->where('review_key', '!=', '')
-                ->where('user_id', $request->user()->id)
-                ->with('bookable.bookableCategory')
-                ->orderBy('start')
-                ->paginate($perPage)
-                ->withQueryString()
-        );
+        return BookingWithoutReviewResource::collection($bookingsWithoutReview);
     }
 }

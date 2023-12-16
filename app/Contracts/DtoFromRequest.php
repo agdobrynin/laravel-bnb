@@ -6,5 +6,5 @@ use Illuminate\Foundation\Http\FormRequest;
 
 interface DtoFromRequest
 {
-    public static function fromRequest(FormRequest $request): static;
+    public static function fromRequest(FormRequest $request): self;
 }

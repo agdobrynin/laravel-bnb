@@ -11,6 +11,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @method static Builder Filter(BookablesFilterDto $filterDto): Builder
+ * @method static Builder DisplayByFilterWithCategory(BookablesFilterDto $filterDto): Builder
+ */
 class Bookable extends Model
 {
     use HasFactory, HasUuids;
@@ -66,5 +70,13 @@ class Bookable extends Model
             $filterDto->priceWeekendMax,
             fn (Builder $query, $value) => $query->where('price_weekend', '<=', $value)
         );
+    }
+
+    public static function scopeDisplayByFilterWithCategory(Builder $builder, BookablesFilterDto $filterDto)
+    {
+        return static::filter($filterDto)
+            ->with('bookableCategory')
+            ->priceLowToHi()
+            ->latest();
     }
 }
