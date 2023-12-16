@@ -52,14 +52,11 @@ class BookableController extends Controller
         $filter = new BookablesFilterDto(...$request->validated());
         $perPage = config('bnb.index_per_page');
 
-        return BookableIndexResource::collection(
-            Bookable::filter($filter)
-                ->with(['bookableCategory'])
-                ->priceLowToHi()
-                ->latest()
-                ->paginate($perPage)
-                ->withQueryString()
-        );
+        $bookables = Bookable::displayByFilterWithCategory($filter)
+            ->paginate($perPage)
+            ->withQueryString();
+
+        return BookableIndexResource::collection($bookables);
     }
 
     #[OA\Get(

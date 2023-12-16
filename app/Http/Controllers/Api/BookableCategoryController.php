@@ -25,9 +25,11 @@ class BookableCategoryController extends Controller
     )]
     public function __invoke(): JsonResource
     {
+        $ttl = (int) config('bnb.cache_ttl_category');
+
         $dictionary = Cache::remember(
             BookableCategory::class,
-            (int) env('CACHE_TTL_DICTIONARY', 300),
+            $ttl,
             static fn () => BookableCategory::all()
         );
 
