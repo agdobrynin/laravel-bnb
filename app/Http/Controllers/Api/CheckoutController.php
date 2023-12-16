@@ -2,16 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Dto\CheckoutBookingDto;
 use App\Dto\CheckoutRequestDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CheckoutRequest;
 use App\Http\Resources\CheckoutSuccessResource;
 use App\Mail\BookingMade;
-use App\Models\Bookable;
-use App\Models\Booking;
-use App\Models\PersonAddress;
-use App\ValueObject\PriceBreakdownVO;
+use App\Services\BookingByUserService;
 use App\Virtual\Response\HeaderSetCookieToken;
 use App\Virtual\Response\HttpNotFoundResponse;
 use App\Virtual\Response\HttpValidationErrorResponse;
@@ -41,33 +37,15 @@ class CheckoutController extends Controller
     )]
     #[HttpNotFoundResponse]
     #[HttpValidationErrorResponse(description: 'Input validation or Fail for availability booking dates')]
-    public function __invoke(CheckoutRequest $request): AnonymousResourceCollection
+    public function __invoke(CheckoutRequest $request, BookingByUserService $bookingByUserService): AnonymousResourceCollection
     {
         $dto = CheckoutRequestDto::fromRequest($request);
-        /** @var PersonAddress $personAddress */
-        $personAddress = PersonAddress::create((array) $dto->person);
+        $bookings = $bookingByUserService->handle($dto, $request->user());
 
-        $bookings = collect($dto->bookings)->map(static function (CheckoutBookingDto $checkoutBooking) use ($personAddress, $request, $dto) {
-            /** @var Bookable $bookable */
-            $bookable = Bookable::with('bookableCategory')->find($checkoutBooking->bookable_id);
-            /** @var Booking $booking */
-            $booking = Booking::make((array) $checkoutBooking);
-            $priceBreakdown = new PriceBreakdownVO($bookable, $booking->start, $booking->end);
-            $booking->price = $priceBreakdown->totalPrice;
-            $booking->bookable()->associate($bookable);
-            $booking->personAddress()->associate($personAddress);
-
-            if ($user = $request->user()) {
-                $booking->user()->associate($user);
-            }
-
-            $booking->save();
-            //Send email with review link to user.
+        foreach ($bookings as $booking) {
             $email = $request->user()?->email ?: $dto->person->email;
             Mail::to($email)->send(new BookingMade($booking));
-
-            return $booking;
-        });
+        }
 
         return CheckoutSuccessResource::collection($bookings);
     }

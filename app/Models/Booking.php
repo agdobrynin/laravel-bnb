@@ -19,7 +19,7 @@ class Booking extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $fillable = ['start', 'end'];
+    protected $fillable = ['start', 'end', 'price'];
 
     public function bookable(): BelongsTo
     {

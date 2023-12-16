@@ -35,7 +35,7 @@ readonly class CheckoutRequestDto implements DtoFromRequest
             $person['email'] = $user->email;
         }
 
-        return new static(
+        return new self(
             new CheckoutPersonDto(...$person),
             $bookings,
         );
