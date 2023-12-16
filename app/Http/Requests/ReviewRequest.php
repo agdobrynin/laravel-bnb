@@ -2,21 +2,30 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Booking;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 
 class ReviewRequest extends FormRequest
 {
-    public function authorize()
+    public ?Booking $booking = null;
+
+    public function authorize(): Response
     {
-        return true;
+        $uuid = $this->input('id');
+
+        if ($uuid && $booking = Booking::findByReviewKey($uuid)) {
+            $this->booking = $booking;
+
+            if ($this->booking->user_id !== $this->user()?->id) {
+                return Response::deny('Forbidden. Your are not owner this booking');
+            }
+        }
+
+        return Response::allow();
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, mixed>
-     */
     public function rules(): array
     {
         return [

@@ -6,7 +6,6 @@ use App\Dto\ReviewRequestDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ReviewRequest;
 use App\Http\Resources\ReviewResource;
-use App\Models\Booking;
 use App\Models\Review;
 use App\Virtual\Parameters\UuidPathParameter;
 use App\Virtual\Response\HeaderSetCookieToken;
@@ -35,28 +34,25 @@ class ReviewController extends Controller
     #[HttpValidationErrorResponse]
     #[HttpNotFoundResponse(description: 'Review not found by review key')]
     #[HttpErrorResponse(code: 403, description: 'Your are not owner this review')]
-    public function store(ReviewRequest $request)
+    public function store(ReviewRequest $request): ReviewResource
     {
-        $dto = new ReviewRequestDto(...$request->validated());
-
-        if ($booking = Booking::findByReviewKey($dto->id)) {
-            if ($booking->user_id !== $request->user()?->id) {
-                abort(403, 'Forbidden. Your are not owner this booking');
-            }
-
-            $booking->review_key = '';
-            $booking->save();
-
-            $review = Review::make((array) $dto);
-            $review->bookable_id = $booking->bookable_id;
-            $review->booking_id = $booking->id;
-
-            $review->save();
-
-            return new ReviewResource($review);
+        if (! $request->booking) {
+            abort(404, 'Not found by review id');
         }
 
-        abort(404, 'Not found by review id');
+        $dto = new ReviewRequestDto(...$request->validated());
+
+        $request->booking->review_key = '';
+        $request->booking->save();
+
+        /** @var Review $review */
+        $review = Review::make((array) $dto);
+        $review->bookable()->associate($request->booking->bookable);
+        $review->booking()->associate($request->booking);
+
+        $review->save();
+
+        return new ReviewResource($review);
     }
 
     #[OA\Get(
