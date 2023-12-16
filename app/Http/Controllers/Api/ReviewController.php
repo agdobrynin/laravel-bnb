@@ -14,7 +14,6 @@ use App\Virtual\Response\HttpErrorResponse;
 use App\Virtual\Response\HttpNotFoundResponse;
 use App\Virtual\Response\HttpValidationErrorResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Validator;
 use OpenApi\Attributes as OA;
 
 class ReviewController extends Controller
@@ -38,13 +37,6 @@ class ReviewController extends Controller
     #[HttpErrorResponse(code: 403, description: 'Your are not owner this review')]
     public function store(ReviewRequest $request)
     {
-        if ($request->user()) {
-            Validator::validate(
-                ['verify-email' => $request->user()->email_verified_at],
-                ['verify-email' => 'required'],
-                ['verify-email' => 'Please verify email']);
-        }
-
         $dto = new ReviewRequestDto(...$request->validated());
 
         if ($booking = Booking::findByReviewKey($dto->id)) {
